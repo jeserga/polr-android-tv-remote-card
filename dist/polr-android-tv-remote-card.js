@@ -318,11 +318,11 @@ class Q {
     return o.innerHTML = e, o;
   }
 }
-function B(t, e, i = t, o) {
+function j(t, e, i = t, o) {
   if (e === A) return e;
   let s = o !== void 0 ? i._$Co?.[o] : i._$Cl;
   const n = G(e) ? void 0 : e._$litDirective$;
-  return s?.constructor !== n && (s?._$AO?.(!1), n === void 0 ? s = void 0 : (s = new n(t), s._$AT(t, i, o)), o !== void 0 ? (i._$Co ??= [])[o] = s : i._$Cl = s), s !== void 0 && (e = B(t, s._$AS(t, e.values), s, o)), e;
+  return s?.constructor !== n && (s?._$AO?.(!1), n === void 0 ? s = void 0 : (s = new n(t), s._$AT(t, i, o)), o !== void 0 ? (i._$Co ??= [])[o] = s : i._$Cl = s), s !== void 0 && (e = j(t, s._$AS(t, e.values), s, o)), e;
 }
 class He {
   constructor(e, i) {
@@ -341,7 +341,7 @@ class He {
     for (; r !== void 0; ) {
       if (a === r.index) {
         let v;
-        r.type === 2 ? v = new K(n, n.nextSibling, this, e) : r.type === 1 ? v = new r.ctor(n, r.name, r.strings, this, e) : r.type === 6 && (v = new je(n, this, e)), this._$AV.push(v), r = o[++c];
+        r.type === 2 ? v = new K(n, n.nextSibling, this, e) : r.type === 1 ? v = new r.ctor(n, r.name, r.strings, this, e) : r.type === 6 && (v = new Be(n, this, e)), this._$AV.push(v), r = o[++c];
       }
       a !== r?.index && (n = M.nextNode(), a++);
     }
@@ -371,7 +371,7 @@ class K {
     return this._$AB;
   }
   _$AI(e, i = this) {
-    e = B(this, e, i), G(e) ? e === d || e == null || e === "" ? (this._$AH !== d && this._$AR(), this._$AH = d) : e !== this._$AH && e !== A && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : De(e) ? this.k(e) : this._(e);
+    e = j(this, e, i), G(e) ? e === d || e == null || e === "" ? (this._$AH !== d && this._$AR(), this._$AH = d) : e !== this._$AH && e !== A && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : De(e) ? this.k(e) : this._(e);
   }
   O(e) {
     return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -424,11 +424,11 @@ class at {
   _$AI(e, i = this, o, s) {
     const n = this.strings;
     let a = !1;
-    if (n === void 0) e = B(this, e, i, 0), a = !G(e) || e !== this._$AH && e !== A, a && (this._$AH = e);
+    if (n === void 0) e = j(this, e, i, 0), a = !G(e) || e !== this._$AH && e !== A, a && (this._$AH = e);
     else {
       const c = e;
       let r, v;
-      for (e = n[0], r = 0; r < n.length - 1; r++) v = B(this, c[o + r], i, r), v === A && (v = this._$AH[r]), a ||= !G(v) || v !== this._$AH[r], v === d ? e = d : e !== d && (e += (v ?? "") + n[r + 1]), this._$AH[r] = v;
+      for (e = n[0], r = 0; r < n.length - 1; r++) v = j(this, c[o + r], i, r), v === A && (v = this._$AH[r]), a ||= !G(v) || v !== this._$AH[r], v === d ? e = d : e !== d && (e += (v ?? "") + n[r + 1]), this._$AH[r] = v;
     }
     a && !s && this.j(e);
   }
@@ -457,7 +457,7 @@ class Ve extends at {
     super(e, i, o, s, n), this.type = 5;
   }
   _$AI(e, i = this) {
-    if ((e = B(this, e, i, 0) ?? d) === A) return;
+    if ((e = j(this, e, i, 0) ?? d) === A) return;
     const o = this._$AH, s = e === d && o !== d || e.capture !== o.capture || e.once !== o.once || e.passive !== o.passive, n = e !== d && (o === d || s);
     s && this.element.removeEventListener(this.name, this, o), n && this.element.addEventListener(this.name, this, e), this._$AH = e;
   }
@@ -465,7 +465,7 @@ class Ve extends at {
     typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
   }
 }
-class je {
+class Be {
   constructor(e, i, o) {
     this.element = e, this.type = 6, this._$AN = void 0, this._$AM = i, this.options = o;
   }
@@ -473,10 +473,10 @@ class je {
     return this._$AM._$AU;
   }
   _$AI(e) {
-    B(this, e);
+    j(this, e);
   }
 }
-const Be = { I: K }, Ke = $t.litHtmlPolyfillSupport;
+const je = { I: K }, Ke = $t.litHtmlPolyfillSupport;
 Ke?.(Q, K), ($t.litHtmlVersions ??= []).push("3.3.3");
 const We = (t, e, i) => {
   const o = i?.renderBefore ?? e;
@@ -615,10 +615,10 @@ let ve = class {
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { I: Ze } = Be, jt = (t) => t, Ge = (t) => t.strings === void 0, Bt = () => document.createComment(""), X = (t, e, i) => {
+const { I: Ze } = je, Bt = (t) => t, Ge = (t) => t.strings === void 0, jt = () => document.createComment(""), X = (t, e, i) => {
   const o = t._$AA.parentNode, s = e === void 0 ? t._$AB : e._$AA;
   if (i === void 0) {
-    const n = o.insertBefore(Bt(), s), a = o.insertBefore(Bt(), s);
+    const n = o.insertBefore(jt(), s), a = o.insertBefore(jt(), s);
     i = new Ze(n, a, t, t.options);
   } else {
     const n = i._$AB.nextSibling, a = i._$AM, c = a !== t;
@@ -629,8 +629,8 @@ const { I: Ze } = Be, jt = (t) => t, Ge = (t) => t.strings === void 0, Bt = () =
     if (n !== s || c) {
       let r = i._$AA;
       for (; r !== n; ) {
-        const v = jt(r).nextSibling;
-        jt(o).insertBefore(r, s), r = v;
+        const v = Bt(r).nextSibling;
+        Bt(o).insertBefore(r, s), r = v;
       }
     }
   }
@@ -804,7 +804,7 @@ const Kt = (t, e, i) => {
   if (!e) return !1;
   const i = t.states?.[e]?.state;
   return i === void 0 ? !1 : !ri.has(i.toLowerCase());
-}, j = (t, e) => (t.features & e) !== 0, Wt = (t, e) => (t.volumeFeatures & e) !== 0, Ft = (t) => t.volume !== void 0, li = (t, e) => {
+}, B = (t, e) => (t.features & e) !== 0, Wt = (t, e) => (t.volumeFeatures & e) !== 0, Ft = (t) => t.volume !== void 0, li = (t, e) => {
   const i = Et(e.service);
   return i ? t.callService(i[0], i[1], e.data ?? {}, e.target) : Promise.reject(
     new Error(`polr-android-tv-remote-card: invalid service "${e.service}"`)
@@ -823,7 +823,7 @@ const Kt = (t, e, i) => {
   const a = i.playerId;
   switch (o) {
     case "power":
-      return a && j(i, i.on ? x.TURN_OFF : x.TURN_ON) ? t.callService(
+      return a && B(i, i.on ? x.TURN_OFF : x.TURN_ON) ? t.callService(
         "media_player",
         i.on ? "turn_off" : "turn_on",
         { entity_id: a }
@@ -831,19 +831,19 @@ const Kt = (t, e, i) => {
         entity_id: i.remoteId
       });
     case "play_pause":
-      if (a && j(i, x.PAUSE))
+      if (a && B(i, x.PAUSE))
         return t.callService("media_player", "media_play_pause", {
           entity_id: a
         });
       break;
     case "next":
-      if (a && j(i, x.NEXT_TRACK))
+      if (a && B(i, x.NEXT_TRACK))
         return t.callService("media_player", "media_next_track", {
           entity_id: a
         });
       break;
     case "previous":
-      if (a && j(i, x.PREVIOUS_TRACK))
+      if (a && B(i, x.PREVIOUS_TRACK))
         return t.callService("media_player", "media_previous_track", {
           entity_id: a
         });
@@ -3416,7 +3416,7 @@ var Li = Object.defineProperty, Vi = Object.getOwnPropertyDescriptor, tt = (t, e
     (a = t[n]) && (s = (o ? a(e, i, s) : a(s)) || s);
   return o && s && Li(e, i, s), s;
 };
-const ji = "2.1.1-jeserga.1", lt = "polr-android-tv-remote-card";
+const Bi = "2.2.0", lt = "polr-android-tv-remote-card";
 let I = class extends z {
   constructor() {
     super(...arguments), this._text = "", this._sending = !1, this._nativeQueues = /* @__PURE__ */ new Map(), this._nativeSessions = /* @__PURE__ */ new Map();
@@ -3615,7 +3615,7 @@ let I = class extends z {
    * codes work regardless — it is only the *player* route that needs the bit.
    */
   _renderTransport(t) {
-    const e = t.playerId === null, i = e || j(t, x.PREVIOUS_TRACK), o = e || j(t, x.NEXT_TRACK), s = new Set(this._config.transport_buttons), n = [
+    const e = t.playerId === null, i = e || B(t, x.PREVIOUS_TRACK), o = e || B(t, x.NEXT_TRACK), s = new Set(this._config.transport_buttons), n = [
       s.has("previous") && i ? this._button("previous", "mdi:skip-previous", "Previous") : d,
       s.has("rewind") ? this._button("rewind", "mdi:rewind", "Rewind", { repeat: !0 }) : d,
       s.has("play_pause") ? this._button(
@@ -3839,9 +3839,9 @@ window.customCards.push({
   preview: !0,
   documentationURL: "https://github.com/jeserga/polr-android-tv-remote-card"
 });
-console.info(`%c ${lt} %c ${ji} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
+console.info(`%c ${lt} %c ${Bi} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
 export {
-  ji as CARD_VERSION,
+  Bi as CARD_VERSION,
   I as PolrAndroidTvRemoteCard
 };
 //# sourceMappingURL=polr-android-tv-remote-card.js.map
