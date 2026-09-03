@@ -44,7 +44,7 @@ import "./nav-pad";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.1.1-jeserga.1";
+export const CARD_VERSION = "2.2.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
