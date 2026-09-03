@@ -200,6 +200,7 @@
 
       const CASES = [
         { title: "buttons + apps", config: { entity: "remote.main_tv", apps: APPS } },
+        { title: "native hold", config: { entity: "remote.main_tv", hold_mode: "native", native_hold_buttons: ["up", "center", "fast_forward", "volume_up"], apps: [] } },
         { title: "d-pad", config: { entity: "remote.main_tv", pad: "dpad", apps: APPS.slice(0, 4) } },
         { title: "touchpad + text", config: { entity: "remote.main_tv", pad: "touchpad", show_text_input: true, apps: APPS.slice(0, 3) } },
         { title: "v1 config (touch, mixed apps)", config: { entity_id: "remote.main_tv", remote: "touch", apps: ["disneyplus", "hbomax", "netflix", "prime", { icon: "mdi:youtube", url: "https://www.youtube.com" }] } },

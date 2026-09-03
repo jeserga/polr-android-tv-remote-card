@@ -129,6 +129,80 @@ for (const dark of [false, true]) {
       `gestures: tap=${gestures.onTap} scroll=${gestures.onScroll} cancel=${gestures.onCancel}`,
     );
 
+    // Native mode must forward the two physical key edges, not synthesize a
+    // stream of SHORT presses. Every exit path must emit exactly one END_LONG
+    // or Android can believe the key is still down after the browser lets go.
+    const native = await page.evaluate(async () => {
+      const kase = [...document.querySelectorAll(".case")].find(
+        (c) => c.querySelector("h2")?.textContent === "native hold",
+      );
+      const card = kase.querySelector("polr-android-tv-remote-card");
+      const btn = card.shadowRoot.querySelector('[aria-label="Fast forward"]');
+      if (!btn) return { error: "no Fast forward button" };
+      const box = btn.getBoundingClientRect();
+      const sendPointer = (type, pointerId = 41) =>
+        btn.dispatchEvent(
+          new PointerEvent(type, {
+            bubbles: true, composed: true, cancelable: true,
+            clientX: box.left + box.width / 2,
+            clientY: box.top + box.height / 2,
+            button: 0, pointerId, pointerType: "touch",
+          }),
+        );
+      const commands = () => window.__calls.map((call) => call[2]?.command);
+      const settle = () => new Promise((resolve) => setTimeout(resolve, 60));
+
+      window.__calls = [];
+      sendPointer("pointerdown");
+      await settle();
+      const whileHeld = commands();
+      sendPointer("pointerup");
+      // Duplicate lifecycle events must not duplicate END_LONG.
+      sendPointer("pointerup");
+      await settle();
+      const released = commands();
+
+      window.__calls = [];
+      sendPointer("pointerdown", 42);
+      sendPointer("pointercancel", 42);
+      sendPointer("pointerup", 42);
+      await settle();
+      const cancelled = commands();
+
+      window.__calls = [];
+      btn.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      btn.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", bubbles: true }));
+      await settle();
+      const keyboard = commands();
+
+      window.__calls = [];
+      sendPointer("pointerdown", 43);
+      window.dispatchEvent(new PageTransitionEvent("pagehide"));
+      sendPointer("pointerup", 43);
+      await settle();
+      const pagehide = commands();
+
+      return { whileHeld, released, cancelled, keyboard, pagehide };
+    });
+
+    const start = "START_LONG:MEDIA_FAST_FORWARD";
+    const end = "END_LONG:MEDIA_FAST_FORWARD";
+    for (const [name, actual, expected] of [
+      ["held", native.whileHeld, [start]],
+      ["released", native.released, [start, end]],
+      ["cancelled", native.cancelled, [start, end]],
+      ["keyboard", native.keyboard, [start, end]],
+      ["pagehide", native.pagehide, [start, end]],
+    ]) {
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        failed = true;
+        console.error(
+          `[native] ${name}: wanted ${JSON.stringify(expected)}, got ${JSON.stringify(actual ?? native)}`,
+        );
+      }
+    }
+    console.log("native hold: pointer, cancel and keyboard edges paired");
+
     // The off-state "Turn on" button is a second entry point to power, and must
     // honour a power override exactly as the header button does — otherwise a
     // blaster-driven TV turns on through the wrong path.

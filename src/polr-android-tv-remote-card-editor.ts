@@ -22,6 +22,7 @@ import { describeAction, resolvePlayer } from "./atv";
 import {
   BRANDS,
   BRAND_IDS,
+  NATIVE_HOLDABLE_BUTTONS,
   brandFor,
   normalizeConfig,
   stripLegacyKeys,
@@ -66,31 +67,64 @@ const APPS_SCHEMA = (config: ResolvedConfig) =>
   [
     { name: "show_apps", selector: { boolean: {} } },
     ...(config.show_apps
-      ? [{ name: "app_columns", selector: { number: { min: 1, max: 8, mode: "box" } } }]
+      ? [
+          { name: "apps_label", selector: { text: {} } },
+          { name: "app_columns", selector: { number: { min: 1, max: 8, mode: "box" } } },
+        ]
       : []),
   ] as const;
 
 /** Everything after the Apps panel. */
-const TAIL_SCHEMA = [
-  {
-    type: "expandable",
-    name: "",
-    title: "Text input",
-    icon: "mdi:keyboard",
-    schema: [{ name: "show_text_input", selector: { boolean: {} } }],
-  },
-  {
-    type: "expandable",
-    name: "",
-    title: "Advanced",
-    icon: "mdi:tune",
-    schema: [
-      { name: "hold_repeat", selector: { boolean: {} } },
-      { name: "haptics", selector: { boolean: {} } },
-      { name: "show_section_labels", selector: { boolean: {} } },
-    ],
-  },
-] as const;
+const TAIL_SCHEMA = (config: ResolvedConfig) =>
+  [
+    {
+      type: "expandable",
+      name: "",
+      title: "Text input",
+      icon: "mdi:keyboard",
+      schema: [{ name: "show_text_input", selector: { boolean: {} } }],
+    },
+    {
+      type: "expandable",
+      name: "",
+      title: "Advanced",
+      icon: "mdi:tune",
+      schema: [
+        {
+          name: "hold_mode",
+          selector: {
+            select: {
+              mode: "dropdown",
+              options: [
+                { value: "repeat", label: "Repeated taps" },
+                { value: "native", label: "Native key hold (HA 2026.9+)" },
+                { value: "none", label: "Disabled" },
+              ],
+            },
+          },
+        },
+        ...(config.hold_mode === "native"
+          ? [
+              {
+                name: "native_hold_buttons",
+                selector: {
+                  select: {
+                    multiple: true,
+                    mode: "list",
+                    options: NATIVE_HOLDABLE_BUTTONS.map((value) => ({
+                      value,
+                      label: value.replaceAll("_", " "),
+                    })),
+                  },
+                },
+              },
+            ]
+          : []),
+        { name: "haptics", selector: { boolean: {} } },
+        { name: "show_section_labels", selector: { boolean: {} } },
+      ],
+    },
+  ] as const;
 
 const SCHEMA = (config: ResolvedConfig) =>
   [
@@ -218,10 +252,12 @@ const LABELS: Record<string, string> = {
   show_transport: "Transport controls",
   show_volume: "Volume controls",
   show_apps: "App launcher",
+  apps_label: "Launcher heading",
   transport_buttons: "Buttons",
   app_columns: "Buttons per row",
   show_text_input: "Text input",
-  hold_repeat: "Hold to repeat",
+  hold_mode: "Hold behaviour",
+  native_hold_buttons: "Native-hold buttons",
   haptics: "Haptic feedback",
   show_section_labels: "Section labels",
 };
@@ -238,6 +274,8 @@ const HELPERS: Record<string, string> = {
   // Kept short: ha-form runs a boolean's helper up against its toggle, and a
   // long one wraps into it. The full caveats are in the README.
   show_text_input: "Needs a focused search field on the TV, and Enable IME.",
+  hold_mode:
+    "Native hold mirrors key down/up and requires Android TV Remote on Home Assistant 2026.9 or newer.",
 };
 
 @customElement("polr-android-tv-remote-card-editor")
@@ -851,7 +889,7 @@ export class PolrAndroidTvRemoteCardEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._formData}
-        .schema=${TAIL_SCHEMA}
+        .schema=${TAIL_SCHEMA(config)}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}
         @value-changed=${this._formChanged}

@@ -14,13 +14,14 @@
 import { LitElement, html, nothing, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
-import type { PadStyle } from "./config";
-import { press } from "./press";
+import type { ButtonId, PadStyle } from "./config";
+import { press, type PressOptions } from "./press";
 import { remoteStyles } from "./styles";
 import { tileStyles } from "./kit/styles";
 import { fireEvent } from "./kit/types";
 
 export type NavDirection = "up" | "down" | "left" | "right" | "center";
+export type NavPressPhase = "short" | "start" | "end";
 
 /** Below this fraction of the pad, a drag counts as a tap. */
 const TAP_THRESHOLD = 0.06;
@@ -40,6 +41,7 @@ export class PolrAtvNavPad extends LitElement {
 
   @property({ type: String }) public pad: PadStyle = "buttons";
   @property({ type: Boolean }) public repeat = true;
+  @property({ attribute: false }) public nativeButtons: ButtonId[] = [];
   @property({ type: Boolean }) public haptics = true;
 
   @query(".touchpad") private _touchpad?: HTMLElement;
@@ -50,8 +52,23 @@ export class PolrAtvNavPad extends LitElement {
   private _startX = 0;
   private _startY = 0;
 
-  private _emit(direction: NavDirection): void {
-    fireEvent(this, "atv-nav", { direction });
+  private _emit(direction: NavDirection, phase: NavPressPhase = "short"): void {
+    fireEvent(this, "atv-nav", { direction, phase });
+  }
+
+  private _pressOptions(direction: NavDirection): PressOptions {
+    if (this.nativeButtons.includes(direction)) {
+      return {
+        onPressStart: () => this._emit(direction, "start"),
+        onPressEnd: () => this._emit(direction, "end"),
+        haptics: this.haptics,
+      };
+    }
+    return {
+      onPress: () => this._emit(direction),
+      repeat: this.repeat && direction !== "center",
+      haptics: this.haptics,
+    };
   }
 
   private _key(
@@ -65,11 +82,7 @@ export class PolrAtvNavPad extends LitElement {
         class="pad-key ${extraClass}"
         type="button"
         aria-label=${label}
-        ${press({
-          onPress: () => this._emit(direction),
-          repeat: this.repeat && direction !== "center",
-          haptics: this.haptics,
-        })}
+        ${press(this._pressOptions(direction))}
       >
         <ha-icon icon=${icon}></ha-icon>
       </button>
@@ -109,7 +122,7 @@ export class PolrAtvNavPad extends LitElement {
           class="pad-key ok"
           type="button"
           aria-label="Select"
-          ${press({ onPress: () => this._emit("center"), haptics: this.haptics })}
+          ${press(this._pressOptions("center"))}
         >
           <span>OK</span>
         </button>

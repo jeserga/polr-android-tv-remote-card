@@ -64,6 +64,8 @@ export const KEYS: Record<string, string> = {
   fast_forward: "MEDIA_FAST_FORWARD",
 };
 
+export type LongPressPhase = "start" | "end";
+
 /** Anything after this prefix is typed into the focused field on the TV. */
 const TEXT_PREFIX = "text:";
 
@@ -261,6 +263,25 @@ export const sendKey = (
     entity_id: device.remoteId,
     command,
   });
+
+/**
+ * Mirror a physical key-down or key-up through androidtv_remote.
+ *
+ * Home Assistant 2026.9 added these command prefixes specifically so a UI can
+ * forward the two halves separately. They must be part of `command` —
+ * `command_type` belongs to remote learning and is not accepted here.
+ */
+export const sendKeyDirection = (
+  hass: HomeAssistant,
+  device: DeviceState,
+  button: ButtonId,
+  phase: LongPressPhase,
+): Promise<unknown> => {
+  const key = KEYS[button];
+  if (!key) return Promise.resolve();
+  const direction = phase === "start" ? "START_LONG" : "END_LONG";
+  return sendKey(hass, device, `${direction}:${key}`);
+};
 
 /**
  * Type text on the TV.

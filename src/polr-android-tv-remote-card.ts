@@ -18,8 +18,10 @@ import {
   pressButton,
   readDevice,
   runAppAction,
+  sendKeyDirection,
   sendText,
   type DeviceState,
+  type LongPressPhase,
 } from "./atv";
 import {
   brandFor,
@@ -40,8 +42,9 @@ import { stateColor, type HomeAssistant } from "./kit/types";
 
 import "./nav-pad";
 import "./polr-android-tv-remote-card-editor";
+import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.1.1-beta.1";
+export const CARD_VERSION = "2.1.1-jeserga.1";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -54,6 +57,14 @@ export class PolrAndroidTvRemoteCard extends LitElement {
   @state() private _config?: ResolvedConfig;
   @state() private _text = "";
   @state() private _sending = false;
+
+  /** Keep START_LONG and END_LONG ordered even across websocket latency. */
+  private _nativeQueues = new Map<ButtonId, Promise<void>>();
+  /** END_LONG must target the same entity snapshot START_LONG used. */
+  private _nativeSessions = new Map<
+    ButtonId,
+    { hass: HomeAssistant; device: DeviceState }
+  >();
 
   public static getConfigElement(): HTMLElement {
     return document.createElement(`${CARD_TYPE}-editor`);
@@ -134,6 +145,50 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     this._run(pressButton(this.hass, this._config, device, button, this));
   }
 
+  private _usesNativeHold(button: ButtonId): boolean {
+    const config = this._config;
+    if (
+      !config ||
+      config.hold_mode !== "native" ||
+      !config.native_hold_buttons.includes(button)
+    ) {
+      return false;
+    }
+    // Any explicit interaction wins over the raw Android key, including
+    // action:none. Otherwise native hold would silently bypass the override.
+    return Object.keys(config.overrides[button] ?? {}).length === 0;
+  }
+
+  /** Queue one half of a physical Android key press. */
+  private _nativePress(button: ButtonId, phase: LongPressPhase): void {
+    let session = this._nativeSessions.get(button);
+    if (phase === "start") {
+      const device = this._device;
+      if (!this.hass || !device) return;
+      session = { hass: this.hass, device };
+      this._nativeSessions.set(button, session);
+    }
+    if (!session) return;
+    if (phase === "end") this._nativeSessions.delete(button);
+
+    const previous = this._nativeQueues.get(button) ?? Promise.resolve();
+    const current = previous
+      // A failed START must not suppress its END; a stuck Android key is worse
+      // than a duplicate error in the console.
+      .catch(() => undefined)
+      .then(() => sendKeyDirection(session!.hass, session!.device, button, phase))
+      .then(() => undefined)
+      .catch((error: unknown) => {
+        console.error("polr-android-tv-remote-card:", error);
+      });
+    this._nativeQueues.set(button, current);
+    void current.finally(() => {
+      if (this._nativeQueues.get(button) === current) {
+        this._nativeQueues.delete(button);
+      }
+    });
+  }
+
   /**
    * Press options for a button, folding in any configured interactions.
    *
@@ -154,17 +209,33 @@ export class PolrAndroidTvRemoteCard extends LitElement {
       if (this.hass) this._run(runAction(this, this.hass, action, config.entity));
     };
 
+    if (this._usesNativeHold(button)) {
+      return {
+        onPressStart: () => this._nativePress(button, "start"),
+        onPressEnd: () => this._nativePress(button, "end"),
+        haptics: config.haptics,
+      };
+    }
+
     return {
       onPress: () => this._press(button),
       ...(isActionable(hold) ? { onHold: run(hold as ActionConfig) } : {}),
       ...(isActionable(doubleTap) ? { onDoubleTap: run(doubleTap as ActionConfig) } : {}),
-      repeat: options.repeat && config.hold_repeat,
+      repeat: options.repeat && config.hold_mode === "repeat",
       haptics: config.haptics,
     };
   }
 
-  private _navigate(event: CustomEvent<{ direction: string }>): void {
-    this._press(event.detail.direction as ButtonId);
+  private _navigate(
+    event: CustomEvent<{ direction: string; phase?: NavPressPhase }>,
+  ): void {
+    const button = event.detail.direction as ButtonId;
+    const phase = event.detail.phase ?? "short";
+    if (phase === "start" || phase === "end") {
+      this._nativePress(button, phase);
+    } else {
+      this._press(button);
+    }
   }
 
   private _launch(app: AppConfig): void {
@@ -455,7 +526,12 @@ export class PolrAndroidTvRemoteCard extends LitElement {
 
   private _renderApps(): TemplateResult | typeof nothing {
     const config = this._config!;
-    return this._renderSection(config.apps, "Apps", config.app_columns, "apps");
+    return this._renderSection(
+      config.apps,
+      config.apps_label,
+      config.app_columns,
+      "apps",
+    );
   }
 
   /** User-defined rows, in declared order, ahead of the app launcher. */
@@ -528,9 +604,12 @@ export class PolrAndroidTvRemoteCard extends LitElement {
               `
             : html`
                 ${config.show_nav
-                  ? html`<polr-atv-nav-pad
+                    ? html`<polr-atv-nav-pad
                       .pad=${config.pad}
-                      .repeat=${config.hold_repeat}
+                      .repeat=${config.hold_mode === "repeat"}
+                      .nativeButtons=${config.native_hold_buttons.filter((button) =>
+                        this._usesNativeHold(button),
+                      )}
                       .haptics=${config.haptics}
                       @atv-nav=${this._navigate}
                     ></polr-atv-nav-pad>`
@@ -559,7 +638,7 @@ window.customCards.push({
   name: "PoLR Android TV Remote",
   description: "A remote for the Android TV Remote integration, with live state and an app launcher.",
   preview: true,
-  documentationURL: "https://github.com/pathofleastresistor/polr-android-tv-remote-card",
+  documentationURL: "https://github.com/jeserga/polr-android-tv-remote-card",
 });
 
 console.info(`%c ${CARD_TYPE} %c ${CARD_VERSION} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
