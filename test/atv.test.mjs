@@ -22,6 +22,7 @@ import {
   resolvePlayer,
   runAppAction,
   sendKey,
+  sendKeyDirection,
   sendText,
 } from "./.build/atv.mjs";
 import { normalizeConfig } from "./.build/config.mjs";
@@ -225,6 +226,48 @@ test("d-pad presses go to remote.send_command with v1's key codes", async () => 
       target: undefined,
     });
   }
+});
+
+test("native holds send HA 2026.9's exact START_LONG and END_LONG prefixes", async () => {
+  const hass = fixture();
+  const device = readDevice(hass, config());
+  await sendKeyDirection(hass, device, "fast_forward", "start");
+  await sendKeyDirection(hass, device, "fast_forward", "end");
+  assert.deepEqual(
+    hass.calls.map((call) => call.data),
+    [
+      { entity_id: "remote.main_tv", command: "START_LONG:MEDIA_FAST_FORWARD" },
+      { entity_id: "remote.main_tv", command: "END_LONG:MEDIA_FAST_FORWARD" },
+    ],
+  );
+});
+
+test("native holds always use raw remote keys rather than media-player helpers", async () => {
+  const hass = fixture();
+  const device = readDevice(hass, config());
+  await sendKeyDirection(hass, device, "volume_up", "start");
+  await sendKeyDirection(hass, device, "previous", "end");
+  assert.deepEqual(
+    hass.calls.map(({ domain, service, data }) => ({ domain, service, data })),
+    [
+      {
+        domain: "remote",
+        service: "send_command",
+        data: { entity_id: "remote.main_tv", command: "START_LONG:VOLUME_UP" },
+      },
+      {
+        domain: "remote",
+        service: "send_command",
+        data: { entity_id: "remote.main_tv", command: "END_LONG:MEDIA_PREVIOUS" },
+      },
+    ],
+  );
+});
+
+test("native hold ignores button ids without an Android key", async () => {
+  const hass = fixture();
+  await sendKeyDirection(hass, readDevice(hass, config()), "favorite", "start");
+  assert.deepEqual(hass.calls, []);
 });
 
 test("mute sends v1's MUTE key when no player is paired", async () => {

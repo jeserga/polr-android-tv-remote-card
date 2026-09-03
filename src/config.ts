@@ -19,6 +19,10 @@ import {
 const PAD_STYLES = ["buttons", "dpad", "touchpad"] as const;
 export type PadStyle = (typeof PAD_STYLES)[number];
 
+/** What holding a button does. `native` mirrors a physical remote key. */
+const HOLD_MODES = ["repeat", "native", "none"] as const;
+type HoldMode = (typeof HOLD_MODES)[number];
+
 export type BrandId =
   | "disneyplus"
   | "hbomax"
@@ -47,6 +51,30 @@ export type ButtonId =
   | "previous"
   | "rewind"
   | "fast_forward";
+
+/**
+ * Buttons for which an Android START_LONG / END_LONG pair is safe and useful.
+ *
+ * Power, mute, play/pause and favourite are toggles or user-defined actions:
+ * leaving any of them held can invert state twice or trigger device-specific
+ * behaviour, so native hold deliberately cannot be enabled for them.
+ */
+export const NATIVE_HOLDABLE_BUTTONS: readonly ButtonId[] = [
+  "up",
+  "down",
+  "left",
+  "right",
+  "center",
+  "home",
+  "back",
+  "menu",
+  "previous",
+  "rewind",
+  "fast_forward",
+  "next",
+  "volume_up",
+  "volume_down",
+];
 
 /** An arbitrary service call — v1's `{service, data}` shape, kept intact. */
 export interface ServiceAction {
@@ -158,6 +186,8 @@ export interface PolrAtvRemoteCardConfig {
   show_volume?: boolean;
   show_text_input?: boolean;
   show_apps?: boolean;
+  /** Heading for the built-in app launcher. */
+  apps_label?: string;
   show_section_labels?: boolean;
 
   apps?: AppConfig[];
@@ -166,6 +196,14 @@ export interface PolrAtvRemoteCardConfig {
   /** Most app buttons on one row before wrapping. */
   app_columns?: number;
 
+  /**
+   * `repeat` sends discrete taps, `native` holds one Android key down, and
+   * `none` turns holding off. Native mode needs Home Assistant 2026.9+.
+   */
+  hold_mode?: HoldMode;
+  /** Buttons that use native hold when `hold_mode` is `native`. */
+  native_hold_buttons?: ButtonId[];
+  /** Legacy spelling retained for compatibility (`true` = repeat). */
   hold_repeat?: boolean;
   haptics?: boolean;
   /**
@@ -192,11 +230,14 @@ export interface ResolvedConfig extends PolrAtvRemoteCardConfig {
   show_volume: boolean;
   show_text_input: boolean;
   show_apps: boolean;
+  apps_label: string;
   show_section_labels: boolean;
   show_favorite: boolean;
   apps: AppConfig[];
   sections: SectionConfig[];
   app_columns: number;
+  hold_mode: HoldMode;
+  native_hold_buttons: ButtonId[];
   hold_repeat: boolean;
   haptics: boolean;
   overrides: Partial<Record<ButtonId, ButtonActions>>;
@@ -214,8 +255,11 @@ export const DEFAULTS = {
   // `enable_ime` on the config entry, neither of which the card can detect.
   show_text_input: false,
   show_apps: true,
+  apps_label: "Apps",
   show_section_labels: false,
   app_columns: 5,
+  hold_mode: "repeat" as HoldMode,
+  native_hold_buttons: [...NATIVE_HOLDABLE_BUTTONS] as ButtonId[],
   hold_repeat: true,
   haptics: true,
 };
@@ -555,6 +599,22 @@ export const normalizeConfig = (raw: PolrAtvRemoteCardConfig): ResolvedConfig =>
   const pick = <T>(value: T | undefined, fallback: T): T =>
     value === undefined ? fallback : value;
 
+  // `hold_repeat` was the original boolean. An explicit v2.1 hold mode wins;
+  // otherwise preserve old configurations byte-for-byte in behaviour.
+  const holdMode: HoldMode = HOLD_MODES.includes(raw.hold_mode as HoldMode)
+    ? (raw.hold_mode as HoldMode)
+    : raw.hold_repeat === false
+      ? "none"
+      : DEFAULTS.hold_mode;
+
+  const allowedNativeButtons = new Set(NATIVE_HOLDABLE_BUTTONS);
+  const nativeHoldButtons = Array.isArray(raw.native_hold_buttons)
+    ? [...new Set(raw.native_hold_buttons)].filter(
+        (button): button is ButtonId =>
+          typeof button === "string" && allowedNativeButtons.has(button as ButtonId),
+      )
+    : [...DEFAULTS.native_hold_buttons];
+
   return {
     ...raw,
     type: raw.type,
@@ -576,6 +636,10 @@ export const normalizeConfig = (raw: PolrAtvRemoteCardConfig): ResolvedConfig =>
       branch.show_text_input ?? DEFAULTS.show_text_input,
     ),
     show_apps: pick(raw.show_apps, branch.show_apps ?? DEFAULTS.show_apps),
+    apps_label:
+      typeof raw.apps_label === "string" && raw.apps_label.trim()
+        ? raw.apps_label.trim()
+        : DEFAULTS.apps_label,
     show_section_labels: pick(raw.show_section_labels, DEFAULTS.show_section_labels),
 
     // v1 always drew a favourite button on the default pad, and threw when it
@@ -589,7 +653,11 @@ export const normalizeConfig = (raw: PolrAtvRemoteCardConfig): ResolvedConfig =>
       typeof raw.app_columns === "number" && raw.app_columns > 0
         ? raw.app_columns
         : DEFAULTS.app_columns,
-    hold_repeat: pick(raw.hold_repeat, DEFAULTS.hold_repeat),
+    hold_mode: holdMode,
+    native_hold_buttons: nativeHoldButtons,
+    // Keep the resolved legacy value truthful for old rendering paths and
+    // third-party code that reads it from the editor's emitted config.
+    hold_repeat: holdMode === "repeat",
     haptics: pick(raw.haptics, DEFAULTS.haptics),
     overrides,
   };

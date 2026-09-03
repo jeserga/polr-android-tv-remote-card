@@ -1,18 +1,18 @@
 {
   "name": "polr-android-tv-remote-card",
-  "version": "2.1.1-beta.1",
+  "version": "2.1.1-jeserga.1",
   "description": "A Lovelace remote for the Android TV Remote integration.",
   "main": "dist/polr-android-tv-remote-card.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pathofleastresistor/polr-android-tv-remote-card.git"
+    "url": "git+https://github.com/jeserga/polr-android-tv-remote-card.git"
   },
   "license": "MIT",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/pathofleastresistor/polr-android-tv-remote-card/issues"
+    "url": "https://github.com/jeserga/polr-android-tv-remote-card/issues"
   },
-  "homepage": "https://github.com/pathofleastresistor/polr-android-tv-remote-card#readme",
+  "homepage": "https://github.com/jeserga/polr-android-tv-remote-card#readme",
   "scripts": {
     "build": "tsc --noEmit && vite build",
     "watch": "vite build --watch",

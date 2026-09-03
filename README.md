@@ -17,14 +17,15 @@ whether the set is on and what app is running, rather than firing commands blind
   hiding what the device does not support
 - An app launcher you configure in the UI, with six bundled brand logos
 - Type into search boxes on the TV instead of pecking with the d-pad
-- Hold to repeat, haptics, full keyboard and screen-reader support
+- Hold to repeat, or forward real Android key-down/key-up events on HA 2026.9+
+- Haptics, full keyboard and screen-reader support
 - Any button can be pointed at any Home Assistant action
 
 ## Installation
 
 ### HACS
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=polr-android-tv-remote-card&category=Lovelace&owner=pathofleastresistor)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=polr-android-tv-remote-card&category=Lovelace&owner=jeserga)
 
 HACS → ⋮ → **Custom repositories** → paste this repository's URL → **Lovelace**
 → install.
@@ -67,11 +68,14 @@ entity: remote.living_room_tv
 | `volume_entity`       | player   | What the volume buttons drive. See [Volume](#volume).                   |
 | `show_text_input`     | `false`  | Type on the TV. See [Text input](#text-input).                          |
 | `show_apps`           | `true`   | The app launcher.                                                       |
+| `apps_label`          | `Apps`   | Heading above the built-in launcher.                                    |
 | `apps`                | `[]`     | See [Apps](#apps).                                                      |
 | `sections`            | `[]`     | Your own rows of buttons. See [Sections](#sections).                    |
 | `app_columns`         | `5`      | Most app buttons on one row before wrapping.                            |
 | `show_section_labels` | `false`  | Small headings above sections.                                          |
-| `hold_repeat`         | `true`   | Hold a d-pad or volume button to repeat it.                             |
+| `hold_mode`           | `repeat` | `repeat`, `native` (HA 2026.9+) or `none`. See [Holding buttons](#holding-buttons). |
+| `native_hold_buttons` | safe keys | Keys forwarded in native mode. See [Holding buttons](#holding-buttons). |
+| `hold_repeat`         | —        | Legacy boolean; still accepted as `repeat` / `none`.                    |
 | `haptics`             | `true`   | Haptic feedback (Companion app only).                                   |
 | `overrides`           | `{}`     | See [Pointing buttons elsewhere](#pointing-buttons-elsewhere).          |
 
@@ -205,11 +209,47 @@ Worth knowing:
 - **Power** toggles when it has no override, choosing `turn_on` or `turn_off`
   from the current state. With one, it always performs your action — which is
   what a blaster sending a single toggle code needs.
-- A **`hold_action` replaces hold-to-repeat** on that button. A control cannot
-  both repeat while held and do something else.
+- Any explicit override replaces native hold on that button. A
+  **`hold_action` replaces hold-to-repeat** as well; one physical gesture has
+  one owner.
 - A **`double_tap_action` delays every tap** on that button by 250ms, because a
   tap is not known to be single until the window passes. Neither is wired unless
   you configure it.
+
+### Holding buttons
+
+The default remains backward-compatible repeated taps. Native mode instead
+forwards the physical press and release as the command prefixes introduced by
+the Android TV Remote integration in Home Assistant 2026.9:
+
+```yaml
+hold_mode: native
+native_hold_buttons:
+  - up
+  - down
+  - left
+  - right
+  - center
+  - home
+  - back
+  - menu
+  - previous
+  - rewind
+  - fast_forward
+  - next
+  - volume_up
+  - volume_down
+```
+
+A quick tap is therefore one `START_LONG` / `END_LONG` pair; keeping a finger
+down keeps the key down until release. Apps can then accelerate seeking or
+scrolling exactly as they do with the physical remote. Release is also sent on
+pointer cancellation, focus loss, component removal and a 30-second safety
+watchdog. Power, mute, play/pause and favourite are intentionally excluded
+because they toggle state or run arbitrary actions.
+
+The `touchpad` continues to emit short swipe actions. Use `buttons` or `dpad`
+when native directional holds are wanted.
 
 ### Volume
 
@@ -257,11 +297,12 @@ data: { command: "text:the bear" }
 
 ### Scrolling on mobile
 
-Buttons resolve on release, so you can start a scroll anywhere on one and it
-will not fire. The touchpad is the exception: a swipe surface has to claim the
-gesture, so the page will not scroll from it. It is kept short with a gutter
-down each side to leave room to scroll past; `pad: buttons` or `pad: dpad`
-avoids the trade-off entirely.
+Regular buttons resolve on release, so you can start a scroll anywhere on one
+and it will not fire. Buttons configured for native hold are the exception:
+they claim the pointer immediately so Android receives a real key-down and a
+guaranteed key-up. The touchpad also has to claim the gesture. Both are kept in
+compact areas with surrounding gutters; choose `hold_mode: repeat` or `none`
+when page scrolling must take priority over native holds.
 
 ### What the integration does not support
 

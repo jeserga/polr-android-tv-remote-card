@@ -13,6 +13,7 @@ import {
   BRANDS,
   BRAND_IDS,
   DEFAULTS,
+  NATIVE_HOLDABLE_BUTTONS,
   brandFor,
   entityAction,
   normalizeConfig,
@@ -96,6 +97,68 @@ test("volume defaults to shown, matching v1", () => {
   assert.equal(
     normalizeConfig(base({ entity_id: "remote.atv", volume: true })).show_volume,
     true,
+  );
+});
+
+test("holding keeps the legacy repeated-tap behaviour by default", () => {
+  const config = normalizeConfig(base({ entity: "remote.atv" }));
+  assert.equal(config.hold_mode, "repeat");
+  assert.equal(config.hold_repeat, true);
+});
+
+test("legacy hold_repeat false becomes hold mode none", () => {
+  const config = normalizeConfig(
+    base({ entity: "remote.atv", hold_repeat: false }),
+  );
+  assert.equal(config.hold_mode, "none");
+  assert.equal(config.hold_repeat, false);
+});
+
+test("an explicit native hold mode wins over the legacy boolean", () => {
+  const config = normalizeConfig(
+    base({ entity: "remote.atv", hold_mode: "native", hold_repeat: true }),
+  );
+  assert.equal(config.hold_mode, "native");
+  assert.equal(config.hold_repeat, false);
+});
+
+test("invalid hold modes fall back without changing existing behaviour", () => {
+  const config = normalizeConfig(
+    base({ entity: "remote.atv", hold_mode: "turbo" }),
+  );
+  assert.equal(config.hold_mode, "repeat");
+});
+
+test("native hold defaults to every safe holdable button", () => {
+  const config = normalizeConfig(
+    base({ entity: "remote.atv", hold_mode: "native" }),
+  );
+  assert.deepEqual(config.native_hold_buttons, [...NATIVE_HOLDABLE_BUTTONS]);
+  for (const unsafe of ["power", "volume_mute", "play_pause", "favorite"]) {
+    assert.equal(config.native_hold_buttons.includes(unsafe), false);
+  }
+});
+
+test("native hold buttons are validated and deduplicated", () => {
+  const config = normalizeConfig(
+    base({
+      entity: "remote.atv",
+      hold_mode: "native",
+      native_hold_buttons: ["left", "power", "left", "bogus", "volume_up"],
+    }),
+  );
+  assert.deepEqual(config.native_hold_buttons, ["left", "volume_up"]);
+});
+
+test("the app launcher heading is customisable and never blank", () => {
+  assert.equal(
+    normalizeConfig(base({ entity: "remote.atv", apps_label: " Aplicaciones " }))
+      .apps_label,
+    "Aplicaciones",
+  );
+  assert.equal(
+    normalizeConfig(base({ entity: "remote.atv", apps_label: "   " })).apps_label,
+    DEFAULTS.apps_label,
   );
 });
 
