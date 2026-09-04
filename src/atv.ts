@@ -280,7 +280,14 @@ export const sendKeyDirection = (
   const key = KEYS[button];
   if (!key) return Promise.resolve();
   const direction = phase === "start" ? "START_LONG" : "END_LONG";
-  return sendKey(hass, device, `${direction}:${key}`);
+  // remote.send_command otherwise waits its default 400 ms after each call.
+  // END_LONG is queued behind START_LONG by the card, so that default makes a
+  // released key visibly stick. Zero keeps ordering while releasing at once.
+  return hass.callService("remote", "send_command", {
+    entity_id: device.remoteId,
+    command: `${direction}:${key}`,
+    delay_secs: 0,
+  });
 };
 
 /**

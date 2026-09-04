@@ -129,9 +129,10 @@ for (const dark of [false, true]) {
       `gestures: tap=${gestures.onTap} scroll=${gestures.onScroll} cancel=${gestures.onCancel}`,
     );
 
-    // Native mode must forward the two physical key edges, not synthesize a
-    // stream of SHORT presses. Every exit path must emit exactly one END_LONG
-    // or Android can believe the key is still down after the browser lets go.
+    // Native mode deliberately has two gestures: an ordinary press sends one
+    // SHORT command, while a real hold forwards Android's physical key edges.
+    // Every exit path after START_LONG must emit exactly one END_LONG or the TV
+    // can believe the key is still down after the browser lets go.
     const native = await page.evaluate(async () => {
       const kase = [...document.querySelectorAll(".case")].find(
         (c) => c.querySelector("h2")?.textContent === "native hold",
@@ -150,48 +151,125 @@ for (const dark of [false, true]) {
           }),
         );
       const commands = () => window.__calls.map((call) => call[2]?.command);
-      const settle = () => new Promise((resolve) => setTimeout(resolve, 60));
+      const delays = () => window.__calls.map((call) => call[2]?.delay_secs);
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+      // A quick, normal press stays a SHORT command.
       window.__calls = [];
       sendPointer("pointerdown");
-      await settle();
-      const whileHeld = commands();
       sendPointer("pointerup");
-      // Duplicate lifecycle events must not duplicate END_LONG.
-      sendPointer("pointerup");
-      await settle();
-      const released = commands();
+      await wait(60);
+      const quickTap = commands();
 
+      // 600 ms is deliberately a fairly slow tap. It must still be usable as
+      // a normal press; the native-hold threshold is 750 ms.
       window.__calls = [];
       sendPointer("pointerdown", 42);
-      sendPointer("pointercancel", 42);
+      await wait(600);
+      const beforeRelaxedRelease = commands();
       sendPointer("pointerup", 42);
-      await settle();
-      const cancelled = commands();
+      await wait(60);
+      const relaxedTap = commands();
 
+      // Only after the threshold does Android receive a real key-down.
+      window.__calls = [];
+      sendPointer("pointerdown", 43);
+      await wait(825);
+      const whileHeld = commands();
+      const whileHeldDelays = delays();
+      sendPointer("pointerup", 43);
+      // Duplicate lifecycle events must not duplicate END_LONG.
+      sendPointer("pointerup", 43);
+      await wait(25);
+      const released = commands();
+      const releasedDelays = delays();
+      await wait(180);
+      const afterRelease = commands();
+
+      // Cancelling before the threshold is neither a tap nor a hold.
+      window.__calls = [];
+      sendPointer("pointerdown", 44);
+      sendPointer("pointercancel", 44);
+      sendPointer("pointerup", 44);
+      await wait(60);
+      const cancelledPending = commands();
+
+      // Once a hold has started, pointercancel is a release edge.
+      window.__calls = [];
+      sendPointer("pointerdown", 45);
+      await wait(825);
+      sendPointer("pointercancel", 45);
+      sendPointer("pointerup", 45);
+      await wait(25);
+      const cancelledHeld = commands();
+
+      // A release dispatched outside the button is caught at window level.
+      window.__calls = [];
+      sendPointer("pointerdown", 46);
+      await wait(825);
+      window.dispatchEvent(new PointerEvent("pointerup", {
+        bubbles: true, cancelable: true, button: 0,
+        pointerId: 46, pointerType: "touch",
+      }));
+      await wait(25);
+      const releasedOutside = commands();
+
+      // Losing pointer capture is another mandatory release path.
+      window.__calls = [];
+      sendPointer("pointerdown", 47);
+      await wait(825);
+      btn.dispatchEvent(new PointerEvent("lostpointercapture", {
+        bubbles: true, pointerId: 47, pointerType: "touch",
+      }));
+      await wait(25);
+      const lostCapture = commands();
+
+      // Keyboard gets exactly the same relaxed tap/hold distinction.
       window.__calls = [];
       btn.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
       btn.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", bubbles: true }));
-      await settle();
-      const keyboard = commands();
+      await wait(60);
+      const keyboardTap = commands();
 
       window.__calls = [];
-      sendPointer("pointerdown", 43);
+      btn.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      await wait(825);
+      btn.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", bubbles: true }));
+      await wait(25);
+      const keyboardHold = commands();
+
+      window.__calls = [];
+      sendPointer("pointerdown", 48);
+      await wait(825);
       window.dispatchEvent(new PageTransitionEvent("pagehide"));
-      sendPointer("pointerup", 43);
-      await settle();
+      sendPointer("pointerup", 48);
+      await wait(25);
       const pagehide = commands();
 
-      return { whileHeld, released, cancelled, keyboard, pagehide };
+      return {
+        quickTap, beforeRelaxedRelease, relaxedTap,
+        whileHeld, whileHeldDelays, released, releasedDelays, afterRelease,
+        cancelledPending, cancelledHeld, releasedOutside, lostCapture,
+        keyboardTap, keyboardHold, pagehide,
+      };
     });
 
+    const short = "MEDIA_FAST_FORWARD";
     const start = "START_LONG:MEDIA_FAST_FORWARD";
     const end = "END_LONG:MEDIA_FAST_FORWARD";
     for (const [name, actual, expected] of [
+      ["quick tap", native.quickTap, [short]],
+      ["600 ms before release", native.beforeRelaxedRelease, []],
+      ["600 ms tap", native.relaxedTap, [short]],
       ["held", native.whileHeld, [start]],
       ["released", native.released, [start, end]],
-      ["cancelled", native.cancelled, [start, end]],
-      ["keyboard", native.keyboard, [start, end]],
+      ["settled after release", native.afterRelease, [start, end]],
+      ["cancelled before threshold", native.cancelledPending, []],
+      ["cancelled while held", native.cancelledHeld, [start, end]],
+      ["released outside", native.releasedOutside, [start, end]],
+      ["lost pointer capture", native.lostCapture, [start, end]],
+      ["keyboard tap", native.keyboardTap, [short]],
+      ["keyboard hold", native.keyboardHold, [start, end]],
       ["pagehide", native.pagehide, [start, end]],
     ]) {
       if (JSON.stringify(actual) !== JSON.stringify(expected)) {
@@ -201,7 +279,16 @@ for (const dark of [false, true]) {
         );
       }
     }
-    console.log("native hold: pointer, cancel and keyboard edges paired");
+    for (const [name, actual] of [
+      ["held", native.whileHeldDelays],
+      ["released", native.releasedDelays],
+    ]) {
+      if (!actual?.every((delay) => delay === 0)) {
+        failed = true;
+        console.error(`[native] ${name}: every long edge must use delay_secs=0, got ${JSON.stringify(actual)}`);
+      }
+    }
+    console.log("native hold: relaxed tap threshold and every release path verified");
 
     // The off-state "Turn on" button is a second entry point to power, and must
     // honour a power override exactly as the header button does — otherwise a

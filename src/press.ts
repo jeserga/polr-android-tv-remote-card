@@ -33,6 +33,14 @@ const MAX_REPEATS = 40;
 const MAX_NATIVE_HOLD_MS = 30_000;
 /** How long a press must last to count as a hold. Matches HA's own handler. */
 const HOLD_MS = 500;
+/**
+ * Native Android holds deliberately use a more relaxed threshold.
+ *
+ * START_LONG is already classified as a long press by Android, regardless of
+ * how quickly END_LONG follows. Waiting here lets an ordinary tap travel as a
+ * single SHORT command and avoids turning a slightly slow thumb into a hold.
+ */
+const NATIVE_HOLD_DELAY_MS = 750;
 /** Window for a second tap. Only applied when a double-tap action exists. */
 const DOUBLE_TAP_MS = 250;
 /**
@@ -47,7 +55,7 @@ const SLOP_PX = 12;
 export interface PressOptions {
   /** Runs on release, and on every repeat while held. */
   onPress?: () => void;
-  /** Runs immediately on key/pointer down for a native Android hold. */
+  /** Runs once the native-hold threshold is crossed. */
   onPressStart?: () => void;
   /** Runs exactly once after `onPressStart`, on every release/cancel path. */
   onPressEnd?: () => void;
@@ -100,6 +108,8 @@ class PressDirective extends AsyncDirective {
   private _startX = 0;
   private _startY = 0;
   private _awaitingSecondTap = false;
+  /** A native-capable press is waiting to cross its hold threshold. */
+  private _nativePending = false;
   private _nativeStarted = false;
   private _nativeEnd?: () => void;
   private _pointerId?: number;
@@ -127,7 +137,8 @@ class PressDirective extends AsyncDirective {
       el.addEventListener("pointerup", this._onPointerUp);
       // The browser fires pointercancel the moment it decides the gesture is a
       // scroll, which is exactly when the press must be abandoned.
-      el.addEventListener("pointercancel", this._abort);
+      el.addEventListener("pointercancel", this._onPointerCancel);
+      el.addEventListener("lostpointercapture", this._onLostPointerCapture);
       el.addEventListener("pointerleave", this._onPointerLeave);
       el.addEventListener("keydown", this._onKeyDown);
       el.addEventListener("keyup", this._onKeyUp);
@@ -163,20 +174,18 @@ class PressDirective extends AsyncDirective {
       // button. It is deliberately limited to native controls; app tiles must
       // remain scrollable without launching.
       event.preventDefault();
+      this._nativePending = true;
+      this._nativeEnd = options.onPressEnd;
+      this._armNativeSafety();
       try {
         this._element?.setPointerCapture(event.pointerId);
       } catch {
-        // Some synthetic PointerEvents cannot be captured. The cancel,
-        // pointerleave and watchdog paths still guarantee an END_LONG.
+        // Some synthetic PointerEvents cannot be captured. Window-level
+        // pointer listeners and the lifecycle fallbacks still catch release.
       }
-      this._resolved = true;
-      this._nativeStarted = true;
-      this._nativeEnd = options.onPressEnd;
-      this._armNativeSafety();
-      this._fireNative(options.onPressStart!, "light");
-      this._nativeTimer = window.setTimeout(
-        () => this._finishNative(),
-        MAX_NATIVE_HOLD_MS,
+      this._holdTimer = window.setTimeout(
+        () => this._startNative(options),
+        NATIVE_HOLD_DELAY_MS,
       );
       return;
     }
@@ -212,7 +221,7 @@ class PressDirective extends AsyncDirective {
 
   private _onPointerMove = (event: PointerEvent): void => {
     if (!this._active) return;
-    if (this._nativeStarted) return;
+    if (this._nativePending || this._nativeStarted) return;
     const dx = event.clientX - this._startX;
     const dy = event.clientY - this._startY;
     if (dx * dx + dy * dy > SLOP_PX * SLOP_PX) this._abort();
@@ -221,15 +230,28 @@ class PressDirective extends AsyncDirective {
   private _onPointerUp = (event: PointerEvent): void => {
     if (!this._active) return;
     if (this._pointerId !== undefined && event.pointerId !== this._pointerId) return;
-    if (this._nativeStarted) {
-      this._finishNative();
-      return;
-    }
-    const resolved = this._resolved;
-    this._reset();
-    // A hold that reached its threshold, or a press that already started
-    // repeating, has had its say.
-    if (!resolved) this._tap();
+    this._release();
+  };
+
+  private _onPointerCancel = (event: PointerEvent): void => {
+    if (this._pointerId !== undefined && event.pointerId !== this._pointerId) return;
+    this._abort();
+  };
+
+  /** Window fallback for release outside the element or a broken capture. */
+  private _onWindowPointerUp = (event: PointerEvent): void => {
+    this._onPointerUp(event);
+  };
+
+  private _onWindowPointerCancel = (event: PointerEvent): void => {
+    this._onPointerCancel(event);
+  };
+
+  /** Losing capture unexpectedly must never leave Android holding a key. */
+  private _onLostPointerCapture = (event: PointerEvent): void => {
+    if (!this._active) return;
+    if (this._pointerId !== undefined && event.pointerId !== this._pointerId) return;
+    this._abort();
   };
 
   /* --------------------------------------------------------------- keyboard */
@@ -244,26 +266,26 @@ class PressDirective extends AsyncDirective {
     const options = this._options;
     if (!options || options.disabled) return;
 
-    // A keyboard press cannot turn into a scroll, so there is nothing to wait
-    // for: fire immediately and let hold/repeat build on top.
+    // A keyboard press cannot turn into a scroll. Native mode still waits for
+    // the same threshold so a quick Enter/Space is a SHORT command.
     this._active = true;
-    this._resolved = true;
+    this._resolved = false;
     this._startX = 0;
     this._startY = 0;
     this._element?.classList.add("pressed");
 
     if (this._isNative(options)) {
-      this._nativeStarted = true;
+      this._nativePending = true;
       this._nativeEnd = options.onPressEnd;
       this._armNativeSafety();
-      this._fireNative(options.onPressStart!, "light");
-      this._nativeTimer = window.setTimeout(
-        () => this._finishNative(),
-        MAX_NATIVE_HOLD_MS,
+      this._holdTimer = window.setTimeout(
+        () => this._startNative(options),
+        NATIVE_HOLD_DELAY_MS,
       );
       return;
     }
 
+    this._resolved = true;
     this._tap();
 
     if (options.onHold) {
@@ -289,8 +311,7 @@ class PressDirective extends AsyncDirective {
 
   private _onKeyUp = (event: KeyboardEvent): void => {
     if (event.key !== "Enter" && event.key !== " ") return;
-    if (this._nativeStarted) this._finishNative();
-    else this._reset();
+    this._release();
   };
 
   /* ------------------------------------------------------------------ firing */
@@ -361,7 +382,7 @@ class PressDirective extends AsyncDirective {
 
   private _onPointerLeave = (): void => {
     if (
-      this._nativeStarted &&
+      (this._nativePending || this._nativeStarted) &&
       this._pointerId !== undefined &&
       this._element?.hasPointerCapture(this._pointerId)
     ) {
@@ -375,6 +396,10 @@ class PressDirective extends AsyncDirective {
   }
 
   private _armNativeSafety(): void {
+    if (this._pointerId !== undefined) {
+      window.addEventListener("pointerup", this._onWindowPointerUp, true);
+      window.addEventListener("pointercancel", this._onWindowPointerCancel, true);
+    }
     window.addEventListener("pagehide", this._abort);
     window.addEventListener("blur", this._abort);
     document.addEventListener("visibilitychange", this._onVisibilityChange);
@@ -383,6 +408,35 @@ class PressDirective extends AsyncDirective {
   private _onVisibilityChange = (): void => {
     if (document.hidden) this._abort();
   };
+
+  /** Cross the threshold and send Android exactly one physical key-down. */
+  private _startNative(options: PressOptions): void {
+    if (!this._active || !this._nativePending || this._nativeStarted) return;
+    this._nativePending = false;
+    this._nativeStarted = true;
+    this._resolved = true;
+    this._nativeEnd = options.onPressEnd;
+    this._holdTimer = undefined;
+    this._fireNative(options.onPressStart!, "light");
+    this._nativeTimer = window.setTimeout(
+      () => this._finishNative(),
+      MAX_NATIVE_HOLD_MS,
+    );
+  }
+
+  /** Resolve a pointer/key release as either SHORT or END_LONG. */
+  private _release(): void {
+    if (!this._active) return;
+    if (this._nativeStarted) {
+      this._finishNative();
+      return;
+    }
+    const resolved = this._resolved;
+    this._reset();
+    // A hold that reached its threshold, or a press that already started
+    // repeating, has had its say. A pending native press is a normal tap.
+    if (!resolved) this._tap();
+  }
 
   /** Release a native key once, including cancel, blur and watchdog paths. */
   private _finishNative(): void {
@@ -397,8 +451,12 @@ class PressDirective extends AsyncDirective {
   private _reset(): void {
     this._active = false;
     this._resolved = false;
+    this._nativePending = false;
+    if (!this._nativeStarted) this._nativeEnd = undefined;
     this._repeats = 0;
     this._element?.classList.remove("pressed");
+    window.removeEventListener("pointerup", this._onWindowPointerUp, true);
+    window.removeEventListener("pointercancel", this._onWindowPointerCancel, true);
     window.removeEventListener("pagehide", this._abort);
     window.removeEventListener("blur", this._abort);
     document.removeEventListener("visibilitychange", this._onVisibilityChange);

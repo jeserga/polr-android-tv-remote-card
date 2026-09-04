@@ -241,12 +241,14 @@ native_hold_buttons:
   - volume_down
 ```
 
-A quick tap is therefore one `START_LONG` / `END_LONG` pair; keeping a finger
-down keeps the key down until release. Apps can then accelerate seeking or
-scrolling exactly as they do with the physical remote. Release is also sent on
-pointer cancellation, focus loss, component removal and a 30-second safety
-watchdog. Power, mute, play/pause and favourite are intentionally excluded
-because they toggle state or run arbitrary actions.
+A quick tap sends one ordinary `SHORT` command. A native hold begins only after
+750ms, then keeps the Android key down until the finger or keyboard key is
+released. Apps can accelerate seeking or scrolling exactly as they do with the
+physical remote without classifying a slightly slow tap as a hold. `END_LONG`
+uses no service delay and release is also caught outside the button, on pointer
+capture loss, cancellation, focus loss, component removal and a 30-second
+safety watchdog. Power, mute, play/pause and favourite are intentionally
+excluded because they toggle state or run arbitrary actions.
 
 The `touchpad` continues to emit short swipe actions. Use `buttons` or `dpad`
 when native directional holds are wanted.
