@@ -59,6 +59,7 @@ export class PolrAtvNavPad extends LitElement {
   private _pressOptions(direction: NavDirection): PressOptions {
     if (this.nativeButtons.includes(direction)) {
       return {
+        onPress: () => this._emit(direction),
         onPressStart: () => this._emit(direction, "start"),
         onPressEnd: () => this._emit(direction, "end"),
         haptics: this.haptics,

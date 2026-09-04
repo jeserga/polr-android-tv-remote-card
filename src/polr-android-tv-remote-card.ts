@@ -44,7 +44,7 @@ import "./nav-pad";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.2.0";
+export const CARD_VERSION = "2.2.1";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -211,6 +211,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
 
     if (this._usesNativeHold(button)) {
       return {
+        onPress: () => this._press(button),
         onPressStart: () => this._nativePress(button, "start"),
         onPressEnd: () => this._nativePress(button, "end"),
         haptics: config.haptics,

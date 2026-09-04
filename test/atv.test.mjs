@@ -236,8 +236,16 @@ test("native holds send HA 2026.9's exact START_LONG and END_LONG prefixes", asy
   assert.deepEqual(
     hass.calls.map((call) => call.data),
     [
-      { entity_id: "remote.main_tv", command: "START_LONG:MEDIA_FAST_FORWARD" },
-      { entity_id: "remote.main_tv", command: "END_LONG:MEDIA_FAST_FORWARD" },
+      {
+        entity_id: "remote.main_tv",
+        command: "START_LONG:MEDIA_FAST_FORWARD",
+        delay_secs: 0,
+      },
+      {
+        entity_id: "remote.main_tv",
+        command: "END_LONG:MEDIA_FAST_FORWARD",
+        delay_secs: 0,
+      },
     ],
   );
 });
@@ -253,12 +261,20 @@ test("native holds always use raw remote keys rather than media-player helpers",
       {
         domain: "remote",
         service: "send_command",
-        data: { entity_id: "remote.main_tv", command: "START_LONG:VOLUME_UP" },
+        data: {
+          entity_id: "remote.main_tv",
+          command: "START_LONG:VOLUME_UP",
+          delay_secs: 0,
+        },
       },
       {
         domain: "remote",
         service: "send_command",
-        data: { entity_id: "remote.main_tv", command: "END_LONG:MEDIA_PREVIOUS" },
+        data: {
+          entity_id: "remote.main_tv",
+          command: "END_LONG:MEDIA_PREVIOUS",
+          delay_secs: 0,
+        },
       },
     ],
   );
