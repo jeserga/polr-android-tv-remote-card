@@ -81,9 +81,6 @@ export const tileStyles = css`
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
-  .tile-icon.interactive:hover::before {
-    opacity: 0.35;
-  }
   .tile-icon.interactive:active {
     transform: scale(1.2);
   }
@@ -216,9 +213,6 @@ export const tileStyles = css`
   .control-button > * {
     position: relative;
   }
-  .control-button:hover:not(:disabled)::before {
-    opacity: 0.3;
-  }
   .control-button:focus-visible {
     box-shadow: 0 0 0 2px var(--tile-color);
   }
@@ -279,12 +273,6 @@ export const tileStyles = css`
   .icon-button ha-icon {
     position: relative;
   }
-  .icon-button:hover:not(:disabled) {
-    color: var(--primary-text-color);
-  }
-  .icon-button:hover:not(:disabled)::before {
-    opacity: 0.2;
-  }
   .icon-button:focus-visible {
     box-shadow: 0 0 0 2px var(--tile-color);
   }
@@ -292,8 +280,24 @@ export const tileStyles = css`
     cursor: not-allowed;
     color: var(--disabled-text-color);
   }
-  .icon-button.danger:hover:not(:disabled) {
-    color: var(--error-color, #db4437);
+  /* Touch WebViews commonly latch :hover until another element is touched.
+     Restrict hover-only paint to hardware that can actually hover. */
+  @media (hover: hover) and (pointer: fine) {
+    .tile-icon.interactive:hover::before {
+      opacity: 0.35;
+    }
+    .control-button:hover:not(:disabled)::before {
+      opacity: 0.3;
+    }
+    .icon-button:hover:not(:disabled) {
+      color: var(--primary-text-color);
+    }
+    .icon-button:hover:not(:disabled)::before {
+      opacity: 0.2;
+    }
+    .icon-button.danger:hover:not(:disabled) {
+      color: var(--error-color, #db4437);
+    }
   }
   .spin {
     animation: spin 900ms linear infinite;

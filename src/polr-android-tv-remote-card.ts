@@ -35,7 +35,7 @@ import {
 } from "./config";
 import { BRAND_LOGOS } from "./icons";
 import { isActionable, runAction, type ActionConfig } from "./actions";
-import { press, type PressOptions } from "./press";
+import { PressCoordinator, press, type PressOptions } from "./press";
 import { remoteStyles } from "./styles";
 import { tileStyles } from "./kit/styles";
 import { stateColor, type HomeAssistant } from "./kit/types";
@@ -44,7 +44,7 @@ import "./nav-pad";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.2.1";
+export const CARD_VERSION = "2.2.2";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -58,13 +58,15 @@ export class PolrAndroidTvRemoteCard extends LitElement {
   @state() private _text = "";
   @state() private _sending = false;
 
-  /** Keep START_LONG and END_LONG ordered even across websocket latency. */
-  private _nativeQueues = new Map<ButtonId, Promise<void>>();
+  /** Every control command keeps gesture order; valid rapid taps are queued, never dropped. */
+  private _controlQueue: Promise<void> = Promise.resolve();
   /** END_LONG must target the same entity snapshot START_LONG used. */
   private _nativeSessions = new Map<
     ButtonId,
     { hass: HomeAssistant; device: DeviceState }
   >();
+  /** One physical contact owns the whole card, including the nested d-pad. */
+  private readonly _pressCoordinator = new PressCoordinator();
 
   public static getConfigElement(): HTMLElement {
     return document.createElement(`${CARD_TYPE}-editor`);
@@ -85,7 +87,19 @@ export class PolrAndroidTvRemoteCard extends LitElement {
   }
 
   public setConfig(config: PolrAtvRemoteCardConfig): void {
+    // Editing/replacing the card while a finger is down must not leave the
+    // previous configuration's Android key held on the TV.
+    this._pressCoordinator.cancel();
+    this._releaseNativeSessions();
     this._config = normalizeConfig(config);
+  }
+
+  public override disconnectedCallback(): void {
+    // Lit disconnects child directives after the host. Release at card level
+    // first so this also covers a child WebView never delivered pointerup to.
+    this._pressCoordinator.cancel();
+    this._releaseNativeSessions();
+    super.disconnectedCallback();
   }
 
   public getCardSize(): number {
@@ -139,10 +153,24 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     });
   }
 
+  /** Serialize remote operations without allowing one rejection to poison the queue. */
+  private _enqueueControl(work: () => Promise<unknown>): void {
+    this._controlQueue = this._controlQueue
+      .catch(() => undefined)
+      .then(work)
+      .then(() => undefined)
+      .catch((error: unknown) => {
+        console.error("polr-android-tv-remote-card:", error);
+      });
+  }
+
   private _press(button: ButtonId): void {
     const device = this._device;
     if (!this.hass || !this._config || !device) return;
-    this._run(pressButton(this.hass, this._config, device, button, this));
+    const hass = this.hass;
+    const config = this._config;
+    this._releaseNativeSessions();
+    this._enqueueControl(() => pressButton(hass, config, device, button, this));
   }
 
   private _usesNativeHold(button: ButtonId): boolean {
@@ -159,34 +187,50 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     return Object.keys(config.overrides[button] ?? {}).length === 0;
   }
 
+  /** Send END_LONG once more only when Home Assistant rejected the first call. */
+  private async _sendNativeEnd(
+    session: { hass: HomeAssistant; device: DeviceState },
+    button: ButtonId,
+  ): Promise<void> {
+    try {
+      await sendKeyDirection(session.hass, session.device, button, "end");
+    } catch {
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 150));
+      await sendKeyDirection(session.hass, session.device, button, "end");
+    }
+  }
+
+  private _endNativeSession(
+    button: ButtonId,
+    session: { hass: HomeAssistant; device: DeviceState },
+  ): void {
+    if (this._nativeSessions.get(button) !== session) return;
+    this._nativeSessions.delete(button);
+    this._enqueueControl(() => this._sendNativeEnd(session, button));
+  }
+
+  /** Release any stale native key before another card action is accepted. */
+  private _releaseNativeSessions(): void {
+    for (const [button, session] of [...this._nativeSessions]) {
+      this._endNativeSession(button, session);
+    }
+  }
+
   /** Queue one half of a physical Android key press. */
   private _nativePress(button: ButtonId, phase: LongPressPhase): void {
     let session = this._nativeSessions.get(button);
     if (phase === "start") {
       const device = this._device;
       if (!this.hass || !device) return;
+      this._releaseNativeSessions();
       session = { hass: this.hass, device };
       this._nativeSessions.set(button, session);
+      this._enqueueControl(() =>
+        sendKeyDirection(session!.hass, session!.device, button, "start"),
+      );
+      return;
     }
-    if (!session) return;
-    if (phase === "end") this._nativeSessions.delete(button);
-
-    const previous = this._nativeQueues.get(button) ?? Promise.resolve();
-    const current = previous
-      // A failed START must not suppress its END; a stuck Android key is worse
-      // than a duplicate error in the console.
-      .catch(() => undefined)
-      .then(() => sendKeyDirection(session!.hass, session!.device, button, phase))
-      .then(() => undefined)
-      .catch((error: unknown) => {
-        console.error("polr-android-tv-remote-card:", error);
-      });
-    this._nativeQueues.set(button, current);
-    void current.finally(() => {
-      if (this._nativeQueues.get(button) === current) {
-        this._nativeQueues.delete(button);
-      }
-    });
+    if (phase === "end" && session) this._endNativeSession(button, session);
   }
 
   /**
@@ -215,6 +259,9 @@ export class PolrAndroidTvRemoteCard extends LitElement {
         onPressStart: () => this._nativePress(button, "start"),
         onPressEnd: () => this._nativePress(button, "end"),
         haptics: config.haptics,
+        claimTouch: true,
+        nativeTouchHoldDelayMs: config.native_touch_hold_delay_ms,
+        coordinator: this._pressCoordinator,
       };
     }
 
@@ -224,6 +271,8 @@ export class PolrAndroidTvRemoteCard extends LitElement {
       ...(isActionable(doubleTap) ? { onDoubleTap: run(doubleTap as ActionConfig) } : {}),
       repeat: options.repeat && config.hold_mode === "repeat",
       haptics: config.haptics,
+      claimTouch: true,
+      coordinator: this._pressCoordinator,
     };
   }
 
@@ -242,7 +291,9 @@ export class PolrAndroidTvRemoteCard extends LitElement {
   private _launch(app: AppConfig): void {
     const device = this._device;
     if (!this.hass || !device) return;
-    this._run(runAppAction(this.hass, device, app.action, this));
+    const hass = this.hass;
+    this._releaseNativeSessions();
+    this._enqueueControl(() => runAppAction(hass, device, app.action, this));
   }
 
   private async _sendText(): Promise<void> {
@@ -514,7 +565,11 @@ export class PolrAndroidTvRemoteCard extends LitElement {
                 title=${tile.name ?? ""}
                 aria-pressed=${tile.entity ? String(active) : nothing}
                 style=${tile.color ? `--app-color:${tile.color}` : ""}
-                ${press({ onPress: () => this._launch(tile), haptics: config.haptics })}
+                ${press({
+                  onPress: () => this._launch(tile),
+                  haptics: config.haptics,
+                  coordinator: this._pressCoordinator,
+                })}
               >
                 ${this._renderAppIcon(tile)}
               </button>
@@ -611,6 +666,8 @@ export class PolrAndroidTvRemoteCard extends LitElement {
                       .nativeButtons=${config.native_hold_buttons.filter((button) =>
                         this._usesNativeHold(button),
                       )}
+                      .nativeTouchHoldDelayMs=${config.native_touch_hold_delay_ms}
+                      .pressCoordinator=${this._pressCoordinator}
                       .haptics=${config.haptics}
                       @atv-nav=${this._navigate}
                     ></polr-atv-nav-pad>`

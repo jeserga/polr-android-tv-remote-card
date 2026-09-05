@@ -25,6 +25,9 @@ const page_url = (dark) =>
 const browser = await puppeteer.launch({
   headless: "new",
   args: ["--allow-file-access-from-files", "--no-sandbox"],
+  ...(process.env.PUPPETEER_EXECUTABLE_PATH
+    ? { executablePath: process.env.PUPPETEER_EXECUTABLE_PATH }
+    : {}),
 });
 
 let failed = false;
@@ -86,6 +89,7 @@ for (const dark of [false, true]) {
           new PointerEvent(type, {
             bubbles: true, composed: true, cancelable: true,
             clientX: cx, clientY: cy, button: 0, pointerId: 1, pointerType: "touch",
+            isPrimary: true,
           }),
         );
       const settle = () => new Promise((r) => setTimeout(r, 60));
@@ -147,7 +151,7 @@ for (const dark of [false, true]) {
             bubbles: true, composed: true, cancelable: true,
             clientX: box.left + box.width / 2,
             clientY: box.top + box.height / 2,
-            button: 0, pointerId, pointerType: "touch",
+            button: 0, pointerId, pointerType: "touch", isPrimary: true,
           }),
         );
       const commands = () => window.__calls.map((call) => call[2]?.command);
@@ -161,11 +165,11 @@ for (const dark of [false, true]) {
       await wait(60);
       const quickTap = commands();
 
-      // 600 ms is deliberately a fairly slow tap. It must still be usable as
-      // a normal press; the native-hold threshold is 750 ms.
+      // 900 ms is deliberately a slow tap. Touch is relaxed to 1000 ms, so it
+      // must still remain an ordinary press.
       window.__calls = [];
       sendPointer("pointerdown", 42);
-      await wait(600);
+      await wait(900);
       const beforeRelaxedRelease = commands();
       sendPointer("pointerup", 42);
       await wait(60);
@@ -174,7 +178,7 @@ for (const dark of [false, true]) {
       // Only after the threshold does Android receive a real key-down.
       window.__calls = [];
       sendPointer("pointerdown", 43);
-      await wait(825);
+      await wait(1_100);
       const whileHeld = commands();
       const whileHeldDelays = delays();
       sendPointer("pointerup", 43);
@@ -197,7 +201,7 @@ for (const dark of [false, true]) {
       // Once a hold has started, pointercancel is a release edge.
       window.__calls = [];
       sendPointer("pointerdown", 45);
-      await wait(825);
+      await wait(1_100);
       sendPointer("pointercancel", 45);
       sendPointer("pointerup", 45);
       await wait(25);
@@ -206,10 +210,10 @@ for (const dark of [false, true]) {
       // A release dispatched outside the button is caught at window level.
       window.__calls = [];
       sendPointer("pointerdown", 46);
-      await wait(825);
+      await wait(1_100);
       window.dispatchEvent(new PointerEvent("pointerup", {
         bubbles: true, cancelable: true, button: 0,
-        pointerId: 46, pointerType: "touch",
+        pointerId: 46, pointerType: "touch", isPrimary: true,
       }));
       await wait(25);
       const releasedOutside = commands();
@@ -217,9 +221,9 @@ for (const dark of [false, true]) {
       // Losing pointer capture is another mandatory release path.
       window.__calls = [];
       sendPointer("pointerdown", 47);
-      await wait(825);
+      await wait(1_100);
       btn.dispatchEvent(new PointerEvent("lostpointercapture", {
-        bubbles: true, pointerId: 47, pointerType: "touch",
+        bubbles: true, pointerId: 47, pointerType: "touch", isPrimary: true,
       }));
       await wait(25);
       const lostCapture = commands();
@@ -240,17 +244,89 @@ for (const dark of [false, true]) {
 
       window.__calls = [];
       sendPointer("pointerdown", 48);
-      await wait(825);
+      await wait(1_100);
       window.dispatchEvent(new PageTransitionEvent("pagehide"));
       sendPointer("pointerup", 48);
       await wait(25);
       const pagehide = commands();
 
+      // A timer belonging to an abandoned contact must never promote the next
+      // one into a hold. The second contact is still below its own threshold.
+      window.__calls = [];
+      sendPointer("pointerdown", 49);
+      await wait(300);
+      sendPointer("pointerdown", 50);
+      await wait(750);
+      const afterStaleTimer = commands();
+      sendPointer("pointerup", 50);
+      await wait(60);
+      const recoveredPending = commands();
+
+      // If Android omitted pointerup after START_LONG, the next pointerdown is
+      // a recovery edge before it becomes a new gesture of its own.
+      window.__calls = [];
+      sendPointer("pointerdown", 51);
+      await wait(1_100);
+      sendPointer("pointerdown", 52);
+      sendPointer("pointerup", 52);
+      await wait(60);
+      const recoveredHeld = commands();
+      const recoveredHeldPressed = btn.classList.contains("pressed");
+
+      // Recovery is card-wide, including a different sibling control.
+      const right = card.shadowRoot
+        .querySelector("polr-atv-nav-pad").shadowRoot
+        .querySelector('[aria-label="Right"]');
+      const rightBox = right.getBoundingClientRect();
+      const sendRight = (type, pointerId = 54) =>
+        right.dispatchEvent(
+          new PointerEvent(type, {
+            bubbles: true, composed: true, cancelable: true,
+            clientX: rightBox.left + rightBox.width / 2,
+            clientY: rightBox.top + rightBox.height / 2,
+            button: 0, pointerId, pointerType: "touch", isPrimary: true,
+          }),
+        );
+      window.__calls = [];
+      sendPointer("pointerdown", 53);
+      await wait(1_100);
+      sendRight("pointerdown");
+      sendRight("pointerup");
+      await wait(60);
+      const recoveredAcrossButtons = commands();
+
+      // Native TouchEvent is an independent WebView fallback when the Pointer
+      // Events stream loses its final up edge.
+      window.__calls = [];
+      sendPointer("pointerdown", 55);
+      await wait(1_100);
+      window.dispatchEvent(new TouchEvent("touchend", {
+        bubbles: true, cancelable: true, touches: [], targetTouches: [], changedTouches: [],
+      }));
+      await wait(60);
+      const nativeTouchEnd = commands();
+
+      // No network coalescer may discard legitimate rapid taps.
+      window.__calls = [];
+      for (let index = 0; index < 20; index += 1) {
+        sendPointer("pointerdown", 100 + index);
+        sendPointer("pointerup", 100 + index);
+      }
+      await wait(100);
+      const rapidTaps = commands();
+      const rapidDelays = delays();
+      const finalVisualState = {
+        pressed: btn.classList.contains("pressed"),
+        focused: btn === card.shadowRoot.activeElement,
+      };
+
       return {
         quickTap, beforeRelaxedRelease, relaxedTap,
         whileHeld, whileHeldDelays, released, releasedDelays, afterRelease,
         cancelledPending, cancelledHeld, releasedOutside, lostCapture,
-        keyboardTap, keyboardHold, pagehide,
+        keyboardTap, keyboardHold, pagehide, afterStaleTimer, recoveredPending,
+        recoveredHeld, recoveredHeldPressed, recoveredAcrossButtons,
+        nativeTouchEnd, rapidTaps, rapidDelays, finalVisualState,
       };
     });
 
@@ -259,8 +335,8 @@ for (const dark of [false, true]) {
     const end = "END_LONG:MEDIA_FAST_FORWARD";
     for (const [name, actual, expected] of [
       ["quick tap", native.quickTap, [short]],
-      ["600 ms before release", native.beforeRelaxedRelease, []],
-      ["600 ms tap", native.relaxedTap, [short]],
+      ["900 ms before release", native.beforeRelaxedRelease, []],
+      ["900 ms tap", native.relaxedTap, [short]],
       ["held", native.whileHeld, [start]],
       ["released", native.released, [start, end]],
       ["settled after release", native.afterRelease, [start, end]],
@@ -271,6 +347,13 @@ for (const dark of [false, true]) {
       ["keyboard tap", native.keyboardTap, [short]],
       ["keyboard hold", native.keyboardHold, [start, end]],
       ["pagehide", native.pagehide, [start, end]],
+      ["stale timer ignored", native.afterStaleTimer, []],
+      ["next tap recovers pending contact", native.recoveredPending, [short]],
+      ["next tap releases held contact", native.recoveredHeld, [start, end, short]],
+      ["different button releases held contact", native.recoveredAcrossButtons,
+        [start, end, "DPAD_RIGHT"]],
+      ["native touchend releases hold", native.nativeTouchEnd, [start, end]],
+      ["twenty rapid taps", native.rapidTaps, Array(20).fill(short)],
     ]) {
       if (JSON.stringify(actual) !== JSON.stringify(expected)) {
         failed = true;
@@ -282,11 +365,16 @@ for (const dark of [false, true]) {
     for (const [name, actual] of [
       ["held", native.whileHeldDelays],
       ["released", native.releasedDelays],
+      ["rapid taps", native.rapidDelays],
     ]) {
       if (!actual?.every((delay) => delay === 0)) {
         failed = true;
         console.error(`[native] ${name}: every long edge must use delay_secs=0, got ${JSON.stringify(actual)}`);
       }
+    }
+    if (native.recoveredHeldPressed || native.finalVisualState?.pressed || native.finalVisualState?.focused) {
+      failed = true;
+      console.error(`[native] a released key kept visual/focus state: ${JSON.stringify(native.finalVisualState)}`);
     }
     console.log("native hold: relaxed tap threshold and every release path verified");
 
@@ -308,7 +396,7 @@ for (const dark of [false, true]) {
           new PointerEvent(type, {
             bubbles: true, composed: true, cancelable: true,
             clientX: box.left + 5, clientY: box.top + 5,
-            button: 0, pointerId: 1, pointerType: "touch",
+            button: 0, pointerId: 1, pointerType: "touch", isPrimary: true,
           }),
         );
       window.__calls = [];
@@ -471,6 +559,165 @@ for (const dark of [false, true]) {
   console.log(`wrote ${file}`);
   await page.close();
 }
+
+/*
+ * Real touchscreen input under Chromium's mobile emulation. Synthetic
+ * PointerEvents catch state-machine regressions, but this is what catches the
+ * Android/WebView class of bugs: sticky :hover, focus after touch and a real
+ * touch stream translated into Pointer Events by the browser.
+ */
+const mobile = await browser.newPage();
+await mobile.setViewport({
+  width: 412,
+  height: 915,
+  deviceScaleFactor: 2.75,
+  isMobile: true,
+  hasTouch: true,
+});
+mobile.on("console", (message) => {
+  if (message.type() === "error") {
+    failed = true;
+    console.error(`[mobile console.error] ${message.text()}`);
+  }
+});
+mobile.on("pageerror", (error) => {
+  failed = true;
+  console.error(`[mobile pageerror] ${error.message}`);
+});
+await mobile.goto(page_url(false), { waitUntil: "networkidle0" });
+await mobile.waitForFunction(() => document.title === "ready", { timeout: 10_000 });
+
+const target = await mobile.evaluate(() => {
+  document.body.style.padding = "8px";
+  document.querySelector(".grid").style.display = "block";
+  const nativeCase = [...document.querySelectorAll(".case")].find(
+    (element) => element.querySelector("h2")?.textContent === "native hold",
+  );
+  for (const element of document.querySelectorAll(".case")) {
+    element.style.display = element === nativeCase ? "block" : "none";
+  }
+  nativeCase.style.width = "100%";
+  const card = nativeCase.querySelector("polr-android-tv-remote-card");
+  const button = card.shadowRoot.querySelector('[aria-label="Fast forward"]');
+  button.scrollIntoView({ block: "center" });
+  const box = button.getBoundingClientRect();
+  window.__calls = [];
+  return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+});
+
+const cdp = await mobile.createCDPSession();
+const touchDown = () =>
+  cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: target.x, y: target.y, id: 0 }],
+  });
+const touchUp = () =>
+  cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+const mobileWait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+await touchDown();
+await mobileWait(70);
+await touchUp();
+await mobileWait(260);
+const mobileTap = await mobile.evaluate(() => {
+  const kase = [...document.querySelectorAll(".case")].find(
+    (element) => element.querySelector("h2")?.textContent === "native hold",
+  );
+  const card = kase.querySelector("polr-android-tv-remote-card");
+  const button = card.shadowRoot.querySelector('[aria-label="Fast forward"]');
+  return {
+    commands: window.__calls.map((call) => call[2]?.command),
+    delays: window.__calls.map((call) => call[2]?.delay_secs),
+    pressed: button.classList.contains("pressed"),
+    focused: card.shadowRoot.activeElement === button,
+    hoverMatched: button.matches(":hover"),
+    pseudoOpacity: getComputedStyle(button, "::before").opacity,
+    touchAction: getComputedStyle(button).touchAction,
+    fineHover: matchMedia("(hover: hover) and (pointer: fine)").matches,
+  };
+});
+
+await mobile.evaluate(() => { window.__calls = []; });
+for (let index = 0; index < 20; index += 1) {
+  await touchDown();
+  await touchUp();
+}
+await mobileWait(260);
+const mobileRapid = await mobile.evaluate(() => {
+  const kase = [...document.querySelectorAll(".case")].find(
+    (element) => element.querySelector("h2")?.textContent === "native hold",
+  );
+  const card = kase.querySelector("polr-android-tv-remote-card");
+  const button = card.shadowRoot.querySelector('[aria-label="Fast forward"]');
+  return {
+    commands: window.__calls.map((call) => call[2]?.command),
+    pressed: button.classList.contains("pressed"),
+    focused: card.shadowRoot.activeElement === button,
+    pseudoOpacity: getComputedStyle(button, "::before").opacity,
+  };
+});
+
+await mobile.evaluate(() => { window.__calls = []; });
+await touchDown();
+await mobileWait(1_100);
+const mobileWhileHeld = await mobile.evaluate(() =>
+  window.__calls.map((call) => call[2]?.command),
+);
+await touchUp();
+await mobileWait(260);
+const mobileReleased = await mobile.evaluate(() => {
+  const kase = [...document.querySelectorAll(".case")].find(
+    (element) => element.querySelector("h2")?.textContent === "native hold",
+  );
+  const card = kase.querySelector("polr-android-tv-remote-card");
+  const button = card.shadowRoot.querySelector('[aria-label="Fast forward"]');
+  return {
+    commands: window.__calls.map((call) => call[2]?.command),
+    pressed: button.classList.contains("pressed"),
+    focused: card.shadowRoot.activeElement === button,
+    pseudoOpacity: getComputedStyle(button, "::before").opacity,
+  };
+});
+
+const mobileShort = "MEDIA_FAST_FORWARD";
+const mobileStart = "START_LONG:MEDIA_FAST_FORWARD";
+const mobileEnd = "END_LONG:MEDIA_FAST_FORWARD";
+for (const [name, actual, expected] of [
+  ["ordinary tap", mobileTap.commands, [mobileShort]],
+  ["twenty rapid taps", mobileRapid.commands, Array(20).fill(mobileShort)],
+  ["held before release", mobileWhileHeld, [mobileStart]],
+  ["held after release", mobileReleased.commands, [mobileStart, mobileEnd]],
+]) {
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    failed = true;
+    console.error(
+      `[mobile touch] ${name}: wanted ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`,
+    );
+  }
+}
+if (!mobileTap.delays.every((delay) => delay === 0)) {
+  failed = true;
+  console.error(`[mobile touch] short commands retained a service delay: ${JSON.stringify(mobileTap.delays)}`);
+}
+if (mobileTap.fineHover || mobileTap.touchAction !== "none") {
+  failed = true;
+  console.error(`[mobile touch] wrong input CSS: ${JSON.stringify(mobileTap)}`);
+}
+for (const [name, state] of [
+  ["ordinary tap", mobileTap],
+  ["rapid taps", mobileRapid],
+  ["released hold", mobileReleased],
+]) {
+  if (state.pressed || state.focused || state.pseudoOpacity !== "0.2") {
+    failed = true;
+    console.error(`[mobile touch] ${name} remained selected: ${JSON.stringify(state)}`);
+  }
+}
+console.log(
+  `mobile touch: tap + 20 rapid taps + native release verified; sticky-hover matched=${mobileTap.hoverMatched}, paint=${mobileTap.pseudoOpacity}`,
+);
+await mobile.screenshot({ path: resolve(outDir, "mobile.png"), fullPage: true });
+await mobile.close();
 
 await browser.close();
 process.exit(failed ? 1 : 0);

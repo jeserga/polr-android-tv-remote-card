@@ -75,6 +75,7 @@ entity: remote.living_room_tv
 | `show_section_labels` | `false`  | Small headings above sections.                                          |
 | `hold_mode`           | `repeat` | `repeat`, `native` (HA 2026.9+) or `none`. See [Holding buttons](#holding-buttons). |
 | `native_hold_buttons` | safe keys | Keys forwarded in native mode. See [Holding buttons](#holding-buttons). |
+| `native_touch_hold_delay_ms` | `1000` | Touch/pen native-hold threshold, from 750 to 2000ms. |
 | `hold_repeat`         | —        | Legacy boolean; still accepted as `repeat` / `none`.                    |
 | `haptics`             | `true`   | Haptic feedback (Companion app only).                                   |
 | `overrides`           | `{}`     | See [Pointing buttons elsewhere](#pointing-buttons-elsewhere).          |
@@ -224,6 +225,7 @@ the Android TV Remote integration in Home Assistant 2026.9:
 
 ```yaml
 hold_mode: native
+native_touch_hold_delay_ms: 1000
 native_hold_buttons:
   - up
   - down
@@ -241,14 +243,18 @@ native_hold_buttons:
   - volume_down
 ```
 
-A quick tap sends one ordinary `SHORT` command. A native hold begins only after
-750ms, then keeps the Android key down until the finger or keyboard key is
-released. Apps can accelerate seeking or scrolling exactly as they do with the
-physical remote without classifying a slightly slow tap as a hold. `END_LONG`
-uses no service delay and release is also caught outside the button, on pointer
-capture loss, cancellation, focus loss, component removal and a 30-second
-safety watchdog. Power, mute, play/pause and favourite are intentionally
-excluded because they toggle state or run arbitrary actions.
+A quick tap sends one ordinary `SHORT` command. A touch or pen native hold
+begins only after 1000ms by default (configurable from 750 to 2000ms); mouse and
+keyboard use 750ms. It then keeps the Android key down until the finger or key
+is released, so apps can accelerate seeking or scrolling exactly as with the
+physical remote. Every command uses zero service delay and valid rapid taps are
+queued in order rather than collapsed.
+
+Release is caught on the button, the window, native touch end, pointer-capture
+loss, cancellation, focus or visibility loss, page removal, and a 15-second
+safety watchdog. A new contact also closes any older incomplete contact before
+it begins. Power, mute, play/pause and favourite are intentionally excluded
+because they toggle state or run arbitrary actions.
 
 The `touchpad` continues to emit short swipe actions. Use `buttons` or `dpad`
 when native directional holds are wanted.
@@ -299,12 +305,12 @@ data: { command: "text:the bear" }
 
 ### Scrolling on mobile
 
-Regular buttons resolve on release, so you can start a scroll anywhere on one
-and it will not fire. Buttons configured for native hold are the exception:
-they claim the pointer immediately so Android receives a real key-down and a
-guaranteed key-up. The touchpad also has to claim the gesture. Both are kept in
-compact areas with surrounding gutters; choose `hold_mode: repeat` or `none`
-when page scrolling must take priority over native holds.
+Remote buttons and the touchpad claim a direct touch immediately. This makes
+key input more reliable in Android WebView and guarantees the matching release;
+start a dashboard scroll from the app grid, a header or the card gutters
+instead. App tiles remain scroll-friendly and cancel if the finger moves. Hover
+paint is restricted to real mouse-like pointers, so a touched key cannot remain
+visually selected on Android.
 
 ### What the integration does not support
 

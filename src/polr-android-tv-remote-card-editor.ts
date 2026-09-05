@@ -37,6 +37,10 @@ import {
 import { BRAND_LOGOS } from "./icons";
 import { tileStyles } from "./kit/styles";
 import { fireEvent, type HomeAssistant } from "./kit/types";
+import {
+  MAX_NATIVE_TOUCH_HOLD_DELAY_MS,
+  MIN_NATIVE_TOUCH_HOLD_DELAY_MS,
+} from "./press-state";
 
 type ActionKind = "activity" | "app" | "key" | "action";
 
@@ -115,6 +119,18 @@ const TAIL_SCHEMA = (config: ResolvedConfig) =>
                       value,
                       label: value.replaceAll("_", " "),
                     })),
+                  },
+                },
+              },
+              {
+                name: "native_touch_hold_delay_ms",
+                selector: {
+                  number: {
+                    min: MIN_NATIVE_TOUCH_HOLD_DELAY_MS,
+                    max: MAX_NATIVE_TOUCH_HOLD_DELAY_MS,
+                    step: 50,
+                    mode: "box",
+                    unit_of_measurement: "ms",
                   },
                 },
               },
@@ -258,6 +274,7 @@ const LABELS: Record<string, string> = {
   show_text_input: "Text input",
   hold_mode: "Hold behaviour",
   native_hold_buttons: "Native-hold buttons",
+  native_touch_hold_delay_ms: "Touch hold threshold",
   haptics: "Haptic feedback",
   show_section_labels: "Section labels",
 };
@@ -276,6 +293,8 @@ const HELPERS: Record<string, string> = {
   show_text_input: "Needs a focused search field on the TV, and Enable IME.",
   hold_mode:
     "Native hold mirrors key down/up and requires Android TV Remote on Home Assistant 2026.9 or newer.",
+  native_touch_hold_delay_ms:
+    "A touch or pen must remain continuously down for this long. Mouse and keyboard use 750 ms.",
 };
 
 @customElement("polr-android-tv-remote-card-editor")

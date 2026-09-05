@@ -15,7 +15,8 @@ import { LitElement, html, nothing, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import type { ButtonId, PadStyle } from "./config";
-import { press, type PressOptions } from "./press";
+import { press, type PressCoordinator, type PressOptions } from "./press";
+import { DEFAULT_NATIVE_TOUCH_HOLD_DELAY_MS } from "./press-state";
 import { remoteStyles } from "./styles";
 import { tileStyles } from "./kit/styles";
 import { fireEvent } from "./kit/types";
@@ -43,6 +44,9 @@ export class PolrAtvNavPad extends LitElement {
   @property({ type: Boolean }) public repeat = true;
   @property({ attribute: false }) public nativeButtons: ButtonId[] = [];
   @property({ type: Boolean }) public haptics = true;
+  @property({ type: Number })
+  public nativeTouchHoldDelayMs = DEFAULT_NATIVE_TOUCH_HOLD_DELAY_MS;
+  @property({ attribute: false }) public pressCoordinator?: PressCoordinator;
 
   @query(".touchpad") private _touchpad?: HTMLElement;
   @query(".touchpad-dot") private _dot?: HTMLElement;
@@ -63,12 +67,17 @@ export class PolrAtvNavPad extends LitElement {
         onPressStart: () => this._emit(direction, "start"),
         onPressEnd: () => this._emit(direction, "end"),
         haptics: this.haptics,
+        claimTouch: true,
+        nativeTouchHoldDelayMs: this.nativeTouchHoldDelayMs,
+        coordinator: this.pressCoordinator,
       };
     }
     return {
       onPress: () => this._emit(direction),
       repeat: this.repeat && direction !== "center",
       haptics: this.haptics,
+      claimTouch: true,
+      coordinator: this.pressCoordinator,
     };
   }
 

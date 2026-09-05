@@ -15,6 +15,11 @@ import {
   type ActionConfig,
   type ButtonActions,
 } from "./actions";
+import {
+  DEFAULT_NATIVE_TOUCH_HOLD_DELAY_MS,
+  MAX_NATIVE_TOUCH_HOLD_DELAY_MS,
+  MIN_NATIVE_TOUCH_HOLD_DELAY_MS,
+} from "./press-state";
 
 const PAD_STYLES = ["buttons", "dpad", "touchpad"] as const;
 export type PadStyle = (typeof PAD_STYLES)[number];
@@ -203,6 +208,8 @@ export interface PolrAtvRemoteCardConfig {
   hold_mode?: HoldMode;
   /** Buttons that use native hold when `hold_mode` is `native`. */
   native_hold_buttons?: ButtonId[];
+  /** Touch/pen hold threshold; mouse and keyboard deliberately remain 750ms. */
+  native_touch_hold_delay_ms?: number;
   /** Legacy spelling retained for compatibility (`true` = repeat). */
   hold_repeat?: boolean;
   haptics?: boolean;
@@ -238,6 +245,7 @@ export interface ResolvedConfig extends PolrAtvRemoteCardConfig {
   app_columns: number;
   hold_mode: HoldMode;
   native_hold_buttons: ButtonId[];
+  native_touch_hold_delay_ms: number;
   hold_repeat: boolean;
   haptics: boolean;
   overrides: Partial<Record<ButtonId, ButtonActions>>;
@@ -260,6 +268,7 @@ export const DEFAULTS = {
   app_columns: 5,
   hold_mode: "repeat" as HoldMode,
   native_hold_buttons: [...NATIVE_HOLDABLE_BUTTONS] as ButtonId[],
+  native_touch_hold_delay_ms: DEFAULT_NATIVE_TOUCH_HOLD_DELAY_MS,
   hold_repeat: true,
   haptics: true,
 };
@@ -615,6 +624,20 @@ export const normalizeConfig = (raw: PolrAtvRemoteCardConfig): ResolvedConfig =>
       )
     : [...DEFAULTS.native_hold_buttons];
 
+  const rawNativeTouchDelay = raw.native_touch_hold_delay_ms;
+  const nativeTouchHoldDelay =
+    typeof rawNativeTouchDelay === "number" &&
+    Number.isFinite(rawNativeTouchDelay) &&
+    rawNativeTouchDelay >= MIN_NATIVE_TOUCH_HOLD_DELAY_MS &&
+    rawNativeTouchDelay <= MAX_NATIVE_TOUCH_HOLD_DELAY_MS
+      ? rawNativeTouchDelay
+      : DEFAULTS.native_touch_hold_delay_ms;
+  if (rawNativeTouchDelay !== undefined && nativeTouchHoldDelay !== rawNativeTouchDelay) {
+    warnOnce(
+      `native_touch_hold_delay_ms must be between ${MIN_NATIVE_TOUCH_HOLD_DELAY_MS} and ${MAX_NATIVE_TOUCH_HOLD_DELAY_MS}; using ${DEFAULTS.native_touch_hold_delay_ms}`,
+    );
+  }
+
   return {
     ...raw,
     type: raw.type,
@@ -655,6 +678,7 @@ export const normalizeConfig = (raw: PolrAtvRemoteCardConfig): ResolvedConfig =>
         : DEFAULTS.app_columns,
     hold_mode: holdMode,
     native_hold_buttons: nativeHoldButtons,
+    native_touch_hold_delay_ms: nativeTouchHoldDelay,
     // Keep the resolved legacy value truthful for old rendering paths and
     // third-party code that reads it from the editor's emitted config.
     hold_repeat: holdMode === "repeat",

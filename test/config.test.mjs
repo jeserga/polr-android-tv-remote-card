@@ -150,6 +150,51 @@ test("native hold buttons are validated and deduplicated", () => {
   assert.deepEqual(config.native_hold_buttons, ["left", "volume_up"]);
 });
 
+test("touch native hold is relaxed to one second by default", () => {
+  const config = normalizeConfig(base({ entity: "remote.atv", hold_mode: "native" }));
+  assert.equal(config.native_touch_hold_delay_ms, 1_000);
+});
+
+test("touch native hold threshold accepts the documented range", () => {
+  for (const delay of [750, 1_250, 2_000]) {
+    const config = normalizeConfig(
+      base({
+        entity: "remote.atv",
+        hold_mode: "native",
+        native_touch_hold_delay_ms: delay,
+      }),
+    );
+    assert.equal(config.native_touch_hold_delay_ms, delay);
+  }
+});
+
+test("invalid touch native hold thresholds safely return to one second", () => {
+  for (const delay of [749, 2_001, Number.NaN, Number.POSITIVE_INFINITY, "1000"]) {
+    const config = normalizeConfig(
+      base({
+        entity: "remote.atv",
+        hold_mode: "native",
+        native_touch_hold_delay_ms: delay,
+      }),
+    );
+    assert.equal(config.native_touch_hold_delay_ms, 1_000);
+  }
+});
+
+test("touch native hold threshold survives an editor-style round trip", () => {
+  const normalized = normalizeConfig(
+    base({
+      entity: "remote.atv",
+      hold_mode: "native",
+      native_touch_hold_delay_ms: 1_150,
+    }),
+  );
+  assert.equal(
+    normalizeConfig(stripLegacyKeys(normalized)).native_touch_hold_delay_ms,
+    1_150,
+  );
+});
+
 test("the app launcher heading is customisable and never blank", () => {
   assert.equal(
     normalizeConfig(base({ entity: "remote.atv", apps_label: " Aplicaciones " }))
