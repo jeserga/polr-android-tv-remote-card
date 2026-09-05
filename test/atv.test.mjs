@@ -222,7 +222,7 @@ test("d-pad presses go to remote.send_command with v1's key codes", async () => 
     assert.deepEqual(hass.calls[0], {
       domain: "remote",
       service: "send_command",
-      data: { entity_id: "remote.main_tv", command: key },
+      data: { entity_id: "remote.main_tv", command: key, delay_secs: 0 },
       target: undefined,
     });
   }
@@ -385,7 +385,7 @@ test("text is sent as a text:-prefixed command", async () => {
   assert.deepEqual(hass.calls[0], {
     domain: "remote",
     service: "send_command",
-    data: { entity_id: "remote.main_tv", command: "text:the bear" },
+    data: { entity_id: "remote.main_tv", command: "text:the bear", delay_secs: 0 },
     target: undefined,
   });
 });
@@ -485,7 +485,7 @@ test("mute falls back to the toggle key when the mute state is unknown", async (
   assert.deepEqual(hass.calls[0], {
     domain: "remote",
     service: "send_command",
-    data: { entity_id: "remote.main_tv", command: "MUTE" },
+    data: { entity_id: "remote.main_tv", command: "MUTE", delay_secs: 0 },
     target: undefined,
   });
 });
@@ -652,7 +652,11 @@ test("canVolume reads the volume target's features, not the TV's", () => {
 test("sendKey targets the remote entity", async () => {
   const hass = fixture();
   await sendKey(hass, readDevice(hass, config()), "GUIDE");
-  assert.deepEqual(hass.calls[0].data, { entity_id: "remote.main_tv", command: "GUIDE" });
+  assert.deepEqual(hass.calls[0].data, {
+    entity_id: "remote.main_tv",
+    command: "GUIDE",
+    delay_secs: 0,
+  });
 });
 
 /* ------------------------------------------------------------------------ *

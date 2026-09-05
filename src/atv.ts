@@ -262,6 +262,9 @@ export const sendKey = (
   hass.callService("remote", "send_command", {
     entity_id: device.remoteId,
     command,
+    // Home Assistant otherwise sleeps 400 ms after every command. A zero
+    // delay preserves each rapid tap while the card's queue keeps its order.
+    delay_secs: 0,
   });
 
 /**

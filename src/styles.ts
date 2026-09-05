@@ -99,9 +99,6 @@ export const remoteStyles = css`
   .pad-key > * {
     position: relative;
   }
-  .pad-key:hover::before {
-    opacity: 0.3;
-  }
   .pad-key:focus-visible {
     box-shadow: 0 0 0 2px var(--tile-color);
   }
@@ -142,7 +139,6 @@ export const remoteStyles = css`
   .dpad .pad-key::before {
     opacity: 0;
   }
-  .dpad .pad-key:hover::before,
   .dpad .pad-key.pressed::before {
     opacity: 0.18;
   }
@@ -177,7 +173,6 @@ export const remoteStyles = css`
     background-color: var(--tile-color);
     opacity: 0;
   }
-  .dpad .ok:hover::before,
   .dpad .ok.pressed::before {
     opacity: 0.2;
   }
@@ -224,9 +219,6 @@ export const remoteStyles = css`
     opacity: 0.25;
     pointer-events: none;
     transition: opacity var(--duration) ease-in-out;
-  }
-  .touchpad:hover .touchpad-mark {
-    opacity: 0.35;
   }
   .touchpad-dot {
     position: absolute;
@@ -325,9 +317,6 @@ export const remoteStyles = css`
     opacity: 0.2;
     transition: opacity var(--duration) ease-in-out;
   }
-  .app-tile:hover::before {
-    opacity: 0.32;
-  }
   /*
    * A tile bound to an entity that is on, tinted like the header pill so that
    * "this is on" reads the same everywhere on the card. Tiles with no entity
@@ -340,10 +329,6 @@ export const remoteStyles = css`
     background-color: var(--app-color, var(--tile-color));
     opacity: 0.25;
   }
-  .app-tile.active:hover::before {
-    opacity: 0.35;
-  }
-
   .app-tile:focus-visible {
     box-shadow: 0 0 0 2px var(--app-color, var(--tile-color));
   }
@@ -393,12 +378,49 @@ export const remoteStyles = css`
   }
 
   /* --------------------------------------------------------- press state -- */
+  /*
+   * This class exists before pointerdown, which is when the browser decides
+   * whether a direct gesture belongs to page scrolling. Remote controls own
+   * the contact; app tiles deliberately do not, so the app list remains a
+   * convenient place to scroll the dashboard.
+   */
+  .press-claim-touch {
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
   .pressed {
     transform: scale(0.94);
   }
   .pad-key.pressed::before,
   .app-tile.pressed::before {
     opacity: 0.4;
+  }
+
+  /* Android WebView can keep :hover after a tap. Hover feedback is therefore
+     available only on devices that really have a fine, hovering pointer. */
+  @media (hover: hover) and (pointer: fine) {
+    .pad-key:hover:not(.pressed)::before {
+      opacity: 0.3;
+    }
+    .dpad .pad-key:hover:not(.pressed)::before {
+      opacity: 0.18;
+    }
+    .dpad .ok:hover:not(.pressed)::before {
+      opacity: 0.2;
+    }
+    .touchpad:hover .touchpad-mark {
+      opacity: 0.35;
+    }
+    .app-tile:hover:not(.pressed)::before {
+      opacity: 0.32;
+    }
+    .app-tile.active:hover:not(.pressed)::before {
+      opacity: 0.35;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

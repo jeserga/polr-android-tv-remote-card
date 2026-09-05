@@ -3,18 +3,18 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const et = globalThis, ft = et.ShadowRoot && (et.ShadyCSS === void 0 || et.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, gt = Symbol(), Ot = /* @__PURE__ */ new WeakMap();
-let re = class {
+const oe = globalThis, $e = oe.ShadowRoot && (oe.ShadyCSS === void 0 || oe.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, xe = Symbol(), He = /* @__PURE__ */ new WeakMap();
+let ht = class {
   constructor(e, i, o) {
-    if (this._$cssResult$ = !0, o !== gt) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    if (this._$cssResult$ = !0, o !== xe) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
     this.cssText = e, this.t = i;
   }
   get styleSheet() {
     let e = this.o;
     const i = this.t;
-    if (ft && e === void 0) {
+    if ($e && e === void 0) {
       const o = i !== void 0 && i.length === 1;
-      o && (e = Ot.get(i)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), o && Ot.set(i, e));
+      o && (e = He.get(i)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), o && He.set(i, e));
     }
     return e;
   }
@@ -22,33 +22,33 @@ let re = class {
     return this.cssText;
   }
 };
-const Ae = (t) => new re(typeof t == "string" ? t : t + "", void 0, gt), bt = (t, ...e) => {
-  const i = t.length === 1 ? t[0] : e.reduce((o, n, s) => o + ((r) => {
+const Pt = (t) => new ht(typeof t == "string" ? t : t + "", void 0, xe), Ae = (t, ...e) => {
+  const i = t.length === 1 ? t[0] : e.reduce((o, s, n) => o + ((r) => {
     if (r._$cssResult$ === !0) return r.cssText;
     if (typeof r == "number") return r;
     throw Error("Value passed to 'css' function must be a 'css' function result: " + r + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
-  })(n) + t[s + 1], t[0]);
-  return new re(i, t, gt);
-}, ke = (t, e) => {
-  if (ft) t.adoptedStyleSheets = e.map((i) => i instanceof CSSStyleSheet ? i : i.styleSheet);
+  })(s) + t[n + 1], t[0]);
+  return new ht(i, t, xe);
+}, Ct = (t, e) => {
+  if ($e) t.adoptedStyleSheets = e.map((i) => i instanceof CSSStyleSheet ? i : i.styleSheet);
   else for (const i of e) {
-    const o = document.createElement("style"), n = et.litNonce;
-    n !== void 0 && o.setAttribute("nonce", n), o.textContent = i.cssText, t.appendChild(o);
+    const o = document.createElement("style"), s = oe.litNonce;
+    s !== void 0 && o.setAttribute("nonce", s), o.textContent = i.cssText, t.appendChild(o);
   }
-}, Nt = ft ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((e) => {
+}, ze = $e ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((e) => {
   let i = "";
   for (const o of e.cssRules) i += o.cssText;
-  return Ae(i);
+  return Pt(i);
 })(t) : t;
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: Ee, defineProperty: Se, getOwnPropertyDescriptor: Te, getOwnPropertyNames: Pe, getOwnPropertySymbols: Ce, getPrototypeOf: Oe } = Object, st = globalThis, Mt = st.trustedTypes, Ne = Mt ? Mt.emptyScript : "", Me = st.reactiveElementPolyfillSupport, X = (t, e) => t, it = { toAttribute(t, e) {
+const { is: Ot, defineProperty: Nt, getOwnPropertyDescriptor: Mt, getOwnPropertyNames: Dt, getOwnPropertySymbols: Lt, getPrototypeOf: It } = Object, ae = globalThis, Ue = ae.trustedTypes, Ht = Ue ? Ue.emptyScript : "", zt = ae.reactiveElementPolyfillSupport, G = (t, e) => t, se = { toAttribute(t, e) {
   switch (e) {
     case Boolean:
-      t = t ? Ne : null;
+      t = t ? Ht : null;
       break;
     case Object:
     case Array:
@@ -73,55 +73,55 @@ const { is: Ee, defineProperty: Se, getOwnPropertyDescriptor: Te, getOwnProperty
       }
   }
   return i;
-} }, yt = (t, e) => !Ee(t, e), zt = { attribute: !0, type: String, converter: it, reflect: !1, useDefault: !1, hasChanged: yt };
-Symbol.metadata ??= Symbol("metadata"), st.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-let H = class extends HTMLElement {
+} }, Te = (t, e) => !Ot(t, e), Re = { attribute: !0, type: String, converter: se, reflect: !1, useDefault: !1, hasChanged: Te };
+Symbol.metadata ??= Symbol("metadata"), ae.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
+let V = class extends HTMLElement {
   static addInitializer(e) {
     this._$Ei(), (this.l ??= []).push(e);
   }
   static get observedAttributes() {
     return this.finalize(), this._$Eh && [...this._$Eh.keys()];
   }
-  static createProperty(e, i = zt) {
+  static createProperty(e, i = Re) {
     if (i.state && (i.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((i = Object.create(i)).wrapped = !0), this.elementProperties.set(e, i), !i.noAccessor) {
-      const o = Symbol(), n = this.getPropertyDescriptor(e, o, i);
-      n !== void 0 && Se(this.prototype, e, n);
+      const o = Symbol(), s = this.getPropertyDescriptor(e, o, i);
+      s !== void 0 && Nt(this.prototype, e, s);
     }
   }
   static getPropertyDescriptor(e, i, o) {
-    const { get: n, set: s } = Te(this.prototype, e) ?? { get() {
+    const { get: s, set: n } = Mt(this.prototype, e) ?? { get() {
       return this[i];
     }, set(r) {
       this[i] = r;
     } };
-    return { get: n, set(r) {
-      const c = n?.call(this);
-      s?.call(this, r), this.requestUpdate(e, c, o);
+    return { get: s, set(r) {
+      const c = s?.call(this);
+      n?.call(this, r), this.requestUpdate(e, c, o);
     }, configurable: !0, enumerable: !0 };
   }
   static getPropertyOptions(e) {
-    return this.elementProperties.get(e) ?? zt;
+    return this.elementProperties.get(e) ?? Re;
   }
   static _$Ei() {
-    if (this.hasOwnProperty(X("elementProperties"))) return;
-    const e = Oe(this);
+    if (this.hasOwnProperty(G("elementProperties"))) return;
+    const e = It(this);
     e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
   }
   static finalize() {
-    if (this.hasOwnProperty(X("finalized"))) return;
-    if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(X("properties"))) {
-      const i = this.properties, o = [...Pe(i), ...Ce(i)];
-      for (const n of o) this.createProperty(n, i[n]);
+    if (this.hasOwnProperty(G("finalized"))) return;
+    if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(G("properties"))) {
+      const i = this.properties, o = [...Dt(i), ...Lt(i)];
+      for (const s of o) this.createProperty(s, i[s]);
     }
     const e = this[Symbol.metadata];
     if (e !== null) {
       const i = litPropertyMetadata.get(e);
-      if (i !== void 0) for (const [o, n] of i) this.elementProperties.set(o, n);
+      if (i !== void 0) for (const [o, s] of i) this.elementProperties.set(o, s);
     }
     this._$Eh = /* @__PURE__ */ new Map();
     for (const [i, o] of this.elementProperties) {
-      const n = this._$Eu(i, o);
-      n !== void 0 && this._$Eh.set(n, i);
+      const s = this._$Eu(i, o);
+      s !== void 0 && this._$Eh.set(s, i);
     }
     this.elementStyles = this.finalizeStyles(this.styles);
   }
@@ -129,8 +129,8 @@ let H = class extends HTMLElement {
     const i = [];
     if (Array.isArray(e)) {
       const o = new Set(e.flat(1 / 0).reverse());
-      for (const n of o) i.unshift(Nt(n));
-    } else e !== void 0 && i.push(Nt(e));
+      for (const s of o) i.unshift(ze(s));
+    } else e !== void 0 && i.push(ze(e));
     return i;
   }
   static _$Eu(e, i) {
@@ -156,7 +156,7 @@ let H = class extends HTMLElement {
   }
   createRenderRoot() {
     const e = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
-    return ke(e, this.constructor.elementStyles), e;
+    return Ct(e, this.constructor.elementStyles), e;
   }
   connectedCallback() {
     this.renderRoot ??= this.createRenderRoot(), this.enableUpdating(!0), this._$EO?.forEach((e) => e.hostConnected?.());
@@ -170,31 +170,31 @@ let H = class extends HTMLElement {
     this._$AK(e, o);
   }
   _$ET(e, i) {
-    const o = this.constructor.elementProperties.get(e), n = this.constructor._$Eu(e, o);
-    if (n !== void 0 && o.reflect === !0) {
-      const s = (o.converter?.toAttribute !== void 0 ? o.converter : it).toAttribute(i, o.type);
-      this._$Em = e, s == null ? this.removeAttribute(n) : this.setAttribute(n, s), this._$Em = null;
+    const o = this.constructor.elementProperties.get(e), s = this.constructor._$Eu(e, o);
+    if (s !== void 0 && o.reflect === !0) {
+      const n = (o.converter?.toAttribute !== void 0 ? o.converter : se).toAttribute(i, o.type);
+      this._$Em = e, n == null ? this.removeAttribute(s) : this.setAttribute(s, n), this._$Em = null;
     }
   }
   _$AK(e, i) {
-    const o = this.constructor, n = o._$Eh.get(e);
-    if (n !== void 0 && this._$Em !== n) {
-      const s = o.getPropertyOptions(n), r = typeof s.converter == "function" ? { fromAttribute: s.converter } : s.converter?.fromAttribute !== void 0 ? s.converter : it;
-      this._$Em = n;
-      const c = r.fromAttribute(i, s.type);
-      this[n] = c ?? this._$Ej?.get(n) ?? c, this._$Em = null;
+    const o = this.constructor, s = o._$Eh.get(e);
+    if (s !== void 0 && this._$Em !== s) {
+      const n = o.getPropertyOptions(s), r = typeof n.converter == "function" ? { fromAttribute: n.converter } : n.converter?.fromAttribute !== void 0 ? n.converter : se;
+      this._$Em = s;
+      const c = r.fromAttribute(i, n.type);
+      this[s] = c ?? this._$Ej?.get(s) ?? c, this._$Em = null;
     }
   }
-  requestUpdate(e, i, o, n = !1, s) {
+  requestUpdate(e, i, o, s = !1, n) {
     if (e !== void 0) {
       const r = this.constructor;
-      if (n === !1 && (s = this[e]), o ??= r.getPropertyOptions(e), !((o.hasChanged ?? yt)(s, i) || o.useDefault && o.reflect && s === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, o)))) return;
+      if (s === !1 && (n = this[e]), o ??= r.getPropertyOptions(e), !((o.hasChanged ?? Te)(n, i) || o.useDefault && o.reflect && n === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, o)))) return;
       this.C(e, i, o);
     }
     this.isUpdatePending === !1 && (this._$ES = this._$EP());
   }
-  C(e, i, { useDefault: o, reflect: n, wrapped: s }, r) {
-    o && !(this._$Ej ??= /* @__PURE__ */ new Map()).has(e) && (this._$Ej.set(e, r ?? i ?? this[e]), s !== !0 || r !== void 0) || (this._$AL.has(e) || (this.hasUpdated || o || (i = void 0), this._$AL.set(e, i)), n === !0 && this._$Em !== e && (this._$Eq ??= /* @__PURE__ */ new Set()).add(e));
+  C(e, i, { useDefault: o, reflect: s, wrapped: n }, r) {
+    o && !(this._$Ej ??= /* @__PURE__ */ new Map()).has(e) && (this._$Ej.set(e, r ?? i ?? this[e]), n !== !0 || r !== void 0) || (this._$AL.has(e) || (this.hasUpdated || o || (i = void 0), this._$AL.set(e, i)), s === !0 && this._$Em !== e && (this._$Eq ??= /* @__PURE__ */ new Set()).add(e));
   }
   async _$EP() {
     this.isUpdatePending = !0;
@@ -213,13 +213,13 @@ let H = class extends HTMLElement {
     if (!this.isUpdatePending) return;
     if (!this.hasUpdated) {
       if (this.renderRoot ??= this.createRenderRoot(), this._$Ep) {
-        for (const [n, s] of this._$Ep) this[n] = s;
+        for (const [s, n] of this._$Ep) this[s] = n;
         this._$Ep = void 0;
       }
       const o = this.constructor.elementProperties;
-      if (o.size > 0) for (const [n, s] of o) {
-        const { wrapped: r } = s, c = this[n];
-        r !== !0 || this._$AL.has(n) || c === void 0 || this.C(n, void 0, s, c);
+      if (o.size > 0) for (const [s, n] of o) {
+        const { wrapped: r } = n, c = this[s];
+        r !== !0 || this._$AL.has(s) || c === void 0 || this.C(s, void 0, n, c);
       }
     }
     let e = !1;
@@ -256,75 +256,75 @@ let H = class extends HTMLElement {
   firstUpdated(e) {
   }
 };
-H.elementStyles = [], H.shadowRootOptions = { mode: "open" }, H[X("elementProperties")] = /* @__PURE__ */ new Map(), H[X("finalized")] = /* @__PURE__ */ new Map(), Me?.({ ReactiveElement: H }), (st.reactiveElementVersions ??= []).push("2.1.2");
+V.elementStyles = [], V.shadowRootOptions = { mode: "open" }, V[G("elementProperties")] = /* @__PURE__ */ new Map(), V[G("finalized")] = /* @__PURE__ */ new Map(), zt?.({ ReactiveElement: V }), (ae.reactiveElementVersions ??= []).push("2.1.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const wt = globalThis, It = (t) => t, ot = wt.trustedTypes, Dt = ot ? ot.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, ae = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, ce = "?" + E, ze = `<${ce}>`, D = document, Z = () => D.createComment(""), G = (t) => t === null || typeof t != "object" && typeof t != "function", $t = Array.isArray, Ie = (t) => $t(t) || typeof t?.[Symbol.iterator] == "function", lt = `[ 	
-\f\r]`, F = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Lt = /-->/g, Rt = />/g, P = RegExp(`>|${lt}(?:([^\\s"'>=/]+)(${lt}*=${lt}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), Ut = /'/g, Ht = /"/g, le = /^(?:script|style|textarea|title)$/i, de = (t) => (e, ...i) => ({ _$litType$: t, strings: e, values: i }), l = de(1), De = de(2), A = Symbol.for("lit-noChange"), d = Symbol.for("lit-nothing"), Vt = /* @__PURE__ */ new WeakMap(), M = D.createTreeWalker(D, 129);
-function he(t, e) {
-  if (!$t(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
-  return Dt !== void 0 ? Dt.createHTML(e) : e;
+const ke = globalThis, Ve = (t) => t, ne = ke.trustedTypes, Be = ne ? ne.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, pt = "$lit$", P = `lit$${Math.random().toFixed(9).slice(2)}$`, ut = "?" + P, Ut = `<${ut}>`, z = document, Q = () => z.createComment(""), J = (t) => t === null || typeof t != "object" && typeof t != "function", Ee = Array.isArray, Rt = (t) => Ee(t) || typeof t?.[Symbol.iterator] == "function", he = `[ 	
+\f\r]`, Y = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, je = /-->/g, We = />/g, N = RegExp(`>|${he}(?:([^\\s"'>=/]+)(${he}*=${he}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), Ke = /'/g, qe = /"/g, _t = /^(?:script|style|textarea|title)$/i, vt = (t) => (e, ...i) => ({ _$litType$: t, strings: e, values: i }), l = vt(1), Vt = vt(2), k = Symbol.for("lit-noChange"), d = Symbol.for("lit-nothing"), Fe = /* @__PURE__ */ new WeakMap(), I = z.createTreeWalker(z, 129);
+function mt(t, e) {
+  if (!Ee(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  return Be !== void 0 ? Be.createHTML(e) : e;
 }
-const Le = (t, e) => {
+const Bt = (t, e) => {
   const i = t.length - 1, o = [];
-  let n, s = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", r = F;
+  let s, n = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", r = Y;
   for (let c = 0; c < i; c++) {
     const a = t[c];
-    let _, m, h = -1, p = 0;
-    for (; p < a.length && (r.lastIndex = p, m = r.exec(a), m !== null); ) p = r.lastIndex, r === F ? m[1] === "!--" ? r = Lt : m[1] !== void 0 ? r = Rt : m[2] !== void 0 ? (le.test(m[2]) && (n = RegExp("</" + m[2], "g")), r = P) : m[3] !== void 0 && (r = P) : r === P ? m[0] === ">" ? (r = n ?? F, h = -1) : m[1] === void 0 ? h = -2 : (h = r.lastIndex - m[2].length, _ = m[1], r = m[3] === void 0 ? P : m[3] === '"' ? Ht : Ut) : r === Ht || r === Ut ? r = P : r === Lt || r === Rt ? r = F : (r = P, n = void 0);
-    const v = r === P && t[c + 1].startsWith("/>") ? " " : "";
-    s += r === F ? a + ze : h >= 0 ? (o.push(_), a.slice(0, h) + ae + a.slice(h) + E + v) : a + E + (h === -2 ? c : v);
+    let u, m, h = -1, p = 0;
+    for (; p < a.length && (r.lastIndex = p, m = r.exec(a), m !== null); ) p = r.lastIndex, r === Y ? m[1] === "!--" ? r = je : m[1] !== void 0 ? r = We : m[2] !== void 0 ? (_t.test(m[2]) && (s = RegExp("</" + m[2], "g")), r = N) : m[3] !== void 0 && (r = N) : r === N ? m[0] === ">" ? (r = s ?? Y, h = -1) : m[1] === void 0 ? h = -2 : (h = r.lastIndex - m[2].length, u = m[1], r = m[3] === void 0 ? N : m[3] === '"' ? qe : Ke) : r === qe || r === Ke ? r = N : r === je || r === We ? r = Y : (r = N, s = void 0);
+    const _ = r === N && t[c + 1].startsWith("/>") ? " " : "";
+    n += r === Y ? a + Ut : h >= 0 ? (o.push(u), a.slice(0, h) + pt + a.slice(h) + P + _) : a + P + (h === -2 ? c : _);
   }
-  return [he(t, s + (t[i] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), o];
+  return [mt(t, n + (t[i] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), o];
 };
-class Q {
+class ee {
   constructor({ strings: e, _$litType$: i }, o) {
-    let n;
+    let s;
     this.parts = [];
-    let s = 0, r = 0;
-    const c = e.length - 1, a = this.parts, [_, m] = Le(e, i);
-    if (this.el = Q.createElement(_, o), M.currentNode = this.el.content, i === 2 || i === 3) {
+    let n = 0, r = 0;
+    const c = e.length - 1, a = this.parts, [u, m] = Bt(e, i);
+    if (this.el = ee.createElement(u, o), I.currentNode = this.el.content, i === 2 || i === 3) {
       const h = this.el.content.firstChild;
       h.replaceWith(...h.childNodes);
     }
-    for (; (n = M.nextNode()) !== null && a.length < c; ) {
-      if (n.nodeType === 1) {
-        if (n.hasAttributes()) for (const h of n.getAttributeNames()) if (h.endsWith(ae)) {
-          const p = m[r++], v = n.getAttribute(h).split(E), f = /([.?@])?(.*)/.exec(p);
-          a.push({ type: 1, index: s, name: f[2], strings: v, ctor: f[1] === "." ? Ue : f[1] === "?" ? He : f[1] === "@" ? Ve : rt }), n.removeAttribute(h);
-        } else h.startsWith(E) && (a.push({ type: 6, index: s }), n.removeAttribute(h));
-        if (le.test(n.tagName)) {
-          const h = n.textContent.split(E), p = h.length - 1;
+    for (; (s = I.nextNode()) !== null && a.length < c; ) {
+      if (s.nodeType === 1) {
+        if (s.hasAttributes()) for (const h of s.getAttributeNames()) if (h.endsWith(pt)) {
+          const p = m[r++], _ = s.getAttribute(h).split(P), f = /([.?@])?(.*)/.exec(p);
+          a.push({ type: 1, index: n, name: f[2], strings: _, ctor: f[1] === "." ? Wt : f[1] === "?" ? Kt : f[1] === "@" ? qt : ce }), s.removeAttribute(h);
+        } else h.startsWith(P) && (a.push({ type: 6, index: n }), s.removeAttribute(h));
+        if (_t.test(s.tagName)) {
+          const h = s.textContent.split(P), p = h.length - 1;
           if (p > 0) {
-            n.textContent = ot ? ot.emptyScript : "";
-            for (let v = 0; v < p; v++) n.append(h[v], Z()), M.nextNode(), a.push({ type: 2, index: ++s });
-            n.append(h[p], Z());
+            s.textContent = ne ? ne.emptyScript : "";
+            for (let _ = 0; _ < p; _++) s.append(h[_], Q()), I.nextNode(), a.push({ type: 2, index: ++n });
+            s.append(h[p], Q());
           }
         }
-      } else if (n.nodeType === 8) if (n.data === ce) a.push({ type: 2, index: s });
+      } else if (s.nodeType === 8) if (s.data === ut) a.push({ type: 2, index: n });
       else {
         let h = -1;
-        for (; (h = n.data.indexOf(E, h + 1)) !== -1; ) a.push({ type: 7, index: s }), h += E.length - 1;
+        for (; (h = s.data.indexOf(P, h + 1)) !== -1; ) a.push({ type: 7, index: n }), h += P.length - 1;
       }
-      s++;
+      n++;
     }
   }
   static createElement(e, i) {
-    const o = D.createElement("template");
+    const o = z.createElement("template");
     return o.innerHTML = e, o;
   }
 }
-function j(t, e, i = t, o) {
-  if (e === A) return e;
-  let n = o !== void 0 ? i._$Co?.[o] : i._$Cl;
-  const s = G(e) ? void 0 : e._$litDirective$;
-  return n?.constructor !== s && (n?._$AO?.(!1), s === void 0 ? n = void 0 : (n = new s(t), n._$AT(t, i, o)), o !== void 0 ? (i._$Co ??= [])[o] = n : i._$Cl = n), n !== void 0 && (e = j(t, n._$AS(t, e.values), n, o)), e;
+function W(t, e, i = t, o) {
+  if (e === k) return e;
+  let s = o !== void 0 ? i._$Co?.[o] : i._$Cl;
+  const n = J(e) ? void 0 : e._$litDirective$;
+  return s?.constructor !== n && (s?._$AO?.(!1), n === void 0 ? s = void 0 : (s = new n(t), s._$AT(t, i, o)), o !== void 0 ? (i._$Co ??= [])[o] = s : i._$Cl = s), s !== void 0 && (e = W(t, s._$AS(t, e.values), s, o)), e;
 }
-class Re {
+class jt {
   constructor(e, i) {
     this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = i;
   }
@@ -335,29 +335,29 @@ class Re {
     return this._$AM._$AU;
   }
   u(e) {
-    const { el: { content: i }, parts: o } = this._$AD, n = (e?.creationScope ?? D).importNode(i, !0);
-    M.currentNode = n;
-    let s = M.nextNode(), r = 0, c = 0, a = o[0];
+    const { el: { content: i }, parts: o } = this._$AD, s = (e?.creationScope ?? z).importNode(i, !0);
+    I.currentNode = s;
+    let n = I.nextNode(), r = 0, c = 0, a = o[0];
     for (; a !== void 0; ) {
       if (r === a.index) {
-        let _;
-        a.type === 2 ? _ = new W(s, s.nextSibling, this, e) : a.type === 1 ? _ = new a.ctor(s, a.name, a.strings, this, e) : a.type === 6 && (_ = new Be(s, this, e)), this._$AV.push(_), a = o[++c];
+        let u;
+        a.type === 2 ? u = new K(n, n.nextSibling, this, e) : a.type === 1 ? u = new a.ctor(n, a.name, a.strings, this, e) : a.type === 6 && (u = new Ft(n, this, e)), this._$AV.push(u), a = o[++c];
       }
-      r !== a?.index && (s = M.nextNode(), r++);
+      r !== a?.index && (n = I.nextNode(), r++);
     }
-    return M.currentNode = D, n;
+    return I.currentNode = z, s;
   }
   p(e) {
     let i = 0;
     for (const o of this._$AV) o !== void 0 && (o.strings !== void 0 ? (o._$AI(e, o, i), i += o.strings.length - 2) : o._$AI(e[i])), i++;
   }
 }
-class W {
+class K {
   get _$AU() {
     return this._$AM?._$AU ?? this._$Cv;
   }
-  constructor(e, i, o, n) {
-    this.type = 2, this._$AH = d, this._$AN = void 0, this._$AA = e, this._$AB = i, this._$AM = o, this.options = n, this._$Cv = n?.isConnected ?? !0;
+  constructor(e, i, o, s) {
+    this.type = 2, this._$AH = d, this._$AN = void 0, this._$AA = e, this._$AB = i, this._$AM = o, this.options = s, this._$Cv = s?.isConnected ?? !0;
   }
   get parentNode() {
     let e = this._$AA.parentNode;
@@ -371,7 +371,7 @@ class W {
     return this._$AB;
   }
   _$AI(e, i = this) {
-    e = j(this, e, i), G(e) ? e === d || e == null || e === "" ? (this._$AH !== d && this._$AR(), this._$AH = d) : e !== this._$AH && e !== A && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : Ie(e) ? this.k(e) : this._(e);
+    e = W(this, e, i), J(e) ? e === d || e == null || e === "" ? (this._$AH !== d && this._$AR(), this._$AH = d) : e !== this._$AH && e !== k && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : Rt(e) ? this.k(e) : this._(e);
   }
   O(e) {
     return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -380,63 +380,63 @@ class W {
     this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
   }
   _(e) {
-    this._$AH !== d && G(this._$AH) ? this._$AA.nextSibling.data = e : this.T(D.createTextNode(e)), this._$AH = e;
+    this._$AH !== d && J(this._$AH) ? this._$AA.nextSibling.data = e : this.T(z.createTextNode(e)), this._$AH = e;
   }
   $(e) {
-    const { values: i, _$litType$: o } = e, n = typeof o == "number" ? this._$AC(e) : (o.el === void 0 && (o.el = Q.createElement(he(o.h, o.h[0]), this.options)), o);
-    if (this._$AH?._$AD === n) this._$AH.p(i);
+    const { values: i, _$litType$: o } = e, s = typeof o == "number" ? this._$AC(e) : (o.el === void 0 && (o.el = ee.createElement(mt(o.h, o.h[0]), this.options)), o);
+    if (this._$AH?._$AD === s) this._$AH.p(i);
     else {
-      const s = new Re(n, this), r = s.u(this.options);
-      s.p(i), this.T(r), this._$AH = s;
+      const n = new jt(s, this), r = n.u(this.options);
+      n.p(i), this.T(r), this._$AH = n;
     }
   }
   _$AC(e) {
-    let i = Vt.get(e.strings);
-    return i === void 0 && Vt.set(e.strings, i = new Q(e)), i;
+    let i = Fe.get(e.strings);
+    return i === void 0 && Fe.set(e.strings, i = new ee(e)), i;
   }
   k(e) {
-    $t(this._$AH) || (this._$AH = [], this._$AR());
+    Ee(this._$AH) || (this._$AH = [], this._$AR());
     const i = this._$AH;
-    let o, n = 0;
-    for (const s of e) n === i.length ? i.push(o = new W(this.O(Z()), this.O(Z()), this, this.options)) : o = i[n], o._$AI(s), n++;
-    n < i.length && (this._$AR(o && o._$AB.nextSibling, n), i.length = n);
+    let o, s = 0;
+    for (const n of e) s === i.length ? i.push(o = new K(this.O(Q()), this.O(Q()), this, this.options)) : o = i[s], o._$AI(n), s++;
+    s < i.length && (this._$AR(o && o._$AB.nextSibling, s), i.length = s);
   }
   _$AR(e = this._$AA.nextSibling, i) {
     for (this._$AP?.(!1, !0, i); e !== this._$AB; ) {
-      const o = It(e).nextSibling;
-      It(e).remove(), e = o;
+      const o = Ve(e).nextSibling;
+      Ve(e).remove(), e = o;
     }
   }
   setConnected(e) {
     this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
   }
 }
-class rt {
+class ce {
   get tagName() {
     return this.element.tagName;
   }
   get _$AU() {
     return this._$AM._$AU;
   }
-  constructor(e, i, o, n, s) {
-    this.type = 1, this._$AH = d, this._$AN = void 0, this.element = e, this.name = i, this._$AM = n, this.options = s, o.length > 2 || o[0] !== "" || o[1] !== "" ? (this._$AH = Array(o.length - 1).fill(new String()), this.strings = o) : this._$AH = d;
+  constructor(e, i, o, s, n) {
+    this.type = 1, this._$AH = d, this._$AN = void 0, this.element = e, this.name = i, this._$AM = s, this.options = n, o.length > 2 || o[0] !== "" || o[1] !== "" ? (this._$AH = Array(o.length - 1).fill(new String()), this.strings = o) : this._$AH = d;
   }
-  _$AI(e, i = this, o, n) {
-    const s = this.strings;
+  _$AI(e, i = this, o, s) {
+    const n = this.strings;
     let r = !1;
-    if (s === void 0) e = j(this, e, i, 0), r = !G(e) || e !== this._$AH && e !== A, r && (this._$AH = e);
+    if (n === void 0) e = W(this, e, i, 0), r = !J(e) || e !== this._$AH && e !== k, r && (this._$AH = e);
     else {
       const c = e;
-      let a, _;
-      for (e = s[0], a = 0; a < s.length - 1; a++) _ = j(this, c[o + a], i, a), _ === A && (_ = this._$AH[a]), r ||= !G(_) || _ !== this._$AH[a], _ === d ? e = d : e !== d && (e += (_ ?? "") + s[a + 1]), this._$AH[a] = _;
+      let a, u;
+      for (e = n[0], a = 0; a < n.length - 1; a++) u = W(this, c[o + a], i, a), u === k && (u = this._$AH[a]), r ||= !J(u) || u !== this._$AH[a], u === d ? e = d : e !== d && (e += (u ?? "") + n[a + 1]), this._$AH[a] = u;
     }
-    r && !n && this.j(e);
+    r && !s && this.j(e);
   }
   j(e) {
     e === d ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
   }
 }
-class Ue extends rt {
+class Wt extends ce {
   constructor() {
     super(...arguments), this.type = 3;
   }
@@ -444,7 +444,7 @@ class Ue extends rt {
     this.element[this.name] = e === d ? void 0 : e;
   }
 }
-class He extends rt {
+class Kt extends ce {
   constructor() {
     super(...arguments), this.type = 4;
   }
@@ -452,20 +452,20 @@ class He extends rt {
     this.element.toggleAttribute(this.name, !!e && e !== d);
   }
 }
-class Ve extends rt {
-  constructor(e, i, o, n, s) {
-    super(e, i, o, n, s), this.type = 5;
+class qt extends ce {
+  constructor(e, i, o, s, n) {
+    super(e, i, o, s, n), this.type = 5;
   }
   _$AI(e, i = this) {
-    if ((e = j(this, e, i, 0) ?? d) === A) return;
-    const o = this._$AH, n = e === d && o !== d || e.capture !== o.capture || e.once !== o.once || e.passive !== o.passive, s = e !== d && (o === d || n);
-    n && this.element.removeEventListener(this.name, this, o), s && this.element.addEventListener(this.name, this, e), this._$AH = e;
+    if ((e = W(this, e, i, 0) ?? d) === k) return;
+    const o = this._$AH, s = e === d && o !== d || e.capture !== o.capture || e.once !== o.once || e.passive !== o.passive, n = e !== d && (o === d || s);
+    s && this.element.removeEventListener(this.name, this, o), n && this.element.addEventListener(this.name, this, e), this._$AH = e;
   }
   handleEvent(e) {
     typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
   }
 }
-class Be {
+class Ft {
   constructor(e, i, o) {
     this.element = e, this.type = 6, this._$AN = void 0, this._$AM = i, this.options = o;
   }
@@ -473,27 +473,27 @@ class Be {
     return this._$AM._$AU;
   }
   _$AI(e) {
-    j(this, e);
+    W(this, e);
   }
 }
-const je = { I: W }, We = wt.litHtmlPolyfillSupport;
-We?.(Q, W), (wt.litHtmlVersions ??= []).push("3.3.3");
-const Ke = (t, e, i) => {
+const Yt = { I: K }, Xt = ke.litHtmlPolyfillSupport;
+Xt?.(ee, K), (ke.litHtmlVersions ??= []).push("3.3.3");
+const Gt = (t, e, i) => {
   const o = i?.renderBefore ?? e;
-  let n = o._$litPart$;
-  if (n === void 0) {
-    const s = i?.renderBefore ?? null;
-    o._$litPart$ = n = new W(e.insertBefore(Z(), s), s, void 0, i ?? {});
+  let s = o._$litPart$;
+  if (s === void 0) {
+    const n = i?.renderBefore ?? null;
+    o._$litPart$ = s = new K(e.insertBefore(Q(), n), n, void 0, i ?? {});
   }
-  return n._$AI(t), n;
+  return s._$AI(t), s;
 };
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const xt = globalThis;
-let z = class extends H {
+const Se = globalThis;
+let H = class extends V {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
@@ -503,7 +503,7 @@ let z = class extends H {
   }
   update(e) {
     const i = this.render();
-    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = Ke(i, this.renderRoot, this.renderOptions);
+    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = Gt(i, this.renderRoot, this.renderOptions);
   }
   connectedCallback() {
     super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -512,19 +512,19 @@ let z = class extends H {
     super.disconnectedCallback(), this._$Do?.setConnected(!1);
   }
   render() {
-    return A;
+    return k;
   }
 };
-z._$litElement$ = !0, z.finalized = !0, xt.litElementHydrateSupport?.({ LitElement: z });
-const Fe = xt.litElementPolyfillSupport;
-Fe?.({ LitElement: z });
-(xt.litElementVersions ??= []).push("4.2.2");
+H._$litElement$ = !0, H.finalized = !0, Se.litElementHydrateSupport?.({ LitElement: H });
+const Zt = Se.litElementPolyfillSupport;
+Zt?.({ LitElement: H });
+(Se.litElementVersions ??= []).push("4.2.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const At = (t) => (e, i) => {
+const Pe = (t) => (e, i) => {
   i !== void 0 ? i.addInitializer(() => {
     customElements.define(t, e);
   }) : customElements.define(t, e);
@@ -534,10 +534,10 @@ const At = (t) => (e, i) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Ye = { attribute: !0, type: String, converter: it, reflect: !1, hasChanged: yt }, Xe = (t = Ye, e, i) => {
-  const { kind: o, metadata: n } = i;
-  let s = globalThis.litPropertyMetadata.get(n);
-  if (s === void 0 && globalThis.litPropertyMetadata.set(n, s = /* @__PURE__ */ new Map()), o === "setter" && ((t = Object.create(t)).wrapped = !0), s.set(i.name, t), o === "accessor") {
+const Qt = { attribute: !0, type: String, converter: se, reflect: !1, hasChanged: Te }, Jt = (t = Qt, e, i) => {
+  const { kind: o, metadata: s } = i;
+  let n = globalThis.litPropertyMetadata.get(s);
+  if (n === void 0 && globalThis.litPropertyMetadata.set(s, n = /* @__PURE__ */ new Map()), o === "setter" && ((t = Object.create(t)).wrapped = !0), n.set(i.name, t), o === "accessor") {
     const { name: r } = i;
     return { set(c) {
       const a = e.get.call(this);
@@ -555,10 +555,10 @@ const Ye = { attribute: !0, type: String, converter: it, reflect: !1, hasChanged
   }
   throw Error("Unsupported decorator location: " + o);
 };
-function R(t) {
-  return (e, i) => typeof i == "object" ? Xe(t, e, i) : ((o, n, s) => {
-    const r = n.hasOwnProperty(s);
-    return n.constructor.createProperty(s, o), r ? Object.getOwnPropertyDescriptor(n, s) : void 0;
+function S(t) {
+  return (e, i) => typeof i == "object" ? Jt(t, e, i) : ((o, s, n) => {
+    const r = s.hasOwnProperty(n);
+    return s.constructor.createProperty(n, o), r ? Object.getOwnPropertyDescriptor(s, n) : void 0;
   })(t, e, i);
 }
 /**
@@ -566,25 +566,25 @@ function R(t) {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function K(t) {
-  return R({ ...t, state: !0, attribute: !1 });
+function q(t) {
+  return S({ ...t, state: !0, attribute: !1 });
 }
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const qe = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
+const ei = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function pe(t, e) {
-  return (i, o, n) => {
-    const s = (r) => r.renderRoot?.querySelector(t) ?? null;
-    return qe(i, o, { get() {
-      return s(this);
+function ft(t, e) {
+  return (i, o, s) => {
+    const n = (r) => r.renderRoot?.querySelector(t) ?? null;
+    return ei(i, o, { get() {
+      return n(this);
     } });
   };
 }
@@ -593,8 +593,8 @@ function pe(t, e) {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const kt = { CHILD: 2, ELEMENT: 6 }, ue = (t) => (...e) => ({ _$litDirective$: t, values: e });
-let _e = class {
+const Ce = { CHILD: 2, ELEMENT: 6 }, gt = (t) => (...e) => ({ _$litDirective$: t, values: e });
+let bt = class {
   constructor(e) {
   }
   get _$AU() {
@@ -615,27 +615,27 @@ let _e = class {
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { I: Ze } = je, Bt = (t) => t, Ge = (t) => t.strings === void 0, jt = () => document.createComment(""), Y = (t, e, i) => {
-  const o = t._$AA.parentNode, n = e === void 0 ? t._$AB : e._$AA;
+const { I: ti } = Yt, Ye = (t) => t, ii = (t) => t.strings === void 0, Xe = () => document.createComment(""), X = (t, e, i) => {
+  const o = t._$AA.parentNode, s = e === void 0 ? t._$AB : e._$AA;
   if (i === void 0) {
-    const s = o.insertBefore(jt(), n), r = o.insertBefore(jt(), n);
-    i = new Ze(s, r, t, t.options);
+    const n = o.insertBefore(Xe(), s), r = o.insertBefore(Xe(), s);
+    i = new ti(n, r, t, t.options);
   } else {
-    const s = i._$AB.nextSibling, r = i._$AM, c = r !== t;
+    const n = i._$AB.nextSibling, r = i._$AM, c = r !== t;
     if (c) {
       let a;
       i._$AQ?.(t), i._$AM = t, i._$AP !== void 0 && (a = t._$AU) !== r._$AU && i._$AP(a);
     }
-    if (s !== n || c) {
+    if (n !== s || c) {
       let a = i._$AA;
-      for (; a !== s; ) {
-        const _ = Bt(a).nextSibling;
-        Bt(o).insertBefore(a, n), a = _;
+      for (; a !== n; ) {
+        const u = Ye(a).nextSibling;
+        Ye(o).insertBefore(a, s), a = u;
       }
     }
   }
   return i;
-}, C = (t, e, i = t) => (t._$AI(e, i), t), Qe = {}, Je = (t, e = Qe) => t._$AH = e, ti = (t) => t._$AH, dt = (t) => {
+}, M = (t, e, i = t) => (t._$AI(e, i), t), oi = {}, si = (t, e = oi) => t._$AH = e, ni = (t) => t._$AH, pe = (t) => {
   t._$AR(), t._$AA.remove();
 };
 /**
@@ -643,80 +643,80 @@ const { I: Ze } = je, Bt = (t) => t, Ge = (t) => t.strings === void 0, jt = () =
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Wt = (t, e, i) => {
+const Ge = (t, e, i) => {
   const o = /* @__PURE__ */ new Map();
-  for (let n = e; n <= i; n++) o.set(t[n], n);
+  for (let s = e; s <= i; s++) o.set(t[s], s);
   return o;
-}, ei = ue(class extends _e {
+}, ri = gt(class extends bt {
   constructor(t) {
-    if (super(t), t.type !== kt.CHILD) throw Error("repeat() can only be used in text expressions");
+    if (super(t), t.type !== Ce.CHILD) throw Error("repeat() can only be used in text expressions");
   }
   dt(t, e, i) {
     let o;
     i === void 0 ? i = e : e !== void 0 && (o = e);
-    const n = [], s = [];
+    const s = [], n = [];
     let r = 0;
-    for (const c of t) n[r] = o ? o(c, r) : r, s[r] = i(c, r), r++;
-    return { values: s, keys: n };
+    for (const c of t) s[r] = o ? o(c, r) : r, n[r] = i(c, r), r++;
+    return { values: n, keys: s };
   }
   render(t, e, i) {
     return this.dt(t, e, i).values;
   }
   update(t, [e, i, o]) {
-    const n = ti(t), { values: s, keys: r } = this.dt(e, i, o);
-    if (!Array.isArray(n)) return this.ut = r, s;
+    const s = ni(t), { values: n, keys: r } = this.dt(e, i, o);
+    if (!Array.isArray(s)) return this.ut = r, n;
     const c = this.ut ??= [], a = [];
-    let _, m, h = 0, p = n.length - 1, v = 0, f = s.length - 1;
-    for (; h <= p && v <= f; ) if (n[h] === null) h++;
-    else if (n[p] === null) p--;
-    else if (c[h] === r[v]) a[v] = C(n[h], s[v]), h++, v++;
-    else if (c[p] === r[f]) a[f] = C(n[p], s[f]), p--, f--;
-    else if (c[h] === r[f]) a[f] = C(n[h], s[f]), Y(t, a[f + 1], n[h]), h++, f--;
-    else if (c[p] === r[v]) a[v] = C(n[p], s[v]), Y(t, n[h], n[p]), p--, v++;
-    else if (_ === void 0 && (_ = Wt(r, v, f), m = Wt(c, h, p)), _.has(c[h])) if (_.has(c[p])) {
-      const y = m.get(r[v]), u = y !== void 0 ? n[y] : null;
-      if (u === null) {
-        const b = Y(t, n[h]);
-        C(b, s[v]), a[v] = b;
-      } else a[v] = C(u, s[v]), Y(t, n[h], u), n[y] = null;
-      v++;
-    } else dt(n[p]), p--;
-    else dt(n[h]), h++;
-    for (; v <= f; ) {
-      const y = Y(t, a[f + 1]);
-      C(y, s[v]), a[v++] = y;
+    let u, m, h = 0, p = s.length - 1, _ = 0, f = n.length - 1;
+    for (; h <= p && _ <= f; ) if (s[h] === null) h++;
+    else if (s[p] === null) p--;
+    else if (c[h] === r[_]) a[_] = M(s[h], n[_]), h++, _++;
+    else if (c[p] === r[f]) a[f] = M(s[p], n[f]), p--, f--;
+    else if (c[h] === r[f]) a[f] = M(s[h], n[f]), X(t, a[f + 1], s[h]), h++, f--;
+    else if (c[p] === r[_]) a[_] = M(s[p], n[_]), X(t, s[h], s[p]), p--, _++;
+    else if (u === void 0 && (u = Ge(r, _, f), m = Ge(c, h, p)), u.has(c[h])) if (u.has(c[p])) {
+      const y = m.get(r[_]), w = y !== void 0 ? s[y] : null;
+      if (w === null) {
+        const F = X(t, s[h]);
+        M(F, n[_]), a[_] = F;
+      } else a[_] = M(w, n[_]), X(t, s[h], w), s[y] = null;
+      _++;
+    } else pe(s[p]), p--;
+    else pe(s[h]), h++;
+    for (; _ <= f; ) {
+      const y = X(t, a[f + 1]);
+      M(y, n[_]), a[_++] = y;
     }
     for (; h <= p; ) {
-      const y = n[h++];
-      y !== null && dt(y);
+      const y = s[h++];
+      y !== null && pe(y);
     }
-    return this.ut = r, Je(t, a), A;
+    return this.ut = r, si(t, a), k;
   }
-}), J = (t, e, i) => {
+}), te = (t, e, i) => {
   t.dispatchEvent(
     new CustomEvent(e, { detail: i, bubbles: !0, composed: !0 })
   );
-}, ii = (t, e) => J(t, "hass-more-info", { entityId: e }), oi = (t, e, i = "var(--state-inactive-color, #9e9e9e)") => e === "unavailable" || e === "unknown" ? "var(--state-unavailable-color, var(--disabled-color))" : `var(--state-${t}-${e}-color, var(--state-icon-color, ${i}))`, ni = (t) => typeof t == "object" && t !== null && !Array.isArray(t), V = (t) => ni(t) && typeof t.action == "string", pt = (t) => t !== void 0 && t.action !== "none", Et = (t) => {
+}, ai = (t, e) => te(t, "hass-more-info", { entityId: e }), ci = (t, e, i = "var(--state-inactive-color, #9e9e9e)") => e === "unavailable" || e === "unknown" ? "var(--state-unavailable-color, var(--disabled-color))" : `var(--state-${t}-${e}-color, var(--state-icon-color, ${i}))`, li = (t) => typeof t == "object" && t !== null && !Array.isArray(t), B = (t) => li(t) && typeof t.action == "string", ve = (t) => t !== void 0 && t.action !== "none", Oe = (t) => {
   const e = (t ?? "").split(".");
   if (e.length !== 2) return null;
   const [i, o] = e;
   return !i || !o ? null : [i, o];
-}, ut = (t, e, i) => ({
+}, me = (t, e, i) => ({
   action: "perform-action",
   perform_action: t,
   ...e ? { data: e } : {},
   ...i ? { target: i } : {}
-}), St = (t, e, i, o) => {
+}), Ne = (t, e, i, o) => {
   switch (i.action) {
     case "none":
       return Promise.resolve();
     case "more-info": {
-      const n = i.entity ?? o;
-      return n && t && ii(t, n), Promise.resolve();
+      const s = i.entity ?? o;
+      return s && t && ai(t, s), Promise.resolve();
     }
     case "toggle": {
-      const n = o;
-      return n ? e.callService("homeassistant", "toggle", { entity_id: n }) : Promise.resolve();
+      const s = o;
+      return s ? e.callService("homeassistant", "toggle", { entity_id: s }) : Promise.resolve();
     }
     case "navigate":
       return history.pushState(null, "", i.navigation_path), window.dispatchEvent(
@@ -726,16 +726,16 @@ const Wt = (t, e, i) => {
       return window.open(i.url_path, "_blank", "noreferrer"), Promise.resolve();
     case "perform-action":
     case "call-service": {
-      const n = i.action === "perform-action" ? i.perform_action : i.service, s = Et(n);
-      if (!s)
+      const s = i.action === "perform-action" ? i.perform_action : i.service, n = Oe(s);
+      if (!n)
         return Promise.reject(
-          new Error(`polr-android-tv-remote-card: invalid action "${n}"`)
+          new Error(`polr-android-tv-remote-card: invalid action "${s}"`)
         );
-      const [r, c] = s, a = i.action === "perform-action" ? i.data : i.data ?? i.service_data;
+      const [r, c] = n, a = i.action === "perform-action" ? i.data : i.data ?? i.service_data;
       return e.callService(r, c, a ?? {}, i.target);
     }
   }
-}, x = {
+}, T = {
   PAUSE: 1,
   VOLUME_MUTE: 8,
   PREVIOUS_TRACK: 16,
@@ -743,7 +743,7 @@ const Wt = (t, e, i) => {
   TURN_ON: 128,
   TURN_OFF: 256,
   VOLUME_STEP: 1024
-}, ve = {
+}, yt = {
   up: "DPAD_UP",
   down: "DPAD_DOWN",
   left: "DPAD_LEFT",
@@ -764,72 +764,75 @@ const Wt = (t, e, i) => {
   // position, which a TV cannot report. These are always key codes.
   rewind: "MEDIA_REWIND",
   fast_forward: "MEDIA_FAST_FORWARD"
-}, si = "text:", me = (t, e) => {
+}, di = "text:", wt = (t, e) => {
   const i = t.entities?.[e.entity]?.device_id;
   if (!i) return null;
   for (const o of Object.values(t.entities ?? {}))
     if (o.device_id === i && o.entity_id.startsWith("media_player."))
       return o.entity_id;
   return null;
-}, ht = (t) => t === void 0 || t.state === "unavailable" || t.state === "unknown", ri = (t, e) => {
-  const i = t.states?.[e.entity], o = me(t, e), n = o ? t.states?.[o] : void 0, s = n?.attributes ?? {}, r = i?.attributes ?? {}, c = e.volume_entity ?? o, _ = (e.volume_entity && e.volume_entity !== o ? t.states?.[e.volume_entity] : n)?.attributes ?? {}, m = n && !ht(n) ? n.state !== "off" : i?.state === "on";
+}, ue = (t) => t === void 0 || t.state === "unavailable" || t.state === "unknown", hi = (t, e) => {
+  const i = t.states?.[e.entity], o = wt(t, e), s = o ? t.states?.[o] : void 0, n = s?.attributes ?? {}, r = i?.attributes ?? {}, c = e.volume_entity ?? o, u = (e.volume_entity && e.volume_entity !== o ? t.states?.[e.volume_entity] : s)?.attributes ?? {}, m = s && !ue(s) ? s.state !== "off" : i?.state === "on";
   return {
     remoteId: e.entity,
     playerId: o,
     remote: i,
-    player: n,
+    player: s,
     found: i !== void 0,
-    available: !ht(i) && (n === void 0 || !ht(n)),
+    available: !ue(i) && (s === void 0 || !ue(s)),
     on: m,
     name: e.name ?? r.friendly_name ?? e.entity,
     // app_name is all the integration provides. It never sets media_title or
     // entity_picture, so there is no now-playing text or artwork to read.
-    appName: s.app_name ?? r.current_activity,
-    appId: s.app_id,
-    playing: n?.state === "playing",
-    features: s.supported_features ?? 0,
+    appName: n.app_name ?? r.current_activity,
+    appId: n.app_id,
+    playing: s?.state === "playing",
+    features: n.supported_features ?? 0,
     volumeId: c,
-    volumeFeatures: _.supported_features ?? 0,
-    volume: typeof _.volume_level == "number" ? _.volume_level : void 0,
-    muted: typeof _.is_volume_muted == "boolean" ? _.is_volume_muted : void 0
+    volumeFeatures: u.supported_features ?? 0,
+    volume: typeof u.volume_level == "number" ? u.volume_level : void 0,
+    muted: typeof u.is_volume_muted == "boolean" ? u.is_volume_muted : void 0
   };
-}, ai = /* @__PURE__ */ new Set([
+}, pi = /* @__PURE__ */ new Set([
   "off",
   "unavailable",
   "unknown",
   "idle",
   "standby",
   "none"
-]), ci = (t, e) => {
+]), ui = (t, e) => {
   if (!e) return !1;
   const i = t.states?.[e]?.state;
-  return i === void 0 ? !1 : !ai.has(i.toLowerCase());
-}, B = (t, e) => (t.features & e) !== 0, Kt = (t, e) => (t.volumeFeatures & e) !== 0, Ft = (t) => t.volume !== void 0, li = (t, e) => {
-  const i = Et(e.service);
+  return i === void 0 ? !1 : !pi.has(i.toLowerCase());
+}, j = (t, e) => (t.features & e) !== 0, Ze = (t, e) => (t.volumeFeatures & e) !== 0, Qe = (t) => t.volume !== void 0, _i = (t, e) => {
+  const i = Oe(e.service);
   return i ? t.callService(i[0], i[1], e.data ?? {}, e.target) : Promise.reject(
     new Error(`polr-android-tv-remote-card: invalid service "${e.service}"`)
   );
-}, Tt = (t, e, i) => t.callService("remote", "send_command", {
+}, Me = (t, e, i) => t.callService("remote", "send_command", {
   entity_id: e.remoteId,
-  command: i
-}), di = (t, e, i, o) => {
-  const n = ve[i];
-  if (!n) return Promise.resolve();
-  const s = o === "start" ? "START_LONG" : "END_LONG";
+  command: i,
+  // Home Assistant otherwise sleeps 400 ms after every command. A zero
+  // delay preserves each rapid tap while the card's queue keeps its order.
+  delay_secs: 0
+}), _e = (t, e, i, o) => {
+  const s = yt[i];
+  if (!s) return Promise.resolve();
+  const n = o === "start" ? "START_LONG" : "END_LONG";
   return t.callService("remote", "send_command", {
     entity_id: e.remoteId,
-    command: `${s}:${n}`,
+    command: `${n}:${s}`,
     delay_secs: 0
   });
-}, hi = (t, e, i) => Tt(t, e, `${si}${i}`), pi = (t, e, i, o, n) => {
-  const s = e.overrides[o]?.tap_action;
-  if (pt(s))
-    return St(n, t, s, i.remoteId);
-  if (s && s.action === "none") return Promise.resolve();
+}, vi = (t, e, i) => Me(t, e, `${di}${i}`), mi = (t, e, i, o, s) => {
+  const n = e.overrides[o]?.tap_action;
+  if (ve(n))
+    return Ne(s, t, n, i.remoteId);
+  if (n && n.action === "none") return Promise.resolve();
   const r = i.playerId;
   switch (o) {
     case "power":
-      return r && B(i, i.on ? x.TURN_OFF : x.TURN_ON) ? t.callService(
+      return r && j(i, i.on ? T.TURN_OFF : T.TURN_ON) ? t.callService(
         "media_player",
         i.on ? "turn_off" : "turn_on",
         { entity_id: r }
@@ -837,26 +840,26 @@ const Wt = (t, e, i) => {
         entity_id: i.remoteId
       });
     case "play_pause":
-      if (r && B(i, x.PAUSE))
+      if (r && j(i, T.PAUSE))
         return t.callService("media_player", "media_play_pause", {
           entity_id: r
         });
       break;
     case "next":
-      if (r && B(i, x.NEXT_TRACK))
+      if (r && j(i, T.NEXT_TRACK))
         return t.callService("media_player", "media_next_track", {
           entity_id: r
         });
       break;
     case "previous":
-      if (r && B(i, x.PREVIOUS_TRACK))
+      if (r && j(i, T.PREVIOUS_TRACK))
         return t.callService("media_player", "media_previous_track", {
           entity_id: r
         });
       break;
     case "volume_up":
     case "volume_down":
-      if (i.volumeId && Kt(i, x.VOLUME_STEP))
+      if (i.volumeId && Ze(i, T.VOLUME_STEP))
         return t.callService(
           "media_player",
           o === "volume_up" ? "volume_up" : "volume_down",
@@ -864,16 +867,16 @@ const Wt = (t, e, i) => {
         );
       break;
     case "volume_mute":
-      if (i.volumeId && i.muted !== void 0 && Kt(i, x.VOLUME_MUTE))
+      if (i.volumeId && i.muted !== void 0 && Ze(i, T.VOLUME_MUTE))
         return t.callService("media_player", "volume_mute", {
           entity_id: i.volumeId,
           is_volume_muted: !i.muted
         });
       break;
   }
-  const c = ve[o];
-  return c ? Tt(t, i, c) : Promise.resolve();
-}, ui = (t, e, i, o) => {
+  const c = yt[o];
+  return c ? Me(t, i, c) : Promise.resolve();
+}, fi = (t, e, i, o) => {
   switch (i.action) {
     case "activity":
       return t.callService("remote", "turn_on", {
@@ -891,16 +894,16 @@ const Wt = (t, e, i) => {
         )
       );
     case "key":
-      return Tt(t, e, i.key);
+      return Me(t, e, i.key);
     // v1's shape.
     case "service":
-      return li(t, i);
+      return _i(t, i);
     // Everything else is a Home Assistant action, run exactly as an override
     // would run it.
     default:
-      return St(o, t, i, e.remoteId);
+      return Ne(o, t, i, e.remoteId);
   }
-}, _i = (t) => {
+}, gi = (t) => {
   switch (t.action) {
     case "activity":
       return `Launch ${t.activity}`;
@@ -925,7 +928,45 @@ const Wt = (t, e, i) => {
     case "none":
       return "Do nothing";
   }
-}, vi = ["buttons", "dpad", "touchpad"], mi = ["repeat", "native", "none"], Pt = [
+}, De = 1e3, fe = 750, ge = 2e3;
+class bi {
+  constructor() {
+    this._state = "idle", this._session = 0;
+  }
+  get state() {
+    return this._state;
+  }
+  get session() {
+    return this._session;
+  }
+  /** Begin a fresh contact, invalidating every earlier timer token. */
+  begin() {
+    return this._session += 1, this._state = "pending", this._session;
+  }
+  /** Cross the hold threshold for this session exactly once. */
+  hold(e) {
+    if (!(e !== this._session || this._state !== "pending"))
+      return this._state = "held", "start";
+  }
+  /** A physical release is a short tap while pending, or key-up while held. */
+  release(e) {
+    if (e === this._session) {
+      if (this._state === "pending")
+        return this._state = "idle", "short";
+      if (this._state === "held")
+        return this._state = "idle", "end";
+    }
+  }
+  /** Cancellation suppresses a pending tap, but must release a held key. */
+  cancel(e = this._session) {
+    if (e === this._session) {
+      if (this._state === "held")
+        return this._state = "idle", "end";
+      this._state === "pending" && (this._state = "idle");
+    }
+  }
+}
+const yi = ["buttons", "dpad", "touchpad"], wi = ["repeat", "native", "none"], Le = [
   "up",
   "down",
   "left",
@@ -940,16 +981,16 @@ const Wt = (t, e, i) => {
   "next",
   "volume_up",
   "volume_down"
-], fi = {
+], $i = {
   button: "press",
   input_button: "press",
   scene: "turn_on",
   script: "turn_on",
   automation: "trigger"
-}, gi = (t) => {
-  const e = Et(t);
+}, xi = (t) => {
+  const e = Oe(t);
   if (!e) return null;
-  const i = fi[e[0]];
+  const i = $i[e[0]];
   return i ? { service: `${e[0]}.${i}`, target: { entity_id: t } } : null;
 }, g = {
   show_header: !0,
@@ -967,21 +1008,22 @@ const Wt = (t, e, i) => {
   show_section_labels: !1,
   app_columns: 5,
   hold_mode: "repeat",
-  native_hold_buttons: [...Pt],
+  native_hold_buttons: [...Le],
+  native_touch_hold_delay_ms: De,
   haptics: !0
-}, O = {
+}, D = {
   disneyplus: { label: "Disney+", activity: "https://www.disneyplus.com" },
   hbomax: { label: "HBO Max", activity: "https://play.hbomax.com" },
   hulu: { label: "Hulu", activity: "HULU" },
   netflix: { label: "Netflix", activity: "https://www.netflix.com/title" },
   prime: { label: "Prime Video", activity: "https://app.primevideo.com" },
   youtube: { label: "YouTube", activity: "https://www.youtube.com" }
-}, _t = Object.keys(O), fe = (t) => {
+}, be = Object.keys(D), $t = (t) => {
   if (!t) return;
   const e = t.toLowerCase().replace(/[^a-z]/g, "");
   if (e)
-    return _t.find((i) => e.includes(i) || i.includes(e));
-}, ge = {
+    return be.find((i) => e.includes(i) || i.includes(e));
+}, xt = {
   up: "up",
   down: "down",
   left: "left",
@@ -994,59 +1036,59 @@ const Wt = (t, e, i) => {
   volumeup: "volume_up",
   volumedown: "volume_down",
   volumemute: "volume_mute"
-}, be = {
+}, At = {
   showRemote: "show_nav",
   showApps: "show_apps",
   showVolume: "show_volume",
   showMedia: "show_transport",
   showURLSearch: "show_text_input"
-}, bi = {
+}, Ai = {
   default: "buttons",
   touch: "touchpad",
   dpad: "dpad"
-}, w = (t) => typeof t == "object" && t !== null && !Array.isArray(t), ye = (t) => w(t) && typeof t.service == "string", Yt = (t, e) => {
+}, $ = (t) => typeof t == "object" && t !== null && !Array.isArray(t), Tt = (t) => $(t) && typeof t.service == "string", Je = (t, e) => {
   if (typeof t == "string") {
-    const i = gi(t);
+    const i = xi(t);
     if (i)
-      return { tap_action: ut(i.service, void 0, i.target) };
-    I(
+      return { tap_action: me(i.service, void 0, i.target) };
+    C(
       `override "${e}" points at ${t}, which cannot simply be pressed. Use an action config instead.`
     );
     return;
   }
-  if (!w(t)) {
-    t !== void 0 && I(`override "${e}" is not an entity id or an action config`);
+  if (!$(t)) {
+    t !== void 0 && C(`override "${e}" is not an entity id or an action config`);
     return;
   }
-  if (V(t.tap_action) || V(t.hold_action) || V(t.double_tap_action)) {
+  if (B(t.tap_action) || B(t.hold_action) || B(t.double_tap_action)) {
     const i = {};
     for (const o of ["tap_action", "hold_action", "double_tap_action"]) {
-      const n = t[o];
-      V(n) && (i[o] = n);
+      const s = t[o];
+      B(s) && (i[o] = s);
     }
     return i;
   }
-  if (ye(t))
+  if (Tt(t))
     return {
-      tap_action: ut(
+      tap_action: me(
         t.service,
-        w(t.data) ? t.data : void 0,
-        w(t.target) ? t.target : void 0
+        $(t.data) ? t.data : void 0,
+        $(t.target) ? t.target : void 0
       )
     };
-  I(`override "${e}" is not an entity id or an action config`);
+  C(`override "${e}" is not an entity id or an action config`);
 };
-let Xt = /* @__PURE__ */ new Set();
-const I = (t) => {
-  Xt.has(t) || (Xt.add(t), console.warn(`polr-android-tv-remote-card: ${t}`));
-}, qt = (t) => {
+let et = /* @__PURE__ */ new Set();
+const C = (t) => {
+  et.has(t) || (et.add(t), console.warn(`polr-android-tv-remote-card: ${t}`));
+}, tt = (t) => {
   if (typeof t == "string") {
-    const s = O[t];
-    return s ? {
-      name: s.label,
+    const n = D[t];
+    return n ? {
+      name: n.label,
       icon: `brand:${t}`,
-      action: { action: "activity", activity: s.activity }
-    } : (I(
+      action: { action: "activity", activity: n.activity }
+    } : (C(
       `unknown app "${t}" — treating it as an activity. Use an object with an icon and action instead.`
     ), {
       name: t,
@@ -1054,65 +1096,67 @@ const I = (t) => {
       action: { action: "activity", activity: t }
     });
   }
-  if (!w(t)) return null;
-  if (w(t.action))
+  if (!$(t)) return null;
+  if ($(t.action))
     return t;
-  const e = typeof t.icon == "string" ? t.icon : void 0, i = typeof t.name == "string" ? t.name : void 0, o = typeof t.color == "string" ? t.color : void 0, n = typeof t.entity == "string" ? t.entity : void 0;
-  return ye(t) ? {
+  const e = typeof t.icon == "string" ? t.icon : void 0, i = typeof t.name == "string" ? t.name : void 0, o = typeof t.color == "string" ? t.color : void 0, s = typeof t.entity == "string" ? t.entity : void 0;
+  return Tt(t) ? {
     ...i ? { name: i } : {},
     ...e ? { icon: e } : {},
     ...o ? { color: o } : {},
-    ...n ? { entity: n } : {},
+    ...s ? { entity: s } : {},
     action: {
       action: "service",
       service: t.service,
-      ...w(t.data) ? { data: t.data } : {},
-      ...w(t.target) ? { target: t.target } : {}
+      ...$(t.data) ? { data: t.data } : {},
+      ...$(t.target) ? { target: t.target } : {}
     }
   } : typeof t.url == "string" ? {
     ...i ? { name: i } : {},
     ...e ? { icon: e } : {},
     ...o ? { color: o } : {},
-    ...n ? { entity: n } : {},
+    ...s ? { entity: s } : {},
     action: { action: "activity", activity: t.url }
-  } : (I(`app entry has no action, url or service and was skipped: ${JSON.stringify(t)}`), null);
-}, we = (t) => {
-  if (!w(t))
+  } : (C(`app entry has no action, url or service and was skipped: ${JSON.stringify(t)}`), null);
+}, kt = (t) => {
+  if (!$(t))
     throw new Error("polr-android-tv-remote-card: invalid configuration");
   const e = typeof t.entity == "string" ? t.entity : typeof t.entity_id == "string" ? t.entity_id : void 0;
   if (!e)
     throw new Error("polr-android-tv-remote-card: 'entity' is required");
-  const i = typeof t.remote == "string" ? bi[t.remote] : void 0;
-  typeof t.remote == "string" && !i && I(`unknown remote style "${t.remote}" — falling back to ${g.pad}`);
-  const o = vi.includes(t.pad) ? t.pad : i ?? g.pad, n = typeof t.volume == "boolean" ? t.volume : void 0, s = {};
-  if (w(t.overrides))
-    for (const [u, b] of Object.entries(t.overrides)) {
-      const T = Yt(b, u);
-      T && (s[u] = T);
+  const i = typeof t.remote == "string" ? Ai[t.remote] : void 0;
+  typeof t.remote == "string" && !i && C(`unknown remote style "${t.remote}" — falling back to ${g.pad}`);
+  const o = yi.includes(t.pad) ? t.pad : i ?? g.pad, s = typeof t.volume == "boolean" ? t.volume : void 0, n = {};
+  if ($(t.overrides))
+    for (const [v, x] of Object.entries(t.overrides)) {
+      const O = Je(x, v);
+      O && (n[v] = O);
     }
-  for (const [u, b] of Object.entries(ge)) {
-    if (s[b]) continue;
-    const T = Yt(t[u], u);
-    T && (s[b] = T);
+  for (const [v, x] of Object.entries(xt)) {
+    if (n[x]) continue;
+    const O = Je(t[v], v);
+    O && (n[x] = O);
   }
   const r = {};
-  for (const [u, b] of Object.entries(be))
-    typeof t[u] == "boolean" && (r[b] = t[u]);
+  for (const [v, x] of Object.entries(At))
+    typeof t[v] == "boolean" && (r[x] = t[v]);
   const c = Array.isArray(t.transport_buttons) ? t.transport_buttons : Array.isArray(t.media_controls) ? t.media_controls : void 0, a = c ? c.filter(
-    (u) => typeof u == "string" && g.transport_buttons.includes(u)
-  ) : g.transport_buttons, _ = (Array.isArray(t.sections) ? t.sections : []).map((u) => {
-    if (!w(u))
-      return I(`section is not an object and was skipped: ${JSON.stringify(u)}`), null;
-    const b = (Array.isArray(u.buttons) ? u.buttons : []).map(qt).filter((T) => T !== null);
+    (v) => typeof v == "string" && g.transport_buttons.includes(v)
+  ) : g.transport_buttons, u = (Array.isArray(t.sections) ? t.sections : []).map((v) => {
+    if (!$(v))
+      return C(`section is not an object and was skipped: ${JSON.stringify(v)}`), null;
+    const x = (Array.isArray(v.buttons) ? v.buttons : []).map(tt).filter((O) => O !== null);
     return {
-      ...typeof u.name == "string" ? { name: u.name } : {},
-      ...typeof u.columns == "number" && u.columns > 0 ? { columns: u.columns } : {},
-      buttons: b
+      ...typeof v.name == "string" ? { name: v.name } : {},
+      ...typeof v.columns == "number" && v.columns > 0 ? { columns: v.columns } : {},
+      buttons: x
     };
-  }).filter((u) => u !== null), h = (Array.isArray(t.apps) ? t.apps : []).map(qt).filter((u) => u !== null), p = (u, b) => u === void 0 ? b : u, v = mi.includes(t.hold_mode) ? t.hold_mode : t.hold_repeat === !1 ? "none" : g.hold_mode, f = new Set(Pt), y = Array.isArray(t.native_hold_buttons) ? [...new Set(t.native_hold_buttons)].filter(
-    (u) => typeof u == "string" && f.has(u)
-  ) : [...g.native_hold_buttons];
-  return {
+  }).filter((v) => v !== null), h = (Array.isArray(t.apps) ? t.apps : []).map(tt).filter((v) => v !== null), p = (v, x) => v === void 0 ? x : v, _ = wi.includes(t.hold_mode) ? t.hold_mode : t.hold_repeat === !1 ? "none" : g.hold_mode, f = new Set(Le), y = Array.isArray(t.native_hold_buttons) ? [...new Set(t.native_hold_buttons)].filter(
+    (v) => typeof v == "string" && f.has(v)
+  ) : [...g.native_hold_buttons], w = t.native_touch_hold_delay_ms, F = typeof w == "number" && Number.isFinite(w) && w >= fe && w <= ge ? w : g.native_touch_hold_delay_ms;
+  return w !== void 0 && F !== w && C(
+    `native_touch_hold_delay_ms must be between ${fe} and ${ge}; using ${g.native_touch_hold_delay_ms}`
+  ), {
     ...t,
     type: t.type,
     entity: e,
@@ -1124,7 +1168,7 @@ const I = (t) => {
     pad: o,
     show_transport: p(t.show_transport, r.show_transport ?? g.show_transport),
     transport_buttons: a,
-    show_volume: p(t.show_volume, r.show_volume ?? n ?? g.show_volume),
+    show_volume: p(t.show_volume, r.show_volume ?? s ?? g.show_volume),
     show_text_input: p(
       t.show_text_input,
       r.show_text_input ?? g.show_text_input
@@ -1134,20 +1178,21 @@ const I = (t) => {
     show_section_labels: p(t.show_section_labels, g.show_section_labels),
     // v1 always drew a favourite button on the default pad, and threw when it
     // had no override to call. Draw it only when it does something.
-    show_favorite: s.favorite !== void 0,
+    show_favorite: n.favorite !== void 0,
     apps: h,
-    sections: _,
+    sections: u,
     // "auto" was the v2-beta spelling, before the tiles became fixed-width.
     app_columns: typeof t.app_columns == "number" && t.app_columns > 0 ? t.app_columns : g.app_columns,
-    hold_mode: v,
+    hold_mode: _,
     native_hold_buttons: y,
+    native_touch_hold_delay_ms: F,
     // Keep the resolved legacy value truthful for old rendering paths and
     // third-party code that reads it from the editor's emitted config.
-    hold_repeat: v === "repeat",
+    hold_repeat: _ === "repeat",
     haptics: p(t.haptics, g.haptics),
-    overrides: s
+    overrides: n
   };
-}, yi = (t) => {
+}, Ti = (t) => {
   const e = /* @__PURE__ */ new Set([
     "entity_id",
     "remote",
@@ -1159,33 +1204,33 @@ const I = (t) => {
     "media_player_entity",
     "showBasic",
     "media_controls",
-    ...Object.keys(be),
-    ...Object.keys(ge)
+    ...Object.keys(At),
+    ...Object.keys(xt)
   ]), i = {};
-  for (const [o, n] of Object.entries(t))
-    e.has(o) || (i[o] = n);
+  for (const [o, s] of Object.entries(t))
+    e.has(o) || (i[o] = s);
   return i;
-}, U = (t) => De`
+}, R = (t) => Vt`
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="${t}" />
   </svg>
-`, vt = {
-  disneyplus: U(
+`, ye = {
+  disneyplus: R(
     "M2.056 6.834C1.572 6.834 1 6.77 1 6.483c0-2.023 3.562-2.11 5.08-2.11 1.978 0 4.506.614 6.66 1.384 3.277 1.188 9.917 5.145 9.917 9.674 0 4.001-4.31 5.914-8.311 5.914a22.376 22.376 0 0 1-3.21-.33c-.066.243-.11.418-.264.924-.253.052-.511.081-.77.087l-.505-.043c-.33-.396-.44-1.033-.572-1.715-2-1.165-3.298-2.155-3.891-2.836-.506-.528-1.078-1.232-1.078-1.913 0-.351.22-.66.726-1.01 1.034-.77 2.352-1.188 4.507-1.563l.044-.9c.022-.22.242-2.573.748-3.013.813.66.901 1.341.967 2.353.022.44.044.901.11 1.385h.308c1.539 0 6.244.395 6.244 2.616 0 .528-.77 1.517-1.518 1.517a1.9 1.9 0 0 1-.966-.285c.329-.375.813-.704.945-.99-.44-.528-2.814-1.143-4.551-1.143a4.043 4.043 0 0 0-.572.022l.022 4.815c.703.44 1.561.483 2.11.483 2.42 0 7.431-.417 7.431-4.331 0-3.87-4.946-6.86-8.64-8.266a21.394 21.394 0 0 0-7.937-1.496 7.22 7.22 0 0 0-1.803.198c-.373.088-.505.176-.505.264 0 .153.747.242.836.286a.221.221 0 0 1 .11.175.26.26 0 0 1-.088.176c-.089 0-.286.022-.528.022zM9.2 14.551c-2.176.177-4.595.397-4.595 1.166 0 .594 1.012 1.32 1.627 1.781a7.052 7.052 0 0 0 2.77 1.319zm11.155-9.85c-.02.428-.042.942-.042 1.723 0 .3 0 .642.01 1.027-.042.193-.32.214-.46.278a1.148 1.148 0 0 1-.256-.192V4.83c0-.29.01-.588.01-1.038 0-.225 0-.482-.01-.792 0-.192.032-.374.15-.802a.342.342 0 0 1 .3-.224c.245.064.491.17.577.374-.257.76-.235 1.594-.279 2.353zm-.384-.085c.428.021.941.042 1.722.042.3 0 .643 0 1.027-.01.193.041.215.32.279.459-.052.094-.116.18-.193.257H20.1c-.289 0-.589-.01-1.037-.01-.225 0-.482 0-.792.01-.193.002-.375-.03-.803-.149a.346.346 0 0 1-.225-.299c.064-.246.172-.492.374-.578.76.257 1.595.235 2.355.278z"
   ),
-  hbomax: U(
+  hbomax: R(
     "M8.844 4.249h3.205a2.013 2.013 0 0 1 1.848 1.876c1.607-3.368 6.667-2.217 6.658 1.515.045 3.744-5.026 4.939-6.658 1.568a2.077 2.077 0 0 1-2.07 1.947H8.845Zm-5.395 0h1.92v2.58h1.213V4.253H8.46v6.902H6.586V8.48H5.373v2.676H3.449ZM9.872 19.83h-.576a.603.603 0 0 1-.6-.57c0-.013-.007-.023-.007-.035v-3.667a1.192 1.192 0 0 0-1.279-1.21 1.192 1.192 0 0 0-1.279 1.211v4.167a.103.103 0 0 1-.102.103h-.575a.61.61 0 0 1-.61-.611v-3.666a1.319 1.319 0 0 0-.066-.296 1.176 1.176 0 0 0-1.213-.913 1.19 1.19 0 0 0-1.183.817c-.05.131-.079.267-.087.406v4.17a.104.104 0 0 1-.104.102h-.579a.61.61 0 0 1-.61-.61V15.56a2.322 2.322 0 0 1 1.68-2.32c.285-.088.584-.133.883-.133a2.584 2.584 0 0 1 1.92.752 2.588 2.588 0 0 1 1.921-.752 2.608 2.608 0 0 1 1.872.715c.451.465.7 1.09.692 1.738v4.171a.103.103 0 0 1-.098.103zm.428-3.35a3.76 3.76 0 0 1 .568-2.102c.133-.2.29-.38.47-.539a2.958 2.958 0 0 1 2.013-.744 3.014 3.014 0 0 1 1.845.59.61.61 0 0 1 .597-.48h.574a.107.107 0 0 1 .105.103v6.427a.104.104 0 0 1-.104.103h-.573a.61.61 0 0 1-.612-.553c-2.16 1.55-5.14-.164-4.887-2.811Zm12.623 3.35h-.977a.813.813 0 0 1-.675-.357l-1.079-1.6a.356.356 0 0 0-.588 0l-1.08 1.6a.825.825 0 0 1-.245.22.803.803 0 0 1-.43.137h-.978a.075.075 0 0 1-.063-.121l1.18-1.752.744-1.1a.61.61 0 0 0 0-.682l-.05-.075-1.872-2.773a.077.077 0 0 1 .062-.121h.978a.813.813 0 0 1 .674.36l.826 1.221.254.376a.355.355 0 0 0 .59 0l1.08-1.597a.82.82 0 0 1 .673-.36h.978a.077.077 0 0 1 .06.122l-1.925 2.855a.61.61 0 0 0 0 .682l1.929 2.853a.076.076 0 0 1-.066.116zM17.068 9.403c1.567.002 2.356-1.89 1.25-3-1.103-1.11-3-.33-3.003 1.237A1.756 1.756 0 0 0 17.068 9.4zm0-3.14c1.23.003 1.843 1.493.97 2.36-.872.866-2.358.246-2.354-.983a1.38 1.38 0 0 1 1.38-1.378zm-3.719 8.1a1.77 1.77 0 0 0-1.783 1.63 3.15 3.15 0 0 0-.037.489 1.867 1.867 0 0 0 1.82 2.123 1.696 1.696 0 0 0 1.455-.764c.253-.407.381-.88.367-1.36a1.867 1.867 0 0 0-1.822-2.118zm.227-6.191a2.976 2.976 0 0 1 0-.954 1.475 1.475 0 0 1-.723.422c.29.096.544.283.722.533zm-1.486.785a.548.548 0 0 0-.5-.577h-.954v1.17h.954a.553.553 0 0 0 .5-.593zm0-2.595a.55.55 0 0 0-.5-.577h-.954V6.94h.954a.548.548 0 0 0 .5-.578z"
   ),
-  hulu: U(
+  hulu: R(
     "m 14.248,8.7019997 h 1.59 V 15.298 h -1.59 z M 5.143,10.764 H 4.124 a 1.4,1.4 0 0 0 -0.36,0.037 C 3.673,10.826 3.615,10.843 3.59,10.851 V 8.7 H 2 v 6.6 h 1.59 v -2.66 a 0.428,0.428 0 0 1 0.124,-0.3 0.4,0.4 0 0 1 0.3,-0.13 h 0.92 a 0.446,0.446 0 0 1 0.435,0.435 V 15.3 h 1.575 v -2.871 a 1.53,1.53 0 0 0 -0.5,-1.261 2,2 0 0 0 -1.301,-0.404 z m 15.267,0 v 2.658 a 0.423,0.423 0 0 1 -0.422,0.423 h -0.932 a 0.423,0.423 0 0 1 -0.422,-0.423 v -2.658 h -1.59 v 2.783 a 1.679,1.679 0 0 0 0.49,1.3 1.874,1.874 0 0 0 1.323,0.453 H 20.41 A 1.47,1.47 0 0 0 21.571,14.816 1.842,1.842 0 0 0 22,13.547 v -2.783 z m -8.957,2.658 a 0.4,0.4 0 0 1 -0.13,0.3 0.43,0.43 0 0 1 -0.3,0.124 H 10.1 A 0.423,0.423 0 0 1 9.678,13.423 V 10.764 H 8.087 v 2.783 a 1.676,1.676 0 0 0 0.491,1.3 1.855,1.855 0 0 0 1.31,0.453 h 1.565 a 1.473,1.473 0 0 0 1.162,-0.484 1.842,1.842 0 0 0 0.429,-1.267 v -2.785 h -1.591 z"
   ),
-  netflix: U(
+  netflix: R(
     "M5.94 1v10.994c0 6.045.006 10.996.014 11.004.01.01.382-.029.834-.078a73.701 73.701 0 0 1 1.383-.139 80.63 80.628 0 0 1 2.06-.133c.05 0 .052-.246.058-4.655l.01-4.645.34.964c1.406 3.979 1.77 5.004 2.166 6.117v.002l.206.581.575 1.624c.003.003.292.02.642.038a48.332 48.33 0 0 1 3.37.29c.12.014.227.024.307.03.038.002.044 0 .067 0 .023 0 .062.003.067 0h.006c.003 0 .003-.967.005-1.382l.002-.435c.007-1.783.01-4.836.007-9.181l-.01-10.979h-4.311L13.73 5.88l-.01 4.859v.003l-.398-1.13V9.61v.002l-2.04-5.765v-.013l-.177-.501c-.422-1.195-.781-2.205-.795-2.251L10.28 1H8.107Z"
   ),
-  prime: U(
+  prime: R(
     "M20.182 5.404a4.05 4.05 0 0 0 .625.05 1.116 1.116 0 0 0 .342-.03.474.474 0 0 0 .404-.306.605.605 0 0 0 .015-.276.4.4 0 0 0-.243-.334.88.88 0 0 0-.281-.064.791.791 0 0 0-.833.499 1.438 1.438 0 0 0-.102.367c-.006.088-.006.088.073.094zm-1.074-.4a1.808 1.808 0 0 1 1.633-1.359 2.38 2.38 0 0 1 1.057.102c.655.224 1.009.932.794 1.59a.986.986 0 0 1-.489.588 1.986 1.986 0 0 1-.66.211 3.534 3.534 0 0 1-1.207-.016 1.221 1.221 0 0 0-.146-.023.88.88 0 0 0 .716.954 2.58 2.58 0 0 0 .995 0c.154-.033.302-.065.456-.102.154-.036.218.012.218.17v.392a.242.242 0 0 1-.18.26 3.082 3.082 0 0 1-.626.17 3.247 3.247 0 0 1-1.214-.01 1.663 1.663 0 0 1-1.36-1.272 2.935 2.935 0 0 1 .016-1.656zm.317 6.367a2.588 2.588 0 0 1 1.012.039 1.936 1.936 0 0 1 1.41 1.635v.011h-.014v.1a.078.078 0 0 0 .024.08v-.021l.007.01v.61l-.012.021v-.01c-.03.02-.02.047-.02.08V14c-.048.9-.747 1.63-1.644 1.717a2.627 2.627 0 0 1-.998-.052 1.694 1.694 0 0 1-1.246-1.114 2.825 2.825 0 0 1 0-2.005c.219-.65.8-1.11 1.482-1.175zM12 3.946c0-.043.006-.086.016-.127a.156.156 0 0 1 .147-.102h.67a.19.19 0 0 1 .184.147c.028.075.044.147.07.223.053 0 .086-.036.122-.057a2.743 2.743 0 0 1 .946-.398 1.962 1.962 0 0 1 .795 0c.25.054.47.202.615.413a.25.25 0 0 0 .03.038v.014c.132-.079.271-.164.415-.237a2.382 2.382 0 0 1 1.203-.266 1.061 1.061 0 0 1 1.095 1.027v2.964c0 .238-.03.27-.27.27h-.647a.906.906 0 0 1-.126 0 .147.147 0 0 1-.128-.122.994.994 0 0 1-.01-.175V5.101a.944.944 0 0 0-.033-.293.4.4 0 0 0-.36-.294 1.861 1.861 0 0 0-.912.176.087.087 0 0 0-.063.096v2.788a.774.774 0 0 1-.01.155c0 .07-.058.127-.128.127h-.81c-.197 0-.24-.047-.24-.243V5.1a1.24 1.24 0 0 0-.026-.276.4.4 0 0 0-.371-.318 1.874 1.874 0 0 0-.928.18.085.085 0 0 0-.059.103v2.833c0 .195-.044.236-.239.236h-.704c-.188 0-.235-.053-.235-.232zm2.71 9.92a.178.178 0 0 0-.074-.011 2 2 0 0 0 .057.324c.08.337.358.59.7.636a2.664 2.664 0 0 0 1.088-.037c.117-.026.229-.053.345-.085.154-.037.223.023.223.17v.385a.235.235 0 0 1-.19.271 3.36 3.36 0 0 1-1.141.217 2.901 2.901 0 0 1-.796-.079 1.63 1.63 0 0 1-1.215-1.136 2.946 2.946 0 0 1-.02-1.776 1.848 1.848 0 0 1 1.838-1.363c.268-.012.535.023.792.101.44.123.775.48.868.928a1.468 1.468 0 0 1 0 .587.983.983 0 0 1-.535.704 2.166 2.166 0 0 1-.891.23 4.15 4.15 0 0 1-1.055-.067zm-3.133-2.202c.027-.037.012-.075.012-.112V9.847c0-.202.037-.238.238-.238h.734c.161.006.207.044.207.208v5.586c0 .147-.049.201-.196.201h-.69a.19.19 0 0 1-.186-.146.82.82 0 0 0-.057-.185c-.048.008-.069.045-.107.067a1.714 1.714 0 0 1-1.615.276 1.526 1.526 0 0 1-.917-.812 2.495 2.495 0 0 1-.266-1.13 2.999 2.999 0 0 1 .187-1.225 1.66 1.66 0 0 1 .826-.945c.552-.263 1.2-.22 1.713.111a.294.294 0 0 0 .117.059zm-.797-3.817h-.733a.32.32 0 0 1-.075 0 .147.147 0 0 1-.147-.137V3.893c0-.127.054-.176.18-.18a19.455 19.455 0 0 1 .828 0c.122 0 .159.037.17.158v3.67a.982.982 0 0 1-.01.176.134.134 0 0 1-.128.12.456.456 0 0 1-.089 0zm-1.045-5.45a.616.616 0 0 1 .642-.586h.064a.649.649 0 0 1 .248.036.6.6 0 0 1 .411.67.587.587 0 0 1-.506.534.963.963 0 0 1-.355 0 .587.587 0 0 1-.504-.66Zm-3.092 5.2V3.983c0-.244.026-.27.27-.27h.51a.211.211 0 0 1 .238.179c.037.132.07.264.1.408a.161.161 0 0 0 .091-.065 3.514 3.514 0 0 1 .303-.27 1.41 1.41 0 0 1 .964-.293c.138 0 .186.048.197.18.01.18 0 .367 0 .546a.985.985 0 0 1-.012.22.147.147 0 0 1-.147.146 1.812 1.812 0 0 1-.22 0 2.523 2.523 0 0 0-1.027.147c-.074.026-.074.079-.074.138v2.678a.13.13 0 0 1-.128.122.992.992 0 0 1-.132 0v.01h-.69a.784.784 0 0 1-.117 0 .147.147 0 0 1-.126-.132zm.904 3.228a.604.604 0 0 1-.192 0 .998.998 0 0 1-.176-.02.6.6 0 0 1-.466-.7.587.587 0 0 1 .567-.536.473.473 0 0 1 .111 0 .638.638 0 0 1 .313.054c.208.078.35.272.361.494a.624.624 0 0 1-.518.716zm.44.855v3.764a.147.147 0 0 1-.133.159h-.88a.147.147 0 0 1-.162-.128v-.026a.567.567 0 0 1 0-.1v-3.67c0-.164.045-.21.21-.21h.751c.164.007.211.054.211.218zm-1.711.047-.317.844-1.067 2.774c-.01.032-.027.063-.037.095a.261.261 0 0 1-.265.175h-.702a.294.294 0 0 1-.318-.218c-.133-.349-.27-.704-.403-1.055-.318-.832-.641-1.666-.96-2.504a.928.928 0 0 1-.069-.207c-.016-.105.021-.158.128-.158h.901c.128 0 .185.085.218.196.058.201.117.408.18.61.217.733.43 1.479.646 2.217h.01l.096-.308.733-2.46.031-.095a.214.214 0 0 1 .213-.147h.812c.2-.003.243.054.176.245zM1.786 3.82a.377.377 0 0 1 .318-.107h.488a.21.21 0 0 1 .234.18c.01.053.02.106.037.16a.022.022 0 0 0 .02.015.429.429 0 0 0 .11-.08 1.87 1.87 0 0 1 1.586-.354c.48.115.874.454 1.061.91a2.451 2.451 0 0 1 .205.798h-.008c.051.444.011.893-.118 1.321a1.942 1.942 0 0 1-.55.88c-.34.306-.795.448-1.248.388A1.776 1.776 0 0 1 3 7.564c-.039.033-.022.074-.022.113v1.506c0 .329 0 .329-.334.329h-.572a.294.294 0 0 1-.294-.126Zm19.37 15.225a.587.587 0 0 1-.176.2 11.64 11.64 0 0 1-1.962 1.247 15.499 15.499 0 0 1-4.152 1.406 18.226 18.226 0 0 1-2.51.27v.022h-.649v-.018c-.293-.014-.578-.026-.868-.047a15.349 15.349 0 0 1-2.296-.352 15.558 15.558 0 0 1-6.885-3.59c-.185-.164-.36-.333-.54-.503a.405.405 0 0 1-.101-.146.195.195 0 0 1 .098-.256.2.2 0 0 1 .147 0 1.21 1.21 0 0 1 .138.069 20.566 20.566 0 0 0 6.164 2.546 22.087 22.087 0 0 0 2.212.398 20.441 20.441 0 0 0 3.213.146 16.97 16.97 0 0 0 1.724-.146 20.908 20.908 0 0 0 3.935-.896 18.627 18.627 0 0 0 1.973-.776.44.44 0 0 1 .318-.043.33.33 0 0 1 .24.398.578.578 0 0 1-.022.066zm1.028 1.488a3.547 3.547 0 0 1-.615.757.432.432 0 0 1-.17.107.123.123 0 0 1-.169-.124.608.608 0 0 1 .038-.162c.185-.496.366-.99.51-1.504a5.346 5.346 0 0 0 .18-.859 1.65 1.65 0 0 0 0-.318.412.412 0 0 0-.294-.388 2.068 2.068 0 0 0-.509-.095 8.356 8.356 0 0 0-1.459.064l-.641.08c-.07 0-.132 0-.17-.065a.18.18 0 0 1 .014-.19.546.546 0 0 1 .162-.148 3.67 3.67 0 0 1 1.299-.562 6.412 6.412 0 0 1 1.097-.121c.346.001.691.042 1.028.121a1.515 1.515 0 0 1 .276.102c.121.05.206.162.219.293a2.157 2.157 0 0 1 .014.455 5.856 5.856 0 0 1-.806 2.55zm-2.55-5.72a.995.995 0 0 0 .301.01.691.691 0 0 0 .505-.293 1.01 1.01 0 0 0 .147-.308l-.009.014a1.924 1.924 0 0 0 .074-.678 2.449 2.449 0 0 0 0-.293 1.64 1.64 0 0 0-.147-.6.685.685 0 0 0-.483-.376.908.908 0 0 0-.302-.01.694.694 0 0 0-.542.328 1.163 1.163 0 0 0-.147.35 2.89 2.89 0 0 0-.042.933 1.494 1.494 0 0 0 .147.525c.09.207.276.355.497.397zm-3.523-1.96a.473.473 0 0 0-.394-.64c-.026 0-.047-.01-.073-.01a.797.797 0 0 0-.775.302 1.321 1.321 0 0 0-.211.578c-.015.047.01.069.058.073a4.705 4.705 0 0 0 .642.053c.11.006.22-.003.328-.026a.465.465 0 0 0 .425-.33zm-5.981-.255a1.174 1.174 0 0 0-.106.26 2.683 2.683 0 0 0-.065.997 1.48 1.48 0 0 0 .147.536.734.734 0 0 0 .568.391 1.306 1.306 0 0 0 .832-.158.147.147 0 0 0 .086-.147v-.966h.007c0-.323-.01-.641 0-.968a.147.147 0 0 0-.096-.156 1.614 1.614 0 0 0-.817-.147.678.678 0 0 0-.556.358zM3.855 7.051a.747.747 0 0 0 .488-.188.807.807 0 0 0 .243-.425 2.654 2.654 0 0 0 .065-1.002 1.505 1.505 0 0 0-.135-.54.653.653 0 0 0-.505-.382 1.44 1.44 0 0 0-.912.137.16.16 0 0 0-.105.164v1.917a.147.147 0 0 0 .09.147 1.468 1.468 0 0 0 .771.17"
   ),
-  youtube: U(
+  youtube: R(
     "M18.43 4.216H5.57A4.57 4.57 0 0 0 1 8.786v6.429a4.57 4.57 0 0 0 4.57 4.569h12.86a4.57 4.57 0 0 0 4.57-4.57V8.786a4.57 4.57 0 0 0-4.57-4.569zm-3.09 8.097-6.015 2.869a.241.241 0 0 1-.346-.218V9.046c0-.18.19-.297.351-.215l6.016 3.048a.242.242 0 0 1-.005.434z"
   )
 };
@@ -1194,49 +1239,49 @@ const I = (t) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const q = (t, e) => {
+const Z = (t, e) => {
   const i = t._$AN;
   if (i === void 0) return !1;
-  for (const o of i) o._$AO?.(e, !1), q(o, e);
+  for (const o of i) o._$AO?.(e, !1), Z(o, e);
   return !0;
-}, nt = (t) => {
+}, re = (t) => {
   let e, i;
   do {
     if ((e = t._$AM) === void 0) break;
     i = e._$AN, i.delete(t), t = e;
   } while (i?.size === 0);
-}, $e = (t) => {
+}, Et = (t) => {
   for (let e; e = t._$AM; t = e) {
     let i = e._$AN;
     if (i === void 0) e._$AN = i = /* @__PURE__ */ new Set();
     else if (i.has(t)) break;
-    i.add(t), xi(e);
+    i.add(t), Si(e);
   }
 };
-function wi(t) {
-  this._$AN !== void 0 ? (nt(this), this._$AM = t, $e(this)) : this._$AM = t;
+function ki(t) {
+  this._$AN !== void 0 ? (re(this), this._$AM = t, Et(this)) : this._$AM = t;
 }
-function $i(t, e = !1, i = 0) {
-  const o = this._$AH, n = this._$AN;
-  if (n !== void 0 && n.size !== 0) if (e) if (Array.isArray(o)) for (let s = i; s < o.length; s++) q(o[s], !1), nt(o[s]);
-  else o != null && (q(o, !1), nt(o));
-  else q(this, t);
+function Ei(t, e = !1, i = 0) {
+  const o = this._$AH, s = this._$AN;
+  if (s !== void 0 && s.size !== 0) if (e) if (Array.isArray(o)) for (let n = i; n < o.length; n++) Z(o[n], !1), re(o[n]);
+  else o != null && (Z(o, !1), re(o));
+  else Z(this, t);
 }
-const xi = (t) => {
-  t.type == kt.CHILD && (t._$AP ??= $i, t._$AQ ??= wi);
+const Si = (t) => {
+  t.type == Ce.CHILD && (t._$AP ??= Ei, t._$AQ ??= ki);
 };
-class Ai extends _e {
+class Pi extends bt {
   constructor() {
     super(...arguments), this._$AN = void 0;
   }
   _$AT(e, i, o) {
-    super._$AT(e, i, o), $e(this), this.isConnected = e._$AU;
+    super._$AT(e, i, o), Et(this), this.isConnected = e._$AU;
   }
   _$AO(e, i = !0) {
-    e !== this.isConnected && (this.isConnected = e, e ? this.reconnected?.() : this.disconnected?.()), i && (q(this, e), nt(this));
+    e !== this.isConnected && (this.isConnected = e, e ? this.reconnected?.() : this.disconnected?.()), i && (Z(this, e), re(this));
   }
   setValue(e) {
-    if (Ge(this._$Ct)) this._$Ct._$AI(e, this);
+    if (ii(this._$Ct)) this._$Ct._$AI(e, this);
     else {
       const i = [...this._$Ct._$AH];
       i[this._$Ci] = e, this._$Ct._$AI(i, this, 0);
@@ -1247,179 +1292,227 @@ class Ai extends _e {
   reconnected() {
   }
 }
-const Zt = 500, Gt = 220, Qt = 40, ki = 3e4, Jt = 500, te = 750, Ei = 250, ee = 12;
-class Si extends Ai {
+const it = 500, ot = 220, st = 40, Ci = 15e3, nt = 500, rt = 750, Oi = 250, Ni = 12, Mi = 24;
+class Di {
+  claim(e) {
+    if (this._active === e) return;
+    const i = this._active;
+    this._active = e, i?.cancelPress();
+  }
+  release(e) {
+    this._active === e && (this._active = void 0);
+  }
+  cancel() {
+    const e = this._active;
+    this._active = void 0, e?.cancelPress();
+  }
+}
+class Li extends Pi {
   constructor(e) {
-    if (super(e), this._repeats = 0, this._inFlight = !1, this._bound = !1, this._active = !1, this._resolved = !1, this._startX = 0, this._startY = 0, this._awaitingSecondTap = !1, this._nativePending = !1, this._nativeStarted = !1, this._onPointerDown = (i) => {
-      if (i.button !== 0) return;
+    if (super(e), this._repeats = 0, this._bound = !1, this._active = !1, this._resolved = !1, this._gestureId = 0, this._startX = 0, this._startY = 0, this._awaitingSecondTap = !1, this._native = new bi(), this._onPointerDown = (i) => {
+      if (i.button !== 0 || this._isDirectPointer(i.pointerType) && !i.isPrimary) return;
       const o = this._options;
-      if (!o || o.disabled || this._active) return;
-      if (this._active = !0, this._resolved = !1, this._startX = i.clientX, this._startY = i.clientY, this._pointerId = i.pointerId, this._element?.classList.add("pressed"), this._isNative(o)) {
-        i.preventDefault(), this._nativePending = !0, this._nativeEnd = o.onPressEnd, this._armNativeSafety();
+      if (!o || o.disabled) return;
+      const s = this._beginGesture(o, i.pointerType || "mouse");
+      if (this._startX = i.clientX, this._startY = i.clientY, this._pointerId = i.pointerId, this._claimsTouch(o) && this._isDirectPointer(i.pointerType)) {
+        i.preventDefault();
         try {
           this._element?.setPointerCapture(i.pointerId);
         } catch {
         }
-        this._holdTimer = window.setTimeout(
-          () => this._startNative(o),
-          te
+      }
+      if (this._armSafety(), this._isNative(o)) {
+        const r = this._native.begin();
+        this._nativeSession = r, this._holdTimer = window.setTimeout(
+          () => this._startNative(s, r),
+          this._nativeHoldDelay(o, this._pointerType)
         );
         return;
       }
       if (o.onHold) {
         this._holdTimer = window.setTimeout(() => {
-          this._active && (this._resolved = !0, this._fire(o.onHold, "medium"));
-        }, Jt);
+          this._isCurrent(s) && (this._resolved = !0, this._fire(o.onHold, "medium", o));
+        }, nt);
         return;
       }
       if (!o.repeat || !o.onPress) return;
       const n = o.onPress;
       this._repeats = 0, this._repeatTimer = window.setTimeout(() => {
-        this._active && (this._resolved = !0, this._fire(n), this._repeatTimer = window.setInterval(() => {
-          if (!this._active || this._repeats >= Qt) {
-            this._reset();
+        this._isCurrent(s) && (this._resolved = !0, this._fire(n, "light", o), this._repeatTimer = window.setInterval(() => {
+          if (!this._isCurrent(s) || this._repeats >= st) {
+            this.cancelPress();
             return;
           }
-          this._repeats += 1, this._fire(n);
-        }, Gt));
-      }, Zt);
+          this._repeats += 1, this._fire(n, "light", o);
+        }, ot));
+      }, it);
     }, this._onPointerMove = (i) => {
-      if (!this._active || this._nativePending || this._nativeStarted) return;
-      const o = i.clientX - this._startX, n = i.clientY - this._startY;
-      o * o + n * n > ee * ee && this._abort();
+      if (!this._active || this._pointerId !== void 0 && i.pointerId !== this._pointerId || this._native.state !== "idle") return;
+      const o = i.clientX - this._startX, s = i.clientY - this._startY, n = this._claimsTouch(this._gestureOptions) ? Mi : Ni;
+      o * o + s * s > n * n && this.cancelPress();
     }, this._onPointerUp = (i) => {
       this._active && (this._pointerId !== void 0 && i.pointerId !== this._pointerId || this._release());
     }, this._onPointerCancel = (i) => {
-      this._pointerId !== void 0 && i.pointerId !== this._pointerId || this._abort();
+      this._pointerId !== void 0 && i.pointerId !== this._pointerId || this.cancelPress();
     }, this._onWindowPointerUp = (i) => {
       this._onPointerUp(i);
     }, this._onWindowPointerCancel = (i) => {
       this._onPointerCancel(i);
+    }, this._onWindowTouchEnd = (i) => {
+      !this._active || !this._isDirectPointer(this._pointerType) || i.touches.length === 0 && this._release();
+    }, this._onWindowTouchCancel = () => {
+      this._active && this._isDirectPointer(this._pointerType) && this.cancelPress();
+    }, this._onWindowMouseUp = (i) => {
+      this._active && this._pointerType === "mouse" && i.button === 0 && this._release();
+    }, this._onClick = (i) => {
+      !this._active || this._pointerId === void 0 || (i.preventDefault(), this._release());
     }, this._onLostPointerCapture = (i) => {
-      this._active && (this._pointerId !== void 0 && i.pointerId !== this._pointerId || this._abort());
+      this._active && (this._pointerId !== void 0 && i.pointerId !== this._pointerId || this.cancelPress());
+    }, this._onPointerLeave = () => {
+      this._pointerId !== void 0 && this._element?.hasPointerCapture(this._pointerId) || this.cancelPress();
+    }, this._onContextMenu = (i) => {
+      i.preventDefault();
     }, this._onKeyDown = (i) => {
-      if (i.key !== "Enter" && i.key !== " " || (i.preventDefault(), i.repeat || this._active)) return;
+      if (i.key !== "Enter" && i.key !== " " || (i.preventDefault(), i.repeat)) return;
       const o = this._options;
       if (!o || o.disabled) return;
-      if (this._active = !0, this._resolved = !1, this._startX = 0, this._startY = 0, this._element?.classList.add("pressed"), this._isNative(o)) {
-        this._nativePending = !0, this._nativeEnd = o.onPressEnd, this._armNativeSafety(), this._holdTimer = window.setTimeout(
-          () => this._startNative(o),
-          te
+      const s = this._beginGesture(o, "keyboard");
+      if (this._armSafety(), this._isNative(o)) {
+        const r = this._native.begin();
+        this._nativeSession = r, this._holdTimer = window.setTimeout(
+          () => this._startNative(s, r),
+          rt
         );
         return;
       }
-      if (this._resolved = !0, this._tap(), o.onHold) {
+      if (this._resolved = !0, this._tap(o), o.onHold) {
         this._holdTimer = window.setTimeout(() => {
-          this._active && this._fire(o.onHold, "medium");
-        }, Jt);
+          this._isCurrent(s) && this._fire(o.onHold, "medium", o);
+        }, nt);
         return;
       }
       if (!o.repeat || !o.onPress) return;
       const n = o.onPress;
       this._repeats = 0, this._repeatTimer = window.setTimeout(() => {
         this._repeatTimer = window.setInterval(() => {
-          if (!this._active || this._repeats >= Qt) {
-            this._reset();
+          if (!this._isCurrent(s) || this._repeats >= st) {
+            this.cancelPress();
             return;
           }
-          this._repeats += 1, this._fire(n);
-        }, Gt);
-      }, Zt);
+          this._repeats += 1, this._fire(n, "light", o);
+        }, ot);
+      }, it);
     }, this._onKeyUp = (i) => {
       i.key !== "Enter" && i.key !== " " || this._release();
-    }, this._abort = () => {
-      this._nativeStarted ? this._finishNative() : this._reset();
-    }, this._onPointerLeave = () => {
-      (this._nativePending || this._nativeStarted) && this._pointerId !== void 0 && this._element?.hasPointerCapture(this._pointerId) || this._abort();
+    }, this.cancelPress = () => {
+      this._active && (this._nativeSession !== void 0 ? this._finishNative(!1) : this._reset());
     }, this._onVisibilityChange = () => {
-      document.hidden && this._abort();
-    }, e.type !== kt.ELEMENT)
+      document.hidden && this.cancelPress();
+    }, e.type !== Ce.ELEMENT)
       throw new Error("press() can only be used on an element");
   }
   render(e) {
-    return A;
+    return k;
   }
   update(e, [i]) {
-    if (this._element = e.element, this._options = i, !this._bound) {
+    if (this._element = e.element, i.disabled && this._active && this.cancelPress(), this._options = i, this._element.classList.toggle(
+      "press-claim-touch",
+      this._claimsTouch(i)
+    ), !this._bound) {
       this._bound = !0;
       const o = this._element;
-      o.addEventListener("pointerdown", this._onPointerDown), o.addEventListener("pointermove", this._onPointerMove), o.addEventListener("pointerup", this._onPointerUp), o.addEventListener("pointercancel", this._onPointerCancel), o.addEventListener("lostpointercapture", this._onLostPointerCapture), o.addEventListener("pointerleave", this._onPointerLeave), o.addEventListener("keydown", this._onKeyDown), o.addEventListener("keyup", this._onKeyUp), o.addEventListener("blur", this._abort), o.addEventListener("contextmenu", (n) => n.preventDefault());
+      o.addEventListener("pointerdown", this._onPointerDown), o.addEventListener("pointermove", this._onPointerMove), o.addEventListener("pointerup", this._onPointerUp), o.addEventListener("pointercancel", this._onPointerCancel), o.addEventListener("lostpointercapture", this._onLostPointerCapture), o.addEventListener("pointerleave", this._onPointerLeave), o.addEventListener("click", this._onClick), o.addEventListener("dragstart", this.cancelPress), o.addEventListener("keydown", this._onKeyDown), o.addEventListener("keyup", this._onKeyUp), o.addEventListener("blur", this.cancelPress), o.addEventListener("contextmenu", this._onContextMenu);
     }
-    return A;
+    return k;
+  }
+  /* ------------------------------------------------------------------ state */
+  _beginGesture(e, i) {
+    return this._active && this.cancelPress(), e.coordinator?.claim(this), this._coordinator = e.coordinator, this._gestureOptions = e, this._active = !0, this._resolved = !1, this._pointerType = i, this._repeats = 0, this._gestureId += 1, this._element?.classList.add("pressed"), this._gestureId;
+  }
+  _isCurrent(e) {
+    return this._active && e === this._gestureId;
+  }
+  _startNative(e, i) {
+    if (!this._isCurrent(e) || this._native.hold(i) !== "start") return;
+    const o = this._gestureOptions;
+    o?.onPressStart && (this._resolved = !0, this._holdTimer = void 0, this._fireNative(o.onPressStart, "light", o), this._nativeTimer = window.setTimeout(() => {
+      this._isCurrent(e) && this.cancelPress();
+    }, Ci));
+  }
+  /** Resolve a physical release as either one short tap or one native key-up. */
+  _release() {
+    if (!this._active) return;
+    if (this._nativeSession !== void 0) {
+      this._finishNative(!0);
+      return;
+    }
+    const e = this._resolved, i = this._gestureOptions ?? this._options;
+    this._reset(), !e && i && this._tap(i);
+  }
+  _finishNative(e) {
+    const i = this._nativeSession, o = this._gestureOptions;
+    if (i === void 0 || !o) {
+      this._reset();
+      return;
+    }
+    const s = e ? this._native.release(i) : this._native.cancel(i);
+    this._reset(), s === "short" && o.onPress ? this._tap(o) : s === "end" && o.onPressEnd && this._fireNative(o.onPressEnd, void 0, o);
   }
   /* ------------------------------------------------------------------ firing */
-  /** A tap, resolving single vs double first when that distinction exists. */
-  _tap() {
-    const e = this._options;
-    if (!e || !e.onPress) return;
+  _tap(e) {
+    if (!e.onPress) return;
     const i = e.onPress;
     if (!e.onDoubleTap) {
-      this._fire(i);
+      this._fire(i, "light", e);
       return;
     }
     if (this._awaitingSecondTap) {
-      window.clearTimeout(this._tapTimer), this._awaitingSecondTap = !1, this._fire(e.onDoubleTap);
+      window.clearTimeout(this._tapTimer), this._awaitingSecondTap = !1, this._fire(e.onDoubleTap, "light", e);
       return;
     }
     this._awaitingSecondTap = !0, this._tapTimer = window.setTimeout(() => {
-      this._awaitingSecondTap = !1, this._fire(i);
-    }, Ei);
+      this._awaitingSecondTap = !1, this._fire(i, "light", e);
+    }, Oi);
   }
-  _fire(e, i = "light") {
-    const o = this._options;
-    o && (this._inFlight || (this._inFlight = !0, Promise.resolve().then(() => {
-      this._inFlight = !1;
-    }), o.haptics !== !1 && this._element && J(this._element, "haptic", i), e()));
+  /** Never coalesce valid taps: transport ordering is handled by the card. */
+  _fire(e, i, o) {
+    o.haptics !== !1 && this._element && te(this._element, "haptic", i), e();
   }
-  /** Native START/END may be adjacent and must never be coalesced. */
-  _fireNative(e, i) {
-    const o = this._options;
-    o && (i && o.haptics !== !1 && this._element && J(this._element, "haptic", i), e());
+  _fireNative(e, i, o) {
+    i && o.haptics !== !1 && this._element && te(this._element, "haptic", i), e();
   }
-  _isNative(e) {
-    return !!(e.onPressStart && e.onPressEnd);
-  }
-  _armNativeSafety() {
-    this._pointerId !== void 0 && (window.addEventListener("pointerup", this._onWindowPointerUp, !0), window.addEventListener("pointercancel", this._onWindowPointerCancel, !0)), window.addEventListener("pagehide", this._abort), window.addEventListener("blur", this._abort), document.addEventListener("visibilitychange", this._onVisibilityChange);
-  }
-  /** Cross the threshold and send Android exactly one physical key-down. */
-  _startNative(e) {
-    !this._active || !this._nativePending || this._nativeStarted || (this._nativePending = !1, this._nativeStarted = !0, this._resolved = !0, this._nativeEnd = e.onPressEnd, this._holdTimer = void 0, this._fireNative(e.onPressStart, "light"), this._nativeTimer = window.setTimeout(
-      () => this._finishNative(),
-      ki
-    ));
-  }
-  /** Resolve a pointer/key release as either SHORT or END_LONG. */
-  _release() {
-    if (!this._active) return;
-    if (this._nativeStarted) {
-      this._finishNative();
-      return;
-    }
-    const e = this._resolved;
-    this._reset(), e || this._tap();
-  }
-  /** Release a native key once, including cancel, blur and watchdog paths. */
-  _finishNative() {
-    if (!this._nativeStarted) return;
-    const e = this._nativeEnd;
-    this._nativeStarted = !1, this._nativeEnd = void 0, this._reset(), e && this._fireNative(e);
+  /* ---------------------------------------------------------------- teardown */
+  _armSafety() {
+    this._pointerId !== void 0 && (window.addEventListener("pointerup", this._onWindowPointerUp, !0), window.addEventListener("pointercancel", this._onWindowPointerCancel, !0), window.addEventListener("mouseup", this._onWindowMouseUp, !0), window.addEventListener("touchend", this._onWindowTouchEnd, !0), window.addEventListener("touchcancel", this._onWindowTouchCancel, !0)), window.addEventListener("pagehide", this.cancelPress), window.addEventListener("beforeunload", this.cancelPress), window.addEventListener("blur", this.cancelPress), document.addEventListener("freeze", this.cancelPress), document.addEventListener("visibilitychange", this._onVisibilityChange);
   }
   _reset() {
-    if (this._active = !1, this._resolved = !1, this._nativePending = !1, this._nativeStarted || (this._nativeEnd = void 0), this._repeats = 0, this._element?.classList.remove("pressed"), window.removeEventListener("pointerup", this._onWindowPointerUp, !0), window.removeEventListener("pointercancel", this._onWindowPointerCancel, !0), window.removeEventListener("pagehide", this._abort), window.removeEventListener("blur", this._abort), document.removeEventListener("visibilitychange", this._onVisibilityChange), this._pointerId !== void 0) {
+    const e = this._element, i = this._pointerId, o = this._pointerType, s = this._gestureId, n = this._coordinator;
+    if (this._active = !1, this._resolved = !1, this._repeats = 0, this._nativeSession = void 0, this._gestureOptions = void 0, this._coordinator = void 0, e?.classList.remove("pressed"), n?.release(this), window.removeEventListener("pointerup", this._onWindowPointerUp, !0), window.removeEventListener("pointercancel", this._onWindowPointerCancel, !0), window.removeEventListener("mouseup", this._onWindowMouseUp, !0), window.removeEventListener("touchend", this._onWindowTouchEnd, !0), window.removeEventListener("touchcancel", this._onWindowTouchCancel, !0), window.removeEventListener("pagehide", this.cancelPress), window.removeEventListener("beforeunload", this.cancelPress), window.removeEventListener("blur", this.cancelPress), document.removeEventListener("freeze", this.cancelPress), document.removeEventListener("visibilitychange", this._onVisibilityChange), i !== void 0)
       try {
-        this._element?.hasPointerCapture(this._pointerId) && this._element.releasePointerCapture(this._pointerId);
+        e?.hasPointerCapture(i) && e.releasePointerCapture(i);
       } catch {
       }
-      this._pointerId = void 0;
-    }
-    this._repeatTimer !== void 0 && (window.clearTimeout(this._repeatTimer), window.clearInterval(this._repeatTimer), this._repeatTimer = void 0), this._holdTimer !== void 0 && (window.clearTimeout(this._holdTimer), this._holdTimer = void 0), this._nativeTimer !== void 0 && (window.clearTimeout(this._nativeTimer), this._nativeTimer = void 0);
+    this._pointerId = void 0, this._pointerType = void 0, this._repeatTimer !== void 0 && (window.clearTimeout(this._repeatTimer), window.clearInterval(this._repeatTimer), this._repeatTimer = void 0), this._holdTimer !== void 0 && (window.clearTimeout(this._holdTimer), this._holdTimer = void 0), this._nativeTimer !== void 0 && (window.clearTimeout(this._nativeTimer), this._nativeTimer = void 0), e && this._isDirectPointer(o) && (e.blur(), window.setTimeout(() => {
+      !this._active && this._gestureId === s && e.blur();
+    }, 0));
+  }
+  _isNative(e) {
+    return !!(e?.onPressStart && e.onPressEnd);
+  }
+  _claimsTouch(e) {
+    return !!(e?.claimTouch || this._isNative(e));
+  }
+  _isDirectPointer(e) {
+    return e === "touch" || e === "pen";
+  }
+  _nativeHoldDelay(e, i) {
+    return this._isDirectPointer(i) ? e.nativeTouchHoldDelayMs ?? De : rt;
   }
   disconnected() {
-    this._nativeStarted ? this._finishNative() : this._reset(), this._tapTimer !== void 0 && (window.clearTimeout(this._tapTimer), this._tapTimer = void 0), this._awaitingSecondTap = !1;
+    this.cancelPress(), this._tapTimer !== void 0 && (window.clearTimeout(this._tapTimer), this._tapTimer = void 0), this._awaitingSecondTap = !1;
   }
 }
-const N = ue(Si), xe = bt`
+const L = gt(Li), St = Ae`
   /*
    * Every section pads its own bottom and relies on the header for the top.
    * With the header hidden the first row sat flush against the card edge, so
@@ -1506,9 +1599,6 @@ const N = ue(Si), xe = bt`
   .pad-key > * {
     position: relative;
   }
-  .pad-key:hover::before {
-    opacity: 0.3;
-  }
   .pad-key:focus-visible {
     box-shadow: 0 0 0 2px var(--tile-color);
   }
@@ -1549,7 +1639,6 @@ const N = ue(Si), xe = bt`
   .dpad .pad-key::before {
     opacity: 0;
   }
-  .dpad .pad-key:hover::before,
   .dpad .pad-key.pressed::before {
     opacity: 0.18;
   }
@@ -1584,7 +1673,6 @@ const N = ue(Si), xe = bt`
     background-color: var(--tile-color);
     opacity: 0;
   }
-  .dpad .ok:hover::before,
   .dpad .ok.pressed::before {
     opacity: 0.2;
   }
@@ -1631,9 +1719,6 @@ const N = ue(Si), xe = bt`
     opacity: 0.25;
     pointer-events: none;
     transition: opacity var(--duration) ease-in-out;
-  }
-  .touchpad:hover .touchpad-mark {
-    opacity: 0.35;
   }
   .touchpad-dot {
     position: absolute;
@@ -1732,9 +1817,6 @@ const N = ue(Si), xe = bt`
     opacity: 0.2;
     transition: opacity var(--duration) ease-in-out;
   }
-  .app-tile:hover::before {
-    opacity: 0.32;
-  }
   /*
    * A tile bound to an entity that is on, tinted like the header pill so that
    * "this is on" reads the same everywhere on the card. Tiles with no entity
@@ -1747,10 +1829,6 @@ const N = ue(Si), xe = bt`
     background-color: var(--app-color, var(--tile-color));
     opacity: 0.25;
   }
-  .app-tile.active:hover::before {
-    opacity: 0.35;
-  }
-
   .app-tile:focus-visible {
     box-shadow: 0 0 0 2px var(--app-color, var(--tile-color));
   }
@@ -1800,12 +1878,49 @@ const N = ue(Si), xe = bt`
   }
 
   /* --------------------------------------------------------- press state -- */
+  /*
+   * This class exists before pointerdown, which is when the browser decides
+   * whether a direct gesture belongs to page scrolling. Remote controls own
+   * the contact; app tiles deliberately do not, so the app list remains a
+   * convenient place to scroll the dashboard.
+   */
+  .press-claim-touch {
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
   .pressed {
     transform: scale(0.94);
   }
   .pad-key.pressed::before,
   .app-tile.pressed::before {
     opacity: 0.4;
+  }
+
+  /* Android WebView can keep :hover after a tap. Hover feedback is therefore
+     available only on devices that really have a fine, hovering pointer. */
+  @media (hover: hover) and (pointer: fine) {
+    .pad-key:hover:not(.pressed)::before {
+      opacity: 0.3;
+    }
+    .dpad .pad-key:hover:not(.pressed)::before {
+      opacity: 0.18;
+    }
+    .dpad .ok:hover:not(.pressed)::before {
+      opacity: 0.2;
+    }
+    .touchpad:hover .touchpad-mark {
+      opacity: 0.35;
+    }
+    .app-tile:hover:not(.pressed)::before {
+      opacity: 0.32;
+    }
+    .app-tile.active:hover:not(.pressed)::before {
+      opacity: 0.35;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1819,7 +1934,7 @@ const N = ue(Si), xe = bt`
       transition: none;
     }
   }
-`, Ct = bt`
+`, Ie = Ae`
   :host {
     /* Mirrors hui-tile-card: inactive by default, state colour when active. */
     --tile-color: var(--state-inactive-color, #9e9e9e);
@@ -1881,9 +1996,6 @@ const N = ue(Si), xe = bt`
   .tile-icon.interactive {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-  }
-  .tile-icon.interactive:hover::before {
-    opacity: 0.35;
   }
   .tile-icon.interactive:active {
     transform: scale(1.2);
@@ -2017,9 +2129,6 @@ const N = ue(Si), xe = bt`
   .control-button > * {
     position: relative;
   }
-  .control-button:hover:not(:disabled)::before {
-    opacity: 0.3;
-  }
   .control-button:focus-visible {
     box-shadow: 0 0 0 2px var(--tile-color);
   }
@@ -2080,12 +2189,6 @@ const N = ue(Si), xe = bt`
   .icon-button ha-icon {
     position: relative;
   }
-  .icon-button:hover:not(:disabled) {
-    color: var(--primary-text-color);
-  }
-  .icon-button:hover:not(:disabled)::before {
-    opacity: 0.2;
-  }
   .icon-button:focus-visible {
     box-shadow: 0 0 0 2px var(--tile-color);
   }
@@ -2093,8 +2196,24 @@ const N = ue(Si), xe = bt`
     cursor: not-allowed;
     color: var(--disabled-text-color);
   }
-  .icon-button.danger:hover:not(:disabled) {
-    color: var(--error-color, #db4437);
+  /* Touch WebViews commonly latch :hover until another element is touched.
+     Restrict hover-only paint to hardware that can actually hover. */
+  @media (hover: hover) and (pointer: fine) {
+    .tile-icon.interactive:hover::before {
+      opacity: 0.35;
+    }
+    .control-button:hover:not(:disabled)::before {
+      opacity: 0.3;
+    }
+    .icon-button:hover:not(:disabled) {
+      color: var(--primary-text-color);
+    }
+    .icon-button:hover:not(:disabled)::before {
+      opacity: 0.2;
+    }
+    .icon-button.danger:hover:not(:disabled) {
+      color: var(--error-color, #db4437);
+    }
   }
   .spin {
     animation: spin 900ms linear infinite;
@@ -2420,12 +2539,12 @@ const N = ue(Si), xe = bt`
     }
   }
 `;
-var Ti = Object.defineProperty, Pi = Object.getOwnPropertyDescriptor, S = (t, e, i, o) => {
-  for (var n = o > 1 ? void 0 : o ? Pi(e, i) : e, s = t.length - 1, r; s >= 0; s--)
-    (r = t[s]) && (n = (o ? r(e, i, n) : r(n)) || n);
-  return o && n && Ti(e, i, n), n;
+var Ii = Object.defineProperty, Hi = Object.getOwnPropertyDescriptor, A = (t, e, i, o) => {
+  for (var s = o > 1 ? void 0 : o ? Hi(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (s = (o ? r(e, i, s) : r(s)) || s);
+  return o && s && Ii(e, i, s), s;
 };
-const ie = 0.06, Ci = {
+const at = 0.06, zi = {
   ArrowUp: "up",
   ArrowDown: "down",
   ArrowLeft: "left",
@@ -2433,9 +2552,9 @@ const ie = 0.06, Ci = {
   Enter: "center",
   " ": "center"
 };
-let $ = class extends z {
+let b = class extends H {
   constructor() {
-    super(...arguments), this.pad = "buttons", this.repeat = !0, this.nativeButtons = [], this.haptics = !0, this._tracking = !1, this._startX = 0, this._startY = 0, this._onPointerDown = (t) => {
+    super(...arguments), this.pad = "buttons", this.repeat = !0, this.nativeButtons = [], this.haptics = !0, this.nativeTouchHoldDelayMs = De, this._tracking = !1, this._startX = 0, this._startY = 0, this._onPointerDown = (t) => {
       t.button === 0 && (t.preventDefault(), this._touchpad?.setPointerCapture(t.pointerId), this._startX = t.clientX, this._startY = t.clientY, this._tracking = !0, this._moveDot(t));
     }, this._onPointerMove = (t) => {
       this._tracking && (t.preventDefault(), this._moveDot(t));
@@ -2444,32 +2563,37 @@ let $ = class extends z {
       this._tracking = !1;
       const e = this._touchpad;
       if (!e) return;
-      const i = e.getBoundingClientRect(), o = (t.clientX - this._startX) / i.width, n = (t.clientY - this._startY) / i.height;
-      if (Math.abs(o) < ie && Math.abs(n) < ie) {
+      const i = e.getBoundingClientRect(), o = (t.clientX - this._startX) / i.width, s = (t.clientY - this._startY) / i.height;
+      if (Math.abs(o) < at && Math.abs(s) < at) {
         this._emit("center");
         return;
       }
-      Math.abs(o) >= Math.abs(n) ? this._emit(o < 0 ? "left" : "right") : this._emit(n < 0 ? "up" : "down");
+      Math.abs(o) >= Math.abs(s) ? this._emit(o < 0 ? "left" : "right") : this._emit(s < 0 ? "up" : "down");
     }, this._onPointerCancel = () => {
       this._tracking = !1;
     }, this._onKeyDown = (t) => {
-      const e = Ci[t.key];
+      const e = zi[t.key];
       e && (t.preventDefault(), this._emit(e));
     };
   }
   _emit(t, e = "short") {
-    J(this, "atv-nav", { direction: t, phase: e });
+    te(this, "atv-nav", { direction: t, phase: e });
   }
   _pressOptions(t) {
     return this.nativeButtons.includes(t) ? {
       onPress: () => this._emit(t),
       onPressStart: () => this._emit(t, "start"),
       onPressEnd: () => this._emit(t, "end"),
-      haptics: this.haptics
+      haptics: this.haptics,
+      claimTouch: !0,
+      nativeTouchHoldDelayMs: this.nativeTouchHoldDelayMs,
+      coordinator: this.pressCoordinator
     } : {
       onPress: () => this._emit(t),
       repeat: this.repeat && t !== "center",
-      haptics: this.haptics
+      haptics: this.haptics,
+      claimTouch: !0,
+      coordinator: this.pressCoordinator
     };
   }
   _key(t, e, i, o = "") {
@@ -2478,7 +2602,7 @@ let $ = class extends z {
         class="pad-key ${o}"
         type="button"
         aria-label=${i}
-        ${N(this._pressOptions(t))}
+        ${L(this._pressOptions(t))}
       >
         <ha-icon icon=${e}></ha-icon>
       </button>
@@ -2515,7 +2639,7 @@ let $ = class extends z {
           class="pad-key ok"
           type="button"
           aria-label="Select"
-          ${N(this._pressOptions("center"))}
+          ${L(this._pressOptions("center"))}
         >
           <span>OK</span>
         </button>
@@ -2563,48 +2687,54 @@ let $ = class extends z {
     `;
   }
 };
-$.styles = [Ct, xe];
-S([
-  R({ type: String })
-], $.prototype, "pad", 2);
-S([
-  R({ type: Boolean })
-], $.prototype, "repeat", 2);
-S([
-  R({ attribute: !1 })
-], $.prototype, "nativeButtons", 2);
-S([
-  R({ type: Boolean })
-], $.prototype, "haptics", 2);
-S([
-  pe(".touchpad")
-], $.prototype, "_touchpad", 2);
-S([
-  pe(".touchpad-dot")
-], $.prototype, "_dot", 2);
-S([
-  K()
-], $.prototype, "_tracking", 2);
-$ = S([
-  At("polr-atv-nav-pad")
-], $);
-var Oi = Object.defineProperty, Ni = Object.getOwnPropertyDescriptor, at = (t, e, i, o) => {
-  for (var n = o > 1 ? void 0 : o ? Ni(e, i) : e, s = t.length - 1, r; s >= 0; s--)
-    (r = t[s]) && (n = (o ? r(e, i, n) : r(n)) || n);
-  return o && n && Oi(e, i, n), n;
+b.styles = [Ie, St];
+A([
+  S({ type: String })
+], b.prototype, "pad", 2);
+A([
+  S({ type: Boolean })
+], b.prototype, "repeat", 2);
+A([
+  S({ attribute: !1 })
+], b.prototype, "nativeButtons", 2);
+A([
+  S({ type: Boolean })
+], b.prototype, "haptics", 2);
+A([
+  S({ type: Number })
+], b.prototype, "nativeTouchHoldDelayMs", 2);
+A([
+  S({ attribute: !1 })
+], b.prototype, "pressCoordinator", 2);
+A([
+  ft(".touchpad")
+], b.prototype, "_touchpad", 2);
+A([
+  ft(".touchpad-dot")
+], b.prototype, "_dot", 2);
+A([
+  q()
+], b.prototype, "_tracking", 2);
+b = A([
+  Pe("polr-atv-nav-pad")
+], b);
+var Ui = Object.defineProperty, Ri = Object.getOwnPropertyDescriptor, le = (t, e, i, o) => {
+  for (var s = o > 1 ? void 0 : o ? Ri(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (s = (o ? r(e, i, s) : r(s)) || s);
+  return o && s && Ui(e, i, s), s;
 };
-const oe = [
+const ct = [
   { value: "activity", label: "Launch app or link", hint: "App name from the integration, or a deep link such as https://www.netflix.com/title" },
   { value: "app", label: "Open app id", hint: "Android package id, e.g. com.netflix.ninja. Needs a paired media player." },
   { value: "key", label: "Send a key", hint: "Android key code, e.g. GUIDE or MEDIA_REWIND" },
   { value: "action", label: "Call an action", hint: "" }
-], Mi = (t) => [
+], Vi = (t) => [
   { name: "show_apps", selector: { boolean: {} } },
   ...t.show_apps ? [
     { name: "apps_label", selector: { text: {} } },
     { name: "app_columns", selector: { number: { min: 1, max: 8, mode: "box" } } }
   ] : []
-], zi = (t) => [
+], Bi = (t) => [
   {
     type: "expandable",
     name: "",
@@ -2638,10 +2768,22 @@ const oe = [
             select: {
               multiple: !0,
               mode: "list",
-              options: Pt.map((e) => ({
+              options: Le.map((e) => ({
                 value: e,
                 label: e.replaceAll("_", " ")
               }))
+            }
+          }
+        },
+        {
+          name: "native_touch_hold_delay_ms",
+          selector: {
+            number: {
+              min: fe,
+              max: ge,
+              step: 50,
+              mode: "box",
+              unit_of_measurement: "ms"
             }
           }
         }
@@ -2650,7 +2792,7 @@ const oe = [
       { name: "show_section_labels", selector: { boolean: {} } }
     ]
   }
-], Ii = (t) => [
+], ji = (t) => [
   {
     name: "entity",
     required: !0,
@@ -2748,9 +2890,9 @@ const oe = [
       }))
     ]
   }
-], Di = [
+], Wi = [
   { name: "action", selector: { ui_action: {} } }
-], Li = {
+], Ki = {
   entity: "Remote entity",
   volume_entity: "Volume on another media player",
   power_action: "Power",
@@ -2771,9 +2913,10 @@ const oe = [
   show_text_input: "Text input",
   hold_mode: "Hold behaviour",
   native_hold_buttons: "Native-hold buttons",
+  native_touch_hold_delay_ms: "Touch hold threshold",
   haptics: "Haptic feedback",
   show_section_labels: "Section labels"
-}, Ri = {
+}, qi = {
   show_power: "In the header, or in the back / home / menu row when the header is hidden.",
   volume_entity: "Point this at a soundbar or receiver that exposes a media player. A TV passing audio through reports no volume level, so the card shows no level bar for it.",
   power_action: "Leave empty to toggle the TV itself. Set it when something else does the switching — an IR or RF blaster, or a script that also powers a receiver.",
@@ -2781,14 +2924,15 @@ const oe = [
   // Kept short: ha-form runs a boolean's helper up against its toggle, and a
   // long one wraps into it. The full caveats are in the README.
   show_text_input: "Needs a focused search field on the TV, and Enable IME.",
-  hold_mode: "Native hold mirrors key down/up and requires Android TV Remote on Home Assistant 2026.9 or newer."
+  hold_mode: "Native hold mirrors key down/up and requires Android TV Remote on Home Assistant 2026.9 or newer.",
+  native_touch_hold_delay_ms: "A touch or pen must remain continuously down for this long. Mouse and keyboard use 750 ms."
 };
-let k = class extends z {
+let E = class extends H {
   constructor() {
-    super(...arguments), this._editing = null, this._computeLabel = (t) => Li[t.name] ?? t.name, this._computeHelper = (t) => Ri[t.name];
+    super(...arguments), this._editing = null, this._computeLabel = (t) => Ki[t.name] ?? t.name, this._computeHelper = (t) => qi[t.name];
   }
   setConfig(t) {
-    this._config = we(t);
+    this._config = kt(t);
   }
   /**
    * ha-form data, with the editable tap actions flattened.
@@ -2799,24 +2943,24 @@ let k = class extends z {
    */
   get _formData() {
     const t = { ...this._config };
-    for (const e of k.ACTION_BUTTONS)
+    for (const e of E.ACTION_BUTTONS)
       t[`${e}_action`] = this._config.overrides[e]?.tap_action;
     return t;
   }
   /** Emit a full v2 config. This is what upgrades stored v1 YAML. */
   _emit(t) {
-    J(this, "config-changed", { config: yi(t) });
+    te(this, "config-changed", { config: Ti(t) });
   }
   _formChanged(t) {
     t.stopPropagation();
     const e = { ...t.detail.value }, i = { ...this._config.overrides };
-    for (const o of k.ACTION_BUTTONS) {
-      const n = `${o}_action`;
-      if (!(n in e)) continue;
-      const s = e[n];
-      delete e[n];
+    for (const o of E.ACTION_BUTTONS) {
+      const s = `${o}_action`;
+      if (!(s in e)) continue;
+      const n = e[s];
+      delete e[s];
       const r = { ...this._config.overrides[o] ?? {} };
-      V(s) && s.action !== "none" ? i[o] = { ...r, tap_action: s } : (delete r.tap_action, Object.keys(r).length ? i[o] = r : delete i[o]);
+      B(n) && n.action !== "none" ? i[o] = { ...r, tap_action: n } : (delete r.tap_action, Object.keys(r).length ? i[o] = r : delete i[o]);
     }
     this._emit({
       ...this._config,
@@ -2840,7 +2984,7 @@ let k = class extends z {
       return;
     }
     const i = this._config.sections.map(
-      (o, n) => n === t ? { ...o, buttons: e } : o
+      (o, s) => s === t ? { ...o, buttons: e } : o
     );
     this._emit({ ...this._config, sections: i });
   }
@@ -2851,7 +2995,7 @@ let k = class extends z {
   _updateTile(t, e, i) {
     this._setTiles(
       t,
-      this._tiles(t).map((o, n) => n === e ? { ...o, ...i } : o)
+      this._tiles(t).map((o, s) => s === e ? { ...o, ...i } : o)
     );
   }
   _removeTile(t, e) {
@@ -2861,8 +3005,8 @@ let k = class extends z {
     ), this._editing = null;
   }
   _moveTile(t, e, i) {
-    const o = [...this._tiles(t)], n = e + i;
-    n < 0 || n >= o.length || ([o[e], o[n]] = [o[n], o[e]], this._setTiles(t, o), this._isEditing(t, e) && (this._editing = { path: t, index: n }));
+    const o = [...this._tiles(t)], s = e + i;
+    s < 0 || s >= o.length || ([o[e], o[s]] = [o[s], o[e]], this._setTiles(t, o), this._isEditing(t, e) && (this._editing = { path: t, index: s }));
   }
   _isEditing(t, e) {
     return this._editing?.path === t && this._editing.index === e;
@@ -2871,12 +3015,12 @@ let k = class extends z {
   _setActionKind(t, e, i) {
     const o = this._tiles(t)[e].action;
     this._updateTile(t, e, {
-      action: se(i, ne(o))
+      action: dt(i, lt(o))
     });
   }
   _setActionValue(t, e, i) {
     const o = this._tiles(t)[e].action;
-    this._updateTile(t, e, { action: se(mt(o), i) });
+    this._updateTile(t, e, { action: dt(we(o), i) });
   }
   /* ---------------------------------------------------------- sections -- */
   _setSections(t) {
@@ -2901,7 +3045,7 @@ let k = class extends z {
   _renderIcon(t) {
     const e = t.icon ?? "mdi:application";
     if (e.startsWith("brand:")) {
-      const i = vt[e.slice(6)];
+      const i = ye[e.slice(6)];
       if (i) return l`<span class="brand">${i}</span>`;
     }
     return e.startsWith("/") || e.startsWith("http") ? l`<img class="brand" src=${e} alt="" />` : l`<ha-icon .icon=${e}></ha-icon>`;
@@ -2923,21 +3067,21 @@ let k = class extends z {
   _renderTileList(t, e, i) {
     return e.length ? l`<ul class="list">
       ${e.flatMap(
-      (o, n) => this._isEditing(t, n) ? [
-        this._renderAppRow(t, o, n, e.length),
-        this._renderAppForm(t, o, n)
-      ] : [this._renderAppRow(t, o, n, e.length)]
+      (o, s) => this._isEditing(t, s) ? [
+        this._renderAppRow(t, o, s, e.length),
+        this._renderAppForm(t, o, s)
+      ] : [this._renderAppRow(t, o, s, e.length)]
     )}
     </ul>` : l`<div class="empty-state">${i}</div>`;
   }
   _renderAppRow(t, e, i, o) {
-    const n = this._isEditing(t, i);
+    const s = this._isEditing(t, i);
     return l`
       <li class="row">
         <div class="tile-icon">${this._renderIcon(e)}</div>
         <div class="tile-info">
           <div class="primary"><span>${e.name ?? "Untitled app"}</span></div>
-          <div class="secondary"><span>${_i(e.action)}</span></div>
+          <div class="secondary"><span>${gi(e.action)}</span></div>
         </div>
         <button
           class="icon-button"
@@ -2957,12 +3101,12 @@ let k = class extends z {
         </button>
         <button
           class="icon-button"
-          title=${n ? "Done" : "Edit"}
+          title=${s ? "Done" : "Edit"}
           @click=${() => {
-      this._editing = n ? null : { path: t, index: i };
+      this._editing = s ? null : { path: t, index: i };
     }}
         >
-          <ha-icon icon=${n ? "mdi:check" : "mdi:pencil"}></ha-icon>
+          <ha-icon icon=${s ? "mdi:check" : "mdi:pencil"}></ha-icon>
         </button>
         <button class="icon-button danger" title="Remove" @click=${() => this._removeTile(t, i)}>
           <ha-icon icon="mdi:close"></ha-icon>
@@ -2971,7 +3115,7 @@ let k = class extends z {
     `;
   }
   _renderAppForm(t, e, i) {
-    const o = mt(e.action), n = oe.find((r) => r.value === o), s = Ui(e.action);
+    const o = we(e.action), s = ct.find((r) => r.value === o), n = Fi(e.action);
     return l`
       <li class="form-host">
         <div class="form">
@@ -3018,14 +3162,14 @@ let k = class extends z {
                  projector or a receiver, so they are only offered for apps. -->
             ${t === "apps" ? l`
                   <div class="chips">
-                    ${_t.map(
+                    ${be.map(
       (r) => l`
                         <button
                           class="chip ${e.icon === `brand:${r}` ? "accent" : ""}"
-                          title=${`Use the ${O[r].label} logo`}
+                          title=${`Use the ${D[r].label} logo`}
                           @click=${() => this._updateTile(t, i, { icon: `brand:${r}` })}
                         >
-                          ${O[r].label}
+                          ${D[r].label}
                         </button>
                       `
     )}
@@ -3038,7 +3182,7 @@ let k = class extends z {
                 .value=${o}
                 @change=${(r) => this._setActionKind(t, i, r.target.value)}
               >
-                ${oe.map(
+                ${ct.map(
       (r) => l`
                     <option value=${r.value} ?selected=${r.value === o}>
                       ${r.label}
@@ -3057,25 +3201,25 @@ let k = class extends z {
                   -->
                   <ha-form
                     .hass=${this.hass}
-                    .data=${{ action: s }}
-                    .schema=${Di}
+                    .data=${{ action: n }}
+                    .schema=${Wi}
                     .computeLabel=${() => "Action"}
                     @value-changed=${(r) => {
       r.stopPropagation();
       const c = r.detail?.value?.action;
-      V(c) && this._updateTile(t, i, { action: c });
+      B(c) && this._updateTile(t, i, { action: c });
     }}
                   ></ha-form>
                 ` : l`
                   <label class="field wide">
-                    <span>${n.label}</span>
+                    <span>${s.label}</span>
                     <input
                       type="text"
-                      .value=${ne(e.action)}
+                      .value=${lt(e.action)}
                       @change=${(r) => this._setActionValue(t, i, r.target.value)}
                     />
                   </label>
-                  <div class="hint">${n.hint}</div>
+                  <div class="hint">${s.hint}</div>
                 `}
           </div>
         </div>
@@ -3091,24 +3235,24 @@ let k = class extends z {
    * package id, which is otherwise tedious to find.
    */
   _renderCurrentApp() {
-    const t = this._config, e = me(this.hass, t), i = e ? this.hass.states?.[e] : void 0, o = i?.attributes?.app_id, n = i?.attributes?.app_name;
+    const t = this._config, e = wt(this.hass, t), i = e ? this.hass.states?.[e] : void 0, o = i?.attributes?.app_id, s = i?.attributes?.app_name;
     if (!o) return d;
-    const s = t.apps.some(
+    const n = t.apps.some(
       (r) => r.action.action === "app" && r.action.app_id === o
     );
     return l`
       <div class="section-head"><span class="grow">Playing right now</span></div>
-      ${s ? l`<div class="hint">${n ?? o} is already in the list.</div>` : l`
+      ${n ? l`<div class="hint">${s ?? o} is already in the list.</div>` : l`
             <div class="chips">
               <button
                 class="chip accent"
                 @click=${() => this._addTile("apps", {
-      name: n ?? o,
-      icon: Hi(n ?? o),
+      name: s ?? o,
+      icon: Yi(s ?? o),
       action: { action: "app", app_id: o }
     })}
               >
-                <ha-icon icon="mdi:plus"></ha-icon>${n ?? o}
+                <ha-icon icon="mdi:plus"></ha-icon>${s ?? o}
               </button>
             </div>
             <div class="hint">
@@ -3125,7 +3269,7 @@ let k = class extends z {
       <ha-form
         .hass=${this.hass}
         .data=${this._formData}
-        .schema=${Ii(t)}
+        .schema=${ji(t)}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}
         @value-changed=${this._formChanged}
@@ -3145,7 +3289,7 @@ let k = class extends z {
         <ha-form
           .hass=${this.hass}
           .data=${this._formData}
-          .schema=${Mi(t)}
+          .schema=${Vi(t)}
           .computeLabel=${this._computeLabel}
           .computeHelper=${this._computeHelper}
           @value-changed=${this._formChanged}
@@ -3161,17 +3305,17 @@ let k = class extends z {
 
               <div class="section-head"><span class="grow">Add a known app</span></div>
               <div class="chips">
-                ${_t.map(
+                ${be.map(
       (i) => l`
                     <button
                       class="chip"
                       @click=${() => this._addTile("apps", {
-        name: O[i].label,
+        name: D[i].label,
         icon: `brand:${i}`,
-        action: { action: "activity", activity: O[i].activity }
+        action: { action: "activity", activity: D[i].activity }
       })}
                     >
-                      <ha-icon icon="mdi:plus"></ha-icon>${O[i].label}
+                      <ha-icon icon="mdi:plus"></ha-icon>${D[i].label}
                     </button>
                   `
     )}
@@ -3220,7 +3364,7 @@ let k = class extends z {
                   <input
                     type="text"
                     .value=${i.name ?? ""}
-                    @change=${(n) => this._renameSection(o, n.target.value)}
+                    @change=${(s) => this._renameSection(o, s.target.value)}
                   />
                 </label>
                 <button
@@ -3261,7 +3405,7 @@ let k = class extends z {
       <ha-form
         .hass=${this.hass}
         .data=${this._formData}
-        .schema=${zi(t)}
+        .schema=${Bi(t)}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}
         @value-changed=${this._formChanged}
@@ -3269,15 +3413,15 @@ let k = class extends z {
     `;
   }
 };
-k.ACTION_BUTTONS = [
+E.ACTION_BUTTONS = [
   "power",
   "volume_up",
   "volume_down",
   "volume_mute"
 ];
-k.styles = [
-  Ct,
-  bt`
+E.styles = [
+  Ie,
+  Ae`
       :host {
         display: block;
       }
@@ -3399,19 +3543,19 @@ k.styles = [
       }
     `
 ];
-at([
-  R({ attribute: !1 })
-], k.prototype, "hass", 2);
-at([
-  K()
-], k.prototype, "_config", 2);
-at([
-  K()
-], k.prototype, "_editing", 2);
-k = at([
-  At("polr-android-tv-remote-card-editor")
-], k);
-const mt = (t) => t.action === "activity" || t.action === "app" || t.action === "key" ? t.action : "action", ne = (t) => {
+le([
+  S({ attribute: !1 })
+], E.prototype, "hass", 2);
+le([
+  q()
+], E.prototype, "_config", 2);
+le([
+  q()
+], E.prototype, "_editing", 2);
+E = le([
+  Pe("polr-android-tv-remote-card-editor")
+], E);
+const we = (t) => t.action === "activity" || t.action === "app" || t.action === "key" ? t.action : "action", lt = (t) => {
   switch (t.action) {
     case "activity":
       return t.activity;
@@ -3422,7 +3566,7 @@ const mt = (t) => t.action === "activity" || t.action === "app" || t.action === 
     default:
       return "";
   }
-}, Ui = (t) => t.action === "service" ? ut(t.service, t.data, t.target) : mt(t) === "action" ? t : void 0, se = (t, e) => {
+}, Fi = (t) => t.action === "service" ? me(t.service, t.data, t.target) : we(t) === "action" ? t : void 0, dt = (t, e) => {
   switch (t) {
     case "activity":
       return { action: "activity", activity: e };
@@ -3433,22 +3577,22 @@ const mt = (t) => t.action === "activity" || t.action === "app" || t.action === 
     case "action":
       return { action: "perform-action", perform_action: e };
   }
-}, Hi = (t) => {
-  const e = fe(t);
+}, Yi = (t) => {
+  const e = $t(t);
   return e ? `brand:${e}` : "mdi:application";
 };
-var Vi = Object.defineProperty, Bi = Object.getOwnPropertyDescriptor, tt = (t, e, i, o) => {
-  for (var n = o > 1 ? void 0 : o ? Bi(e, i) : e, s = t.length - 1, r; s >= 0; s--)
-    (r = t[s]) && (n = (o ? r(e, i, n) : r(n)) || n);
-  return o && n && Vi(e, i, n), n;
+var Xi = Object.defineProperty, Gi = Object.getOwnPropertyDescriptor, ie = (t, e, i, o) => {
+  for (var s = o > 1 ? void 0 : o ? Gi(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (s = (o ? r(e, i, s) : r(s)) || s);
+  return o && s && Xi(e, i, s), s;
 };
-const ji = "2.2.1", ct = "polr-android-tv-remote-card";
-let L = class extends z {
+const Zi = "2.2.2", de = "polr-android-tv-remote-card";
+let U = class extends H {
   constructor() {
-    super(...arguments), this._text = "", this._sending = !1, this._nativeQueues = /* @__PURE__ */ new Map(), this._nativeSessions = /* @__PURE__ */ new Map();
+    super(...arguments), this._text = "", this._sending = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new Di();
   }
   static getConfigElement() {
-    return document.createElement(`${ct}-editor`);
+    return document.createElement(`${de}-editor`);
   }
   /**
    * Pick a real remote off the user's system.
@@ -3461,7 +3605,10 @@ let L = class extends z {
     return { entity: Object.keys(t?.states ?? {}).find((i) => i.startsWith("remote.")) ?? "remote.android_tv", pad: "buttons" };
   }
   setConfig(t) {
-    this._config = we(t);
+    this._pressCoordinator.cancel(), this._releaseNativeSessions(), this._config = kt(t);
+  }
+  disconnectedCallback() {
+    this._pressCoordinator.cancel(), this._releaseNativeSessions(), super.disconnectedCallback();
   }
   getCardSize() {
     const t = this._config;
@@ -3490,7 +3637,7 @@ let L = class extends z {
   }
   get _device() {
     if (!(!this.hass || !this._config))
-      return ri(this.hass, this._config);
+      return hi(this.hass, this._config);
   }
   /**
    * Run a card action, reporting failures instead of dropping them.
@@ -3504,32 +3651,52 @@ let L = class extends z {
       console.error("polr-android-tv-remote-card:", e);
     });
   }
+  /** Serialize remote operations without allowing one rejection to poison the queue. */
+  _enqueueControl(t) {
+    this._controlQueue = this._controlQueue.catch(() => {
+    }).then(t).then(() => {
+    }).catch((e) => {
+      console.error("polr-android-tv-remote-card:", e);
+    });
+  }
   _press(t) {
     const e = this._device;
-    !this.hass || !this._config || !e || this._run(pi(this.hass, this._config, e, t, this));
+    if (!this.hass || !this._config || !e) return;
+    const i = this.hass, o = this._config;
+    this._releaseNativeSessions(), this._enqueueControl(() => mi(i, o, e, t, this));
   }
   _usesNativeHold(t) {
     const e = this._config;
     return !e || e.hold_mode !== "native" || !e.native_hold_buttons.includes(t) ? !1 : Object.keys(e.overrides[t] ?? {}).length === 0;
   }
+  /** Send END_LONG once more only when Home Assistant rejected the first call. */
+  async _sendNativeEnd(t, e) {
+    try {
+      await _e(t.hass, t.device, e, "end");
+    } catch {
+      await new Promise((i) => window.setTimeout(i, 150)), await _e(t.hass, t.device, e, "end");
+    }
+  }
+  _endNativeSession(t, e) {
+    this._nativeSessions.get(t) === e && (this._nativeSessions.delete(t), this._enqueueControl(() => this._sendNativeEnd(e, t)));
+  }
+  /** Release any stale native key before another card action is accepted. */
+  _releaseNativeSessions() {
+    for (const [t, e] of [...this._nativeSessions])
+      this._endNativeSession(t, e);
+  }
   /** Queue one half of a physical Android key press. */
   _nativePress(t, e) {
     let i = this._nativeSessions.get(t);
     if (e === "start") {
-      const s = this._device;
-      if (!this.hass || !s) return;
-      i = { hass: this.hass, device: s }, this._nativeSessions.set(t, i);
+      const o = this._device;
+      if (!this.hass || !o) return;
+      this._releaseNativeSessions(), i = { hass: this.hass, device: o }, this._nativeSessions.set(t, i), this._enqueueControl(
+        () => _e(i.hass, i.device, t, "start")
+      );
+      return;
     }
-    if (!i) return;
-    e === "end" && this._nativeSessions.delete(t);
-    const n = (this._nativeQueues.get(t) ?? Promise.resolve()).catch(() => {
-    }).then(() => di(i.hass, i.device, t, e)).then(() => {
-    }).catch((s) => {
-      console.error("polr-android-tv-remote-card:", s);
-    });
-    this._nativeQueues.set(t, n), n.finally(() => {
-      this._nativeQueues.get(t) === n && this._nativeQueues.delete(t);
-    });
+    e === "end" && i && this._endNativeSession(t, i);
   }
   /**
    * Press options for a button, folding in any configured interactions.
@@ -3539,20 +3706,25 @@ let L = class extends z {
    * handler replaces hold-to-repeat, so neither should exist by default.
    */
   _pressOptions(t, e = {}) {
-    const i = this._config, o = i.overrides[t], n = o?.hold_action, s = o?.double_tap_action, r = (c) => () => {
-      this.hass && this._run(St(this, this.hass, c, i.entity));
+    const i = this._config, o = i.overrides[t], s = o?.hold_action, n = o?.double_tap_action, r = (c) => () => {
+      this.hass && this._run(Ne(this, this.hass, c, i.entity));
     };
     return this._usesNativeHold(t) ? {
       onPress: () => this._press(t),
       onPressStart: () => this._nativePress(t, "start"),
       onPressEnd: () => this._nativePress(t, "end"),
-      haptics: i.haptics
+      haptics: i.haptics,
+      claimTouch: !0,
+      nativeTouchHoldDelayMs: i.native_touch_hold_delay_ms,
+      coordinator: this._pressCoordinator
     } : {
       onPress: () => this._press(t),
-      ...pt(n) ? { onHold: r(n) } : {},
-      ...pt(s) ? { onDoubleTap: r(s) } : {},
+      ...ve(s) ? { onHold: r(s) } : {},
+      ...ve(n) ? { onDoubleTap: r(n) } : {},
       repeat: e.repeat && i.hold_mode === "repeat",
-      haptics: i.haptics
+      haptics: i.haptics,
+      claimTouch: !0,
+      coordinator: this._pressCoordinator
     };
   }
   _navigate(t) {
@@ -3561,14 +3733,16 @@ let L = class extends z {
   }
   _launch(t) {
     const e = this._device;
-    !this.hass || !e || this._run(ui(this.hass, e, t.action, this));
+    if (!this.hass || !e) return;
+    const i = this.hass;
+    this._releaseNativeSessions(), this._enqueueControl(() => fi(i, e, t.action, this));
   }
   async _sendText() {
     const t = this._device, e = this._text.trim();
     if (!(!this.hass || !t || !e)) {
       this._sending = !0;
       try {
-        await hi(this.hass, t, e), this._text = "";
+        await vi(this.hass, t, e), this._text = "";
       } finally {
         this._sending = !1;
       }
@@ -3576,13 +3750,13 @@ let L = class extends z {
   }
   /* ------------------------------------------------------------- header -- */
   _renderHeader(t) {
-    const e = this._config, i = t.available ? t.on ? t.appName ?? "On" : "Off" : "Unavailable", o = t.on && t.available ? fe(t.appName) : void 0;
+    const e = this._config, i = t.available ? t.on ? t.appName ?? "On" : "Off" : "Unavailable", o = t.on && t.available ? $t(t.appName) : void 0;
     return l`
       <div class="tile">
         <!-- Not interactive: the icon shows what is playing, and tapping it
              opened a more-info dialog nobody wanted from a remote. -->
         <div class="tile-icon">
-          ${o ? l`<span class="brand-mark">${vt[o]}</span>` : l`<ha-icon icon="mdi:television"></ha-icon>`}
+          ${o ? l`<span class="brand-mark">${ye[o]}</span>` : l`<ha-icon icon="mdi:television"></ha-icon>`}
         </div>
         <div class="tile-info">
           <div class="primary"><span>${t.name}</span></div>
@@ -3593,7 +3767,7 @@ let L = class extends z {
                 class="icon-button"
                 type="button"
                 aria-label=${t.on ? "Turn off" : "Turn on"}
-                ${N(this._pressOptions("power"))}
+                ${L(this._pressOptions("power"))}
               >
                 <ha-icon icon="mdi:power"></ha-icon>
               </button>
@@ -3605,7 +3779,7 @@ let L = class extends z {
   _renderChips(t) {
     if (!t.on || !t.available) return d;
     const e = [];
-    return t.muted === !0 ? e.push(l`<span class="chip warn"><ha-icon icon="mdi:volume-off"></ha-icon>Muted</span>`) : Ft(t) && e.push(l`<span class="chip accent">${Math.round(t.volume * 100)}%</span>`), e.length ? l`<div class="tile" style="padding-top:0;min-height:0">
+    return t.muted === !0 ? e.push(l`<span class="chip warn"><ha-icon icon="mdi:volume-off"></ha-icon>Muted</span>`) : Qe(t) && e.push(l`<span class="chip accent">${Math.round(t.volume * 100)}%</span>`), e.length ? l`<div class="tile" style="padding-top:0;min-height:0">
       <div class="chips">${e}</div>
     </div>` : d;
   }
@@ -3617,7 +3791,7 @@ let L = class extends z {
         type="button"
         aria-label=${i}
         title=${i}
-        ${N(this._pressOptions(t, o))}
+        ${L(this._pressOptions(t, o))}
       >
         <ha-icon icon=${e}></ha-icon>
       </button>
@@ -3642,18 +3816,18 @@ let L = class extends z {
    * codes work regardless — it is only the *player* route that needs the bit.
    */
   _renderTransport(t) {
-    const e = t.playerId === null, i = e || B(t, x.PREVIOUS_TRACK), o = e || B(t, x.NEXT_TRACK), n = new Set(this._config.transport_buttons), s = [
-      n.has("previous") && i ? this._button("previous", "mdi:skip-previous", "Previous") : d,
-      n.has("rewind") ? this._button("rewind", "mdi:rewind", "Rewind", { repeat: !0 }) : d,
-      n.has("play_pause") ? this._button(
+    const e = t.playerId === null, i = e || j(t, T.PREVIOUS_TRACK), o = e || j(t, T.NEXT_TRACK), s = new Set(this._config.transport_buttons), n = [
+      s.has("previous") && i ? this._button("previous", "mdi:skip-previous", "Previous") : d,
+      s.has("rewind") ? this._button("rewind", "mdi:rewind", "Rewind", { repeat: !0 }) : d,
+      s.has("play_pause") ? this._button(
         "play_pause",
         t.playing ? "mdi:pause" : "mdi:play",
         t.playing ? "Pause" : "Play"
       ) : d,
-      n.has("fast_forward") ? this._button("fast_forward", "mdi:fast-forward", "Fast forward", { repeat: !0 }) : d,
-      n.has("next") && o ? this._button("next", "mdi:skip-next", "Next") : d
+      s.has("fast_forward") ? this._button("fast_forward", "mdi:fast-forward", "Fast forward", { repeat: !0 }) : d,
+      s.has("next") && o ? this._button("next", "mdi:skip-next", "Next") : d
     ];
-    return l`<div class="features">${s}</div>`;
+    return l`<div class="features">${n}</div>`;
   }
   /**
    * Volume.
@@ -3665,7 +3839,7 @@ let L = class extends z {
    * all be invented. When that is the case the row is just three buttons.
    */
   _renderVolume(t) {
-    const e = Ft(t), i = t.muted === !0;
+    const e = Qe(t), i = t.muted === !0;
     return l`
       <div class="features">
         ${this._button("volume_down", "mdi:volume-minus", "Volume down", { repeat: !0 })}
@@ -3674,7 +3848,7 @@ let L = class extends z {
           type="button"
           aria-label=${i ? "Unmute" : "Mute"}
           aria-pressed=${t.muted === void 0 ? "undefined" : i ? "true" : "false"}
-          ${N(this._pressOptions("volume_mute"))}
+          ${L(this._pressOptions("volume_mute"))}
         >
           <ha-icon icon=${i ? "mdi:volume-off" : "mdi:volume-high"}></ha-icon>
         </button>
@@ -3718,7 +3892,7 @@ let L = class extends z {
   _renderAppIcon(t) {
     const e = t.icon ?? "mdi:application";
     if (e.startsWith("brand:")) {
-      const i = vt[e.slice(6)];
+      const i = ye[e.slice(6)];
       if (i) return l`${i}`;
     }
     return e.startsWith("/") || e.startsWith("http") ? l`<img src=${e} alt="" />` : l`<ha-icon icon=${e}></ha-icon>`;
@@ -3731,28 +3905,32 @@ let L = class extends z {
    * section is indistinguishable from a native one.
    */
   _renderSection(t, e, i, o) {
-    const n = this._config;
+    const s = this._config;
     return t.length ? l`
-      ${n.show_section_labels && e ? l`<div class="section-head">
+      ${s.show_section_labels && e ? l`<div class="section-head">
             ${e}<span class="grow"></span><span class="count">${t.length}</span>
           </div>` : d}
       <div class="app-grid" style="--app-per-row: ${i}">
-        ${ei(
+        ${ri(
       t,
-      (s, r) => `${o}:${r}:${s.icon ?? ""}`,
-      (s) => {
-        const r = this.hass ? ci(this.hass, s.entity) : !1;
+      (n, r) => `${o}:${r}:${n.icon ?? ""}`,
+      (n) => {
+        const r = this.hass ? ui(this.hass, n.entity) : !1;
         return l`
               <button
                 class="app-tile ${r ? "active" : ""}"
                 type="button"
-                aria-label=${s.name ?? "Launch app"}
-                title=${s.name ?? ""}
-                aria-pressed=${s.entity ? String(r) : d}
-                style=${s.color ? `--app-color:${s.color}` : ""}
-                ${N({ onPress: () => this._launch(s), haptics: n.haptics })}
+                aria-label=${n.name ?? "Launch app"}
+                title=${n.name ?? ""}
+                aria-pressed=${n.entity ? String(r) : d}
+                style=${n.color ? `--app-color:${n.color}` : ""}
+                ${L({
+          onPress: () => this._launch(n),
+          haptics: s.haptics,
+          coordinator: this._pressCoordinator
+        })}
               >
-                ${this._renderAppIcon(s)}
+                ${this._renderAppIcon(n)}
               </button>
             `;
       }
@@ -3796,7 +3974,7 @@ let L = class extends z {
           </div>
         </ha-card>
       `;
-    const i = oi("media_player", e.on ? "on" : "off"), o = e.available;
+    const i = ci("media_player", e.on ? "on" : "off"), o = e.available;
     return l`
       <ha-card class=${t.show_header ? "" : "headerless"} style="--tile-color:${i}">
         ${t.show_header ? this._renderHeader(e) : d}
@@ -3812,8 +3990,10 @@ let L = class extends z {
                       .pad=${t.pad}
                       .repeat=${t.hold_mode === "repeat"}
                       .nativeButtons=${t.native_hold_buttons.filter(
-      (n) => this._usesNativeHold(n)
+      (s) => this._usesNativeHold(s)
     )}
+                      .nativeTouchHoldDelayMs=${t.native_touch_hold_delay_ms}
+                      .pressCoordinator=${this._pressCoordinator}
                       .haptics=${t.haptics}
                       @atv-nav=${this._navigate}
                     ></polr-atv-nav-pad>` : d}
@@ -3830,7 +4010,7 @@ let L = class extends z {
                   <button
                     class="control-button accent wide"
                     type="button"
-                    ${N(this._pressOptions("power"))}
+                    ${L(this._pressOptions("power"))}
                   >
                     <ha-icon icon="mdi:power"></ha-icon><span>Turn on</span>
                   </button>
@@ -3842,33 +4022,33 @@ let L = class extends z {
     `;
   }
 };
-L.styles = [Ct, xe];
-tt([
-  R({ attribute: !1 })
-], L.prototype, "hass", 2);
-tt([
-  K()
-], L.prototype, "_config", 2);
-tt([
-  K()
-], L.prototype, "_text", 2);
-tt([
-  K()
-], L.prototype, "_sending", 2);
-L = tt([
-  At(ct)
-], L);
+U.styles = [Ie, St];
+ie([
+  S({ attribute: !1 })
+], U.prototype, "hass", 2);
+ie([
+  q()
+], U.prototype, "_config", 2);
+ie([
+  q()
+], U.prototype, "_text", 2);
+ie([
+  q()
+], U.prototype, "_sending", 2);
+U = ie([
+  Pe(de)
+], U);
 window.customCards = window.customCards ?? [];
 window.customCards.push({
-  type: ct,
+  type: de,
   name: "PoLR Android TV Remote",
   description: "A remote for the Android TV Remote integration, with live state and an app launcher.",
   preview: !0,
   documentationURL: "https://github.com/jeserga/polr-android-tv-remote-card"
 });
-console.info(`%c ${ct} %c ${ji} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
+console.info(`%c ${de} %c ${Zi} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
 export {
-  ji as CARD_VERSION,
-  L as PolrAndroidTvRemoteCard
+  Zi as CARD_VERSION,
+  U as PolrAndroidTvRemoteCard
 };
 //# sourceMappingURL=polr-android-tv-remote-card.js.map

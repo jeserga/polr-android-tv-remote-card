@@ -1,20 +1,11 @@
 /**
  * Press handling for every control on the card.
  *
- * v1 wired `@click` onto bare `<div>`s: no keyboard, no screen-reader
- * semantics, no press feedback, no way to hold an arrow down. This replaces all
- * of it with one directive used everywhere, so a control cannot accidentally be
- * built without those things.
- *
- * Taps resolve on *release*, never on pointerdown. Firing on pointerdown means
- * that on a phone, putting a thumb on an app tile to scroll the page launches
- * the app — the gesture has not yet declared itself as a tap or a drag. The
- * cost is that a tap lands when the finger lifts rather than when it touches,
- * which is how every native control behaves.
- *
- * A caller can choose either repeated discrete presses or a native key-down /
- * key-up pair. Native hold is what a physical remote does, and lets each Android
- * app decide whether a held arrow seeks, scrolls or opens a context menu.
+ * Pointer Events remain the primary input API, but Android WebView gets two
+ * independent safety nets: native TouchEvent release listeners, and a
+ * card-wide coordinator that closes any old gesture before a new one starts.
+ * A press is identified by a monotonically increasing token, so delayed timer
+ * callbacks can never resolve a later gesture.
  */
 
 import { noChange, type ElementPart, type Part } from "lit";
@@ -22,97 +13,110 @@ import { directive, type PartInfo, PartType } from "lit/directive.js";
 import { AsyncDirective } from "lit/async-directive.js";
 
 import { fireEvent } from "./kit/types";
+import {
+  DEFAULT_NATIVE_TOUCH_HOLD_DELAY_MS,
+  NativePressStateMachine,
+} from "./press-state";
 
-/** How long to hold before the first repeat. */
+/** How long to hold before the first discrete repeat. */
 const REPEAT_DELAY_MS = 500;
-/** Interval between repeats after that. Tuned on a real network; easy to move. */
+/** Interval between discrete repeats after that. */
 const REPEAT_INTERVAL_MS = 220;
-/** Backstop so a stuck pointer cannot flood the TV's websocket. */
+/** Backstop so a repeat cannot flood the TV indefinitely. */
 const MAX_REPEATS = 40;
-/** Safety release if the browser loses every pointer lifecycle event. */
-const MAX_NATIVE_HOLD_MS = 30_000;
-/** How long a press must last to count as a hold. Matches HA's own handler. */
+/** Final safety release if a WebView loses every lifecycle event. */
+const MAX_NATIVE_HOLD_MS = 15_000;
+/** Home Assistant-style configured hold action threshold. */
 const HOLD_MS = 500;
-/**
- * Native Android holds deliberately use a more relaxed threshold.
- *
- * START_LONG is already classified as a long press by Android, regardless of
- * how quickly END_LONG follows. Waiting here lets an ordinary tap travel as a
- * single SHORT command and avoids turning a slightly slow thumb into a hold.
- */
-const NATIVE_HOLD_DELAY_MS = 750;
-/** Window for a second tap. Only applied when a double-tap action exists. */
+/** A deliberate mouse or keyboard hold starts a little sooner than touch. */
+const DESKTOP_NATIVE_HOLD_MS = 750;
+/** Window for a second tap, only when a double-tap action exists. */
 const DOUBLE_TAP_MS = 250;
-/**
- * How far a pointer may travel and still count as a tap.
- *
- * Beyond this the gesture is a scroll or a drag, and the press is abandoned.
- * Chrome's own touch slop is 8px; a little more is forgiving of thumbs without
- * making a deliberate tap hard to land.
- */
-const SLOP_PX = 12;
+/** Scrollable tiles abandon a press quickly; claimed controls are more lenient. */
+const SCROLL_SLOP_PX = 12;
+const CLAIMED_SLOP_PX = 24;
 
-export interface PressOptions {
-  /** Runs on release, and on every repeat while held. */
-  onPress?: () => void;
-  /** Runs once the native-hold threshold is crossed. */
-  onPressStart?: () => void;
-  /** Runs exactly once after `onPressStart`, on every release/cancel path. */
-  onPressEnd?: () => void;
-  /**
-   * Runs when the press passes the hold threshold.
-   *
-   * Mutually exclusive with `repeat`: a control cannot both repeat while held
-   * and do something else on hold. When both are supplied, hold wins, because
-   * it was configured explicitly and repeat is only ever a default.
-   */
-  onHold?: () => void;
-  /**
-   * Runs on a second tap inside the double-tap window.
-   *
-   * Supplying this delays the single tap by that window, since there is no way
-   * to know a tap is single until it has passed. Left undefined, taps fire on
-   * release — which is why it is only wired when actually configured.
-   */
-  onDoubleTap?: () => void;
-  /** Hold to repeat. Only sensible for idempotent, directional controls. */
-  repeat?: boolean;
-  /** Fire HA haptic feedback (Companion app only; a no-op elsewhere). */
-  haptics?: boolean;
-  disabled?: boolean;
+interface CoordinatedPress {
+  cancelPress(): void;
 }
 
 /**
- * Wire pointer, keyboard and press-feedback onto an element.
+ * Enforce one active gesture within a card.
  *
- * Used as `<button ${press({onPress})}>`. A directive rather than a set of
- * `@pointerdown=` bindings because the listeners have to co-operate — the
- * repeat timer, the slop threshold and the `.pressed` class are one unit, and
- * splitting them across a template is how they drift apart.
+ * This also makes the next touch a recovery path: if Android omitted the old
+ * pointerup, touching any other control first releases/cancels the old one.
  */
-class PressDirective extends AsyncDirective {
+export class PressCoordinator {
+  private _active?: CoordinatedPress;
+
+  public claim(next: CoordinatedPress): void {
+    if (this._active === next) return;
+    const previous = this._active;
+    // Install first so the previous participant cannot clear the new owner
+    // while it tears itself down.
+    this._active = next;
+    previous?.cancelPress();
+  }
+
+  public release(participant: CoordinatedPress): void {
+    if (this._active === participant) this._active = undefined;
+  }
+
+  public cancel(): void {
+    const active = this._active;
+    this._active = undefined;
+    active?.cancelPress();
+  }
+}
+
+export interface PressOptions {
+  /** Runs once for a completed short press, and for each discrete repeat. */
+  onPress?: () => void;
+  /** Runs once after an uninterrupted native-hold threshold. */
+  onPressStart?: () => void;
+  /** Runs exactly once after onPressStart on every end/cancel path. */
+  onPressEnd?: () => void;
+  /** Runs when a configured Home Assistant hold action reaches its threshold. */
+  onHold?: () => void;
+  /** Runs on a second tap inside the double-tap window. */
+  onDoubleTap?: () => void;
+  /** Hold to repeat discrete presses. */
+  repeat?: boolean;
+  /** Fire Home Assistant Companion haptic feedback. */
+  haptics?: boolean;
+  disabled?: boolean;
+  /** Claim direct input instead of allowing the gesture to become page scroll. */
+  claimTouch?: boolean;
+  /** Touch/pen threshold for native key hold. Mouse and keyboard stay at 750ms. */
+  nativeTouchHoldDelayMs?: number;
+  /** Shared by all controls rendered by one card. */
+  coordinator?: PressCoordinator;
+}
+
+/** Wire pointer, keyboard, lifecycle and press feedback onto an element. */
+class PressDirective extends AsyncDirective implements CoordinatedPress {
   private _element?: HTMLElement;
   private _options?: PressOptions;
+  private _gestureOptions?: PressOptions;
   private _repeatTimer?: number;
   private _holdTimer?: number;
   private _nativeTimer?: number;
   private _tapTimer?: number;
   private _repeats = 0;
-  private _inFlight = false;
   private _bound = false;
 
-  /** A press is in progress and has not yet been abandoned. */
   private _active = false;
-  /** Something already fired for this press: hold, or a repeat. */
   private _resolved = false;
+  private _gestureId = 0;
   private _startX = 0;
   private _startY = 0;
   private _awaitingSecondTap = false;
-  /** A native-capable press is waiting to cross its hold threshold. */
-  private _nativePending = false;
-  private _nativeStarted = false;
-  private _nativeEnd?: () => void;
   private _pointerId?: number;
+  private _pointerType?: string;
+  private _coordinator?: PressCoordinator;
+
+  private readonly _native = new NativePressStateMachine();
+  private _nativeSession?: number;
 
   constructor(partInfo: PartInfo) {
     super(partInfo);
@@ -127,7 +131,12 @@ class PressDirective extends AsyncDirective {
 
   override update(part: Part, [options]: [PressOptions]): typeof noChange {
     this._element = (part as ElementPart).element as HTMLElement;
+    if (options.disabled && this._active) this.cancelPress();
     this._options = options;
+    this._element.classList.toggle(
+      "press-claim-touch",
+      this._claimsTouch(options),
+    );
 
     if (!this._bound) {
       this._bound = true;
@@ -135,17 +144,15 @@ class PressDirective extends AsyncDirective {
       el.addEventListener("pointerdown", this._onPointerDown);
       el.addEventListener("pointermove", this._onPointerMove);
       el.addEventListener("pointerup", this._onPointerUp);
-      // The browser fires pointercancel the moment it decides the gesture is a
-      // scroll, which is exactly when the press must be abandoned.
       el.addEventListener("pointercancel", this._onPointerCancel);
       el.addEventListener("lostpointercapture", this._onLostPointerCapture);
       el.addEventListener("pointerleave", this._onPointerLeave);
+      el.addEventListener("click", this._onClick);
+      el.addEventListener("dragstart", this.cancelPress);
       el.addEventListener("keydown", this._onKeyDown);
       el.addEventListener("keyup", this._onKeyUp);
-      el.addEventListener("blur", this._abort);
-      // Otherwise a long press pops a text-selection or context menu, which is
-      // exactly the gesture hold-to-repeat needs.
-      el.addEventListener("contextmenu", (event) => event.preventDefault());
+      el.addEventListener("blur", this.cancelPress);
+      el.addEventListener("contextmenu", this._onContextMenu);
     }
     return noChange;
   }
@@ -153,48 +160,44 @@ class PressDirective extends AsyncDirective {
   /* ---------------------------------------------------------------- pointer */
 
   private _onPointerDown = (event: PointerEvent): void => {
-    // Primary button only; a right-click should not drive the TV.
     if (event.button !== 0) return;
+    if (this._isDirectPointer(event.pointerType) && !event.isPrimary) return;
     const options = this._options;
     if (!options || options.disabled) return;
-    if (this._active) return;
 
-    // Deliberately no preventDefault and no pointer capture: both interfere
-    // with the browser's own scroll detection, and this element wants that
-    // detection to win.
-    this._active = true;
-    this._resolved = false;
+    const gesture = this._beginGesture(options, event.pointerType || "mouse");
     this._startX = event.clientX;
     this._startY = event.clientY;
     this._pointerId = event.pointerId;
-    this._element?.classList.add("pressed");
 
-    if (this._isNative(options)) {
-      // Capture makes release reliable even if the thumb drifts outside the
-      // button. It is deliberately limited to native controls; app tiles must
-      // remain scrollable without launching.
+    if (this._claimsTouch(options) && this._isDirectPointer(event.pointerType)) {
+      // touch-action is declared in CSS before pointerdown. preventDefault
+      // additionally suppresses compatibility mouse activation/focus.
       event.preventDefault();
-      this._nativePending = true;
-      this._nativeEnd = options.onPressEnd;
-      this._armNativeSafety();
       try {
         this._element?.setPointerCapture(event.pointerId);
       } catch {
-        // Some synthetic PointerEvents cannot be captured. Window-level
-        // pointer listeners and the lifecycle fallbacks still catch release.
+        // Synthetic events cannot always be captured. Window and TouchEvent
+        // fallbacks still own every release path.
       }
+    }
+    this._armSafety();
+
+    if (this._isNative(options)) {
+      const session = this._native.begin();
+      this._nativeSession = session;
       this._holdTimer = window.setTimeout(
-        () => this._startNative(options),
-        NATIVE_HOLD_DELAY_MS,
+        () => this._startNative(gesture, session),
+        this._nativeHoldDelay(options, this._pointerType),
       );
       return;
     }
 
     if (options.onHold) {
       this._holdTimer = window.setTimeout(() => {
-        if (!this._active) return;
+        if (!this._isCurrent(gesture)) return;
         this._resolved = true;
-        this._fire(options.onHold!, "medium");
+        this._fire(options.onHold!, "medium", options);
       }, HOLD_MS);
       return;
     }
@@ -203,28 +206,30 @@ class PressDirective extends AsyncDirective {
     const onPress = options.onPress;
     this._repeats = 0;
     this._repeatTimer = window.setTimeout(() => {
-      if (!this._active) return;
-      // Held long enough to be a repeat rather than a tap: fire the first one
-      // now, so holding feels immediate from here on.
+      if (!this._isCurrent(gesture)) return;
       this._resolved = true;
-      this._fire(onPress);
+      this._fire(onPress, "light", options);
       this._repeatTimer = window.setInterval(() => {
-        if (!this._active || this._repeats >= MAX_REPEATS) {
-          this._reset();
+        if (!this._isCurrent(gesture) || this._repeats >= MAX_REPEATS) {
+          this.cancelPress();
           return;
         }
         this._repeats += 1;
-        this._fire(onPress);
+        this._fire(onPress, "light", options);
       }, REPEAT_INTERVAL_MS);
     }, REPEAT_DELAY_MS);
   };
 
   private _onPointerMove = (event: PointerEvent): void => {
     if (!this._active) return;
-    if (this._nativePending || this._nativeStarted) return;
+    if (this._pointerId !== undefined && event.pointerId !== this._pointerId) return;
+    if (this._native.state !== "idle") return;
     const dx = event.clientX - this._startX;
     const dy = event.clientY - this._startY;
-    if (dx * dx + dy * dy > SLOP_PX * SLOP_PX) this._abort();
+    const slop = this._claimsTouch(this._gestureOptions)
+      ? CLAIMED_SLOP_PX
+      : SCROLL_SLOP_PX;
+    if (dx * dx + dy * dy > slop * slop) this.cancelPress();
   };
 
   private _onPointerUp = (event: PointerEvent): void => {
@@ -235,10 +240,9 @@ class PressDirective extends AsyncDirective {
 
   private _onPointerCancel = (event: PointerEvent): void => {
     if (this._pointerId !== undefined && event.pointerId !== this._pointerId) return;
-    this._abort();
+    this.cancelPress();
   };
 
-  /** Window fallback for release outside the element or a broken capture. */
   private _onWindowPointerUp = (event: PointerEvent): void => {
     this._onPointerUp(event);
   };
@@ -247,11 +251,46 @@ class PressDirective extends AsyncDirective {
     this._onPointerCancel(event);
   };
 
-  /** Losing capture unexpectedly must never leave Android holding a key. */
+  private _onWindowTouchEnd = (event: TouchEvent): void => {
+    if (!this._active || !this._isDirectPointer(this._pointerType)) return;
+    if (event.touches.length === 0) this._release();
+  };
+
+  private _onWindowTouchCancel = (): void => {
+    if (this._active && this._isDirectPointer(this._pointerType)) this.cancelPress();
+  };
+
+  private _onWindowMouseUp = (event: MouseEvent): void => {
+    if (this._active && this._pointerType === "mouse" && event.button === 0) {
+      this._release();
+    }
+  };
+
+  /** A compatibility click is the final fallback for WebViews omitting up. */
+  private _onClick = (event: MouseEvent): void => {
+    if (!this._active || this._pointerId === undefined) return;
+    event.preventDefault();
+    this._release();
+  };
+
   private _onLostPointerCapture = (event: PointerEvent): void => {
     if (!this._active) return;
     if (this._pointerId !== undefined && event.pointerId !== this._pointerId) return;
-    this._abort();
+    this.cancelPress();
+  };
+
+  private _onPointerLeave = (): void => {
+    if (
+      this._pointerId !== undefined &&
+      this._element?.hasPointerCapture(this._pointerId)
+    ) {
+      return;
+    }
+    this.cancelPress();
+  };
+
+  private _onContextMenu = (event: Event): void => {
+    event.preventDefault();
   };
 
   /* --------------------------------------------------------------- keyboard */
@@ -259,38 +298,31 @@ class PressDirective extends AsyncDirective {
   private _onKeyDown = (event: KeyboardEvent): void => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
-    // Held keys arrive as a stream of keydowns; let the repeat timer own the
-    // cadence instead of the OS key-repeat rate.
-    if (event.repeat || this._active) return;
+    if (event.repeat) return;
 
     const options = this._options;
     if (!options || options.disabled) return;
-
-    // A keyboard press cannot turn into a scroll. Native mode still waits for
-    // the same threshold so a quick Enter/Space is a SHORT command.
-    this._active = true;
-    this._resolved = false;
-    this._startX = 0;
-    this._startY = 0;
-    this._element?.classList.add("pressed");
+    const gesture = this._beginGesture(options, "keyboard");
+    this._armSafety();
 
     if (this._isNative(options)) {
-      this._nativePending = true;
-      this._nativeEnd = options.onPressEnd;
-      this._armNativeSafety();
+      const session = this._native.begin();
+      this._nativeSession = session;
       this._holdTimer = window.setTimeout(
-        () => this._startNative(options),
-        NATIVE_HOLD_DELAY_MS,
+        () => this._startNative(gesture, session),
+        DESKTOP_NATIVE_HOLD_MS,
       );
       return;
     }
 
+    // Preserve native button keyboard timing: activate immediately, while
+    // keeping hold/repeat timers owned by this one session.
     this._resolved = true;
-    this._tap();
+    this._tap(options);
 
     if (options.onHold) {
       this._holdTimer = window.setTimeout(() => {
-        if (this._active) this._fire(options.onHold!, "medium");
+        if (this._isCurrent(gesture)) this._fire(options.onHold!, "medium", options);
       }, HOLD_MS);
       return;
     }
@@ -299,12 +331,12 @@ class PressDirective extends AsyncDirective {
     this._repeats = 0;
     this._repeatTimer = window.setTimeout(() => {
       this._repeatTimer = window.setInterval(() => {
-        if (!this._active || this._repeats >= MAX_REPEATS) {
-          this._reset();
+        if (!this._isCurrent(gesture) || this._repeats >= MAX_REPEATS) {
+          this.cancelPress();
           return;
         }
         this._repeats += 1;
-        this._fire(onPress);
+        this._fire(onPress, "light", options);
       }, REPEAT_INTERVAL_MS);
     }, REPEAT_DELAY_MS);
   };
@@ -314,58 +346,115 @@ class PressDirective extends AsyncDirective {
     this._release();
   };
 
+  /* ------------------------------------------------------------------ state */
+
+  private _beginGesture(options: PressOptions, pointerType: string): number {
+    // A valid pointer cannot emit a second pointerdown before ending. Treating
+    // one as a new session is therefore the safest recovery for a lost up.
+    if (this._active) this.cancelPress();
+    options.coordinator?.claim(this);
+    this._coordinator = options.coordinator;
+    this._gestureOptions = options;
+    this._active = true;
+    this._resolved = false;
+    this._pointerType = pointerType;
+    this._repeats = 0;
+    this._gestureId += 1;
+    this._element?.classList.add("pressed");
+    return this._gestureId;
+  }
+
+  private _isCurrent(gesture: number): boolean {
+    return this._active && gesture === this._gestureId;
+  }
+
+  private _startNative(gesture: number, session: number): void {
+    if (!this._isCurrent(gesture)) return;
+    if (this._native.hold(session) !== "start") return;
+    const options = this._gestureOptions;
+    if (!options?.onPressStart) return;
+    this._resolved = true;
+    this._holdTimer = undefined;
+    this._fireNative(options.onPressStart, "light", options);
+    this._nativeTimer = window.setTimeout(() => {
+      if (this._isCurrent(gesture)) this.cancelPress();
+    }, MAX_NATIVE_HOLD_MS);
+  }
+
+  /** Resolve a physical release as either one short tap or one native key-up. */
+  private _release(): void {
+    if (!this._active) return;
+    if (this._nativeSession !== undefined) {
+      this._finishNative(true);
+      return;
+    }
+    const resolved = this._resolved;
+    const options = this._gestureOptions ?? this._options;
+    this._reset();
+    if (!resolved && options) this._tap(options);
+  }
+
+  private _finishNative(released: boolean): void {
+    const session = this._nativeSession;
+    const options = this._gestureOptions;
+    if (session === undefined || !options) {
+      this._reset();
+      return;
+    }
+    const effect = released
+      ? this._native.release(session)
+      : this._native.cancel(session);
+    this._reset();
+    if (effect === "short" && options.onPress) {
+      this._tap(options);
+    } else if (effect === "end" && options.onPressEnd) {
+      this._fireNative(options.onPressEnd, undefined, options);
+    }
+  }
+
+  /** Cancel from DOM lifecycle or from another control claiming the card. */
+  public cancelPress = (): void => {
+    if (!this._active) return;
+    if (this._nativeSession !== undefined) this._finishNative(false);
+    else this._reset();
+  };
+
   /* ------------------------------------------------------------------ firing */
 
-  /** A tap, resolving single vs double first when that distinction exists. */
-  private _tap(): void {
-    const options = this._options;
-    if (!options) return;
+  private _tap(options: PressOptions): void {
     if (!options.onPress) return;
     const onPress = options.onPress;
 
     if (!options.onDoubleTap) {
-      this._fire(onPress);
+      this._fire(onPress, "light", options);
       return;
     }
-
     if (this._awaitingSecondTap) {
       window.clearTimeout(this._tapTimer);
       this._awaitingSecondTap = false;
-      this._fire(options.onDoubleTap);
+      this._fire(options.onDoubleTap, "light", options);
       return;
     }
-
     this._awaitingSecondTap = true;
     this._tapTimer = window.setTimeout(() => {
       this._awaitingSecondTap = false;
-      this._fire(onPress);
+      this._fire(onPress, "light", options);
     }, DOUBLE_TAP_MS);
   }
 
-  private _fire(run: () => void, haptic = "light"): void {
-    const options = this._options;
-    if (!options) return;
-
-    // Coalesce: on a slow websocket a repeat can outrun the previous call, and
-    // the queue arrives long after the finger lifts.
-    if (this._inFlight) return;
-    this._inFlight = true;
-    // Cleared on a microtask rather than awaiting the call: presses stay
-    // responsive, but two cannot be issued from the same tick.
-    Promise.resolve().then(() => {
-      this._inFlight = false;
-    });
-
+  /** Never coalesce valid taps: transport ordering is handled by the card. */
+  private _fire(run: () => void, haptic: string, options: PressOptions): void {
     if (options.haptics !== false && this._element) {
       fireEvent(this._element, "haptic", haptic);
     }
     run();
   }
 
-  /** Native START/END may be adjacent and must never be coalesced. */
-  private _fireNative(run: () => void, haptic?: string): void {
-    const options = this._options;
-    if (!options) return;
+  private _fireNative(
+    run: () => void,
+    haptic: string | undefined,
+    options: PressOptions,
+  ): void {
     if (haptic && options.haptics !== false && this._element) {
       fireEvent(this._element, "haptic", haptic);
     }
@@ -374,102 +463,62 @@ class PressDirective extends AsyncDirective {
 
   /* ---------------------------------------------------------------- teardown */
 
-  /** Give up on the current press; native mode still releases the Android key. */
-  private _abort = (): void => {
-    if (this._nativeStarted) this._finishNative();
-    else this._reset();
-  };
-
-  private _onPointerLeave = (): void => {
-    if (
-      (this._nativePending || this._nativeStarted) &&
-      this._pointerId !== undefined &&
-      this._element?.hasPointerCapture(this._pointerId)
-    ) {
-      return;
-    }
-    this._abort();
-  };
-
-  private _isNative(options: PressOptions): boolean {
-    return Boolean(options.onPressStart && options.onPressEnd);
-  }
-
-  private _armNativeSafety(): void {
+  private _armSafety(): void {
     if (this._pointerId !== undefined) {
       window.addEventListener("pointerup", this._onWindowPointerUp, true);
       window.addEventListener("pointercancel", this._onWindowPointerCancel, true);
+      window.addEventListener("mouseup", this._onWindowMouseUp, true);
+      window.addEventListener("touchend", this._onWindowTouchEnd, true);
+      window.addEventListener("touchcancel", this._onWindowTouchCancel, true);
     }
-    window.addEventListener("pagehide", this._abort);
-    window.addEventListener("blur", this._abort);
+    window.addEventListener("pagehide", this.cancelPress);
+    window.addEventListener("beforeunload", this.cancelPress);
+    window.addEventListener("blur", this.cancelPress);
+    document.addEventListener("freeze", this.cancelPress);
     document.addEventListener("visibilitychange", this._onVisibilityChange);
   }
 
   private _onVisibilityChange = (): void => {
-    if (document.hidden) this._abort();
+    if (document.hidden) this.cancelPress();
   };
 
-  /** Cross the threshold and send Android exactly one physical key-down. */
-  private _startNative(options: PressOptions): void {
-    if (!this._active || !this._nativePending || this._nativeStarted) return;
-    this._nativePending = false;
-    this._nativeStarted = true;
-    this._resolved = true;
-    this._nativeEnd = options.onPressEnd;
-    this._holdTimer = undefined;
-    this._fireNative(options.onPressStart!, "light");
-    this._nativeTimer = window.setTimeout(
-      () => this._finishNative(),
-      MAX_NATIVE_HOLD_MS,
-    );
-  }
-
-  /** Resolve a pointer/key release as either SHORT or END_LONG. */
-  private _release(): void {
-    if (!this._active) return;
-    if (this._nativeStarted) {
-      this._finishNative();
-      return;
-    }
-    const resolved = this._resolved;
-    this._reset();
-    // A hold that reached its threshold, or a press that already started
-    // repeating, has had its say. A pending native press is a normal tap.
-    if (!resolved) this._tap();
-  }
-
-  /** Release a native key once, including cancel, blur and watchdog paths. */
-  private _finishNative(): void {
-    if (!this._nativeStarted) return;
-    const end = this._nativeEnd;
-    this._nativeStarted = false;
-    this._nativeEnd = undefined;
-    this._reset();
-    if (end) this._fireNative(end);
-  }
-
   private _reset(): void {
+    const element = this._element;
+    const pointerId = this._pointerId;
+    const pointerType = this._pointerType;
+    const endedGesture = this._gestureId;
+    const coordinator = this._coordinator;
+
     this._active = false;
     this._resolved = false;
-    this._nativePending = false;
-    if (!this._nativeStarted) this._nativeEnd = undefined;
     this._repeats = 0;
-    this._element?.classList.remove("pressed");
+    this._nativeSession = undefined;
+    this._gestureOptions = undefined;
+    this._coordinator = undefined;
+    element?.classList.remove("pressed");
+    coordinator?.release(this);
+
     window.removeEventListener("pointerup", this._onWindowPointerUp, true);
     window.removeEventListener("pointercancel", this._onWindowPointerCancel, true);
-    window.removeEventListener("pagehide", this._abort);
-    window.removeEventListener("blur", this._abort);
+    window.removeEventListener("mouseup", this._onWindowMouseUp, true);
+    window.removeEventListener("touchend", this._onWindowTouchEnd, true);
+    window.removeEventListener("touchcancel", this._onWindowTouchCancel, true);
+    window.removeEventListener("pagehide", this.cancelPress);
+    window.removeEventListener("beforeunload", this.cancelPress);
+    window.removeEventListener("blur", this.cancelPress);
+    document.removeEventListener("freeze", this.cancelPress);
     document.removeEventListener("visibilitychange", this._onVisibilityChange);
-    if (this._pointerId !== undefined) {
+
+    if (pointerId !== undefined) {
       try {
-        if (this._element?.hasPointerCapture(this._pointerId)) {
-          this._element.releasePointerCapture(this._pointerId);
-        }
+        if (element?.hasPointerCapture(pointerId)) element.releasePointerCapture(pointerId);
       } catch {
-        // The browser may already have released capture on pointerup/cancel.
+        // The browser may already have implicitly released capture.
       }
-      this._pointerId = undefined;
     }
+    this._pointerId = undefined;
+    this._pointerType = undefined;
+
     if (this._repeatTimer !== undefined) {
       window.clearTimeout(this._repeatTimer);
       window.clearInterval(this._repeatTimer);
@@ -483,11 +532,38 @@ class PressDirective extends AsyncDirective {
       window.clearTimeout(this._nativeTimer);
       this._nativeTimer = undefined;
     }
+
+    // Android WebView can apply focus after pointerup's default action. Blur
+    // both now and once after that task, without stealing focus from a newer
+    // gesture or from keyboard users.
+    if (element && this._isDirectPointer(pointerType)) {
+      element.blur();
+      window.setTimeout(() => {
+        if (!this._active && this._gestureId === endedGesture) element.blur();
+      }, 0);
+    }
+  }
+
+  private _isNative(options: PressOptions | undefined): boolean {
+    return Boolean(options?.onPressStart && options.onPressEnd);
+  }
+
+  private _claimsTouch(options: PressOptions | undefined): boolean {
+    return Boolean(options?.claimTouch || this._isNative(options));
+  }
+
+  private _isDirectPointer(pointerType: string | undefined): boolean {
+    return pointerType === "touch" || pointerType === "pen";
+  }
+
+  private _nativeHoldDelay(options: PressOptions, pointerType: string | undefined): number {
+    return this._isDirectPointer(pointerType)
+      ? (options.nativeTouchHoldDelayMs ?? DEFAULT_NATIVE_TOUCH_HOLD_DELAY_MS)
+      : DESKTOP_NATIVE_HOLD_MS;
   }
 
   protected override disconnected(): void {
-    if (this._nativeStarted) this._finishNative();
-    else this._reset();
+    this.cancelPress();
     if (this._tapTimer !== undefined) {
       window.clearTimeout(this._tapTimer);
       this._tapTimer = undefined;
