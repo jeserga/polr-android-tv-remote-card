@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {mkdirSync} from 'node:fs';
 const out=resolve('test/harness/shots-tv-guide');mkdirSync(out,{recursive:true});
-const browser=await puppeteer.launch({headless:true,args:['--no-sandbox','--allow-file-access-from-files'],executablePath:process.env.PUPPETEER_EXECUTABLE_PATH||'/usr/bin/chromium'});
+const browser=await puppeteer.launch({headless:true,args:['--no-sandbox','--allow-file-access-from-files'],...(process.env.PUPPETEER_EXECUTABLE_PATH?{executablePath:process.env.PUPPETEER_EXECUTABLE_PATH}:{})});
 const errors=[];const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
 await page.setViewport({width:1280,height:1100});await page.goto(pathToFileURL(resolve('test/harness/guide.html')).href);
 await page.waitForFunction(()=>window.cards?.[1].shadowRoot?.querySelectorAll('.channel-list .channel').length===3);
