@@ -32,13 +32,17 @@ jobs:
         # into the wrong shape, and getConfigElement returning an element that
         # was never defined -- the bug that left v1's editor blank for two
         # years. Fails on any console error.
-        run: npm run shots
+        run: |
+          npm run shots
+          npm run shots:guide
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: card-screenshots
-          path: test/harness/shots/
+          path: |
+            test/harness/shots/
+            test/harness/shots-tv-guide/
           if-no-files-found: ignore
 
       - name: Committed bundle is current

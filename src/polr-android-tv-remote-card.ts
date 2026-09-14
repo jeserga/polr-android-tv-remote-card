@@ -41,10 +41,11 @@ import { tileStyles } from "./kit/styles";
 import { stateColor, type HomeAssistant } from "./kit/types";
 
 import "./nav-pad";
+import "./tv-guide-card";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.2.2";
+export const CARD_VERSION = "2.3.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -313,11 +314,12 @@ export class PolrAndroidTvRemoteCard extends LitElement {
 
   private _renderHeader(device: DeviceState): TemplateResult {
     const config = this._config!;
-    const secondary = device.available
+    const context = config.context_entity ? this.hass?.states[config.context_entity]?.attributes : undefined;
+    const secondary = context?.label ?? (device.available
       ? device.on
         ? (device.appName ?? "On")
         : "Off"
-      : "Unavailable";
+      : "Unavailable");
 
     // A brand logo is instantly readable at 24px; mdi:television-play is not.
     const brand = device.on && device.available ? brandFor(device.appName) : undefined;
@@ -329,7 +331,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
         <div class="tile-icon">
           ${brand
             ? html`<span class="brand-mark">${BRAND_LOGOS[brand]}</span>`
-            : html`<ha-icon icon="mdi:television"></ha-icon>`}
+            : html`<ha-icon icon=${context?.kind === "home" ? "mdi:home" : context?.kind === "tv" ? "mdi:television-classic" : "mdi:television"}></ha-icon>`}
         </div>
         <div class="tile-info">
           <div class="primary"><span>${device.name}</span></div>
