@@ -376,3 +376,25 @@ unavailable, no paired player, reduced `supported_features`. `npm run shots`
 screenshots them in light and dark and fails on any console error, on a tap that
 does not fire, on a scroll that does, and on a control that is unlabelled or
 unreachable by keyboard.
+
+
+## Shared TV guide (2.3.0)
+
+An optional `context_entity` on the remote header displays the app or observed tuner channel. The companion `polr-tv-guide-card` uses the authenticated `tv_guide` integration for current/next programmes, shared channel favourites, an observed channel selector and a searchable TV/radio catalogue. The full mode adds a desktop timetable and mobile agenda; programme times use Europe/Madrid, including DST.
+
+```yaml
+type: custom:polr-android-tv-remote-card
+entity: remote.tv_salon
+context_entity: sensor.tv_salon_contexto
+```
+
+```yaml
+type: custom:polr-tv-guide-card
+entity: sensor.tv_salon_contexto
+compact: true
+guide_path: /mando-tv/guia
+```
+
+Use `compact: false` in the separate guide view. The backend integration is required for guide data and services. Empty EPG coverage is shown explicitly; selecting a channel wakes and opens TV through the backend. Favourites belong to the household and persist on the server.
+
+Guide browser checks: `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium node test/harness/guide-shoot.mjs`. They cover accent-insensitive search, shared favourites, observed selection, dialogue focus/Escape, responsive layout, labelled controls and bounded failure recovery. The existing remote gesture harness remains in `npm run shots`.

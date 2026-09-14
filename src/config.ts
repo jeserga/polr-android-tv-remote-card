@@ -178,6 +178,8 @@ export interface PolrAtvRemoteCardConfig {
    * itself reports no volume level to display.
    */
   volume_entity?: string;
+  /** Optional tv_guide context sensor for launcher, tuner and input state. */
+  context_entity?: string;
   /** Header title. Defaults to the entity's friendly name. */
   name?: string;
 

@@ -5,3 +5,5 @@ test/.build/
 test/harness/shots/
 
 # dist/ is deliberately NOT ignored — HACS ships the built bundle from the repo.
+
+test/harness/shots-tv-guide/

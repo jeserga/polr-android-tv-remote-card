@@ -1,0 +1,17 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía TV</title>
+<style>body{margin:24px;background:#f4f5f8;font:16px system-ui;--primary-color:#356bd4;--primary-text-color:#222a36;--secondary-text-color:#637086;--secondary-background-color:#edf0f5;--card-background-color:#fff;--divider-color:#e0e5ed;--error-color:#b32034;--text-primary-color:#fff}ha-card{display:block;border-radius:20px;background:var(--card-background-color)}body.dark{background:#151923;--primary-color:#89b5ff;--primary-text-color:#e5ebf4;--secondary-text-color:#a2afc4;--secondary-background-color:#303b4e;--card-background-color:#202838;--divider-color:#3a4559;--text-primary-color:#152d50}#compact{max-width:450px;margin-bottom:24px}ha-icon{font:14px system-ui}</style>
+<div id="compact"></div><div id="full"></div>
+<script type="module">
+import '../../dist/polr-android-tv-remote-card.js';
+customElements.define('ha-icon',class extends HTMLElement {connectedCallback(){this.textContent=this.getAttribute('icon')?.includes('star')?'☆':'◦';}});
+if(location.search.includes('dark'))document.body.classList.add('dark');
+const now=Date.now()/1000;
+const event=(channel,start,end,title)=>({channel,id:channel+start,title,description:'Descripción de prueba con tildes: emisión en directo.',start,end,source:'tv'});
+window.programs=[event('boing',now-1800,now+1800,'El asombroso mundo de Gumball'),event('boing',now+1800,now+3600,'Teen Titans Go!'),event('boing',now+3600,now+5400,'Doraemon'),event('boing',now+5400,now+7200,'El mundo de Craig'),event('la1',now-1000,now+2000,'Telediario')];
+window.channels=[{key:'la1',number:'1',name:'La 1 HD',option:'1 · La 1 HD',kind:'tv',favorite:false,browsable:true,current:programs[4]},{key:'boing',number:'5',name:'Boing',option:'5 · Boing',kind:'tv',favorite:false,browsable:true,current:programs[0]},{key:'radio',number:'10',name:'Ràdio clásica',option:'10 · Ràdio clásica',kind:'radio',favorite:false,browsable:true}];
+window.calls=[];window.wsCount=0;window.offline=false;
+let revision=1;
+window.refresh=()=>{revision++;for(const card of window.cards){card.hass={...window.hass,states:{'sensor.ctx':{state:'tv',attributes:{entry_id:'demo',guide_revision:revision,kind:'tv',channel:channels[1],current:programs[0],next:programs.slice(1,4),favorite:channels[1].favorite}}}};}};
+window.hass={states:{},callWS:async m=>{wsCount++;if(offline)throw new Error('Sin conexión de prueba');return m.type==='tv_guide/catalog'?{channels:channels.map(c=>({...c})),missing_favorites:[]}:{programs,available_end:now+3*86400};},callService:async(domain,service,data)=>{calls.push({domain,service,data});if(service==='set_favorite'){channels.find(c=>c.key===data.channel_key).favorite=data.favorite;refresh();}}};
+window.cards=[true,false].map(compact=>{const card=document.createElement('polr-tv-guide-card');card.setConfig({entity:'sensor.ctx',compact});document.getElementById(compact?'compact':'full').append(card);return card;});refresh();
+</script></html>
