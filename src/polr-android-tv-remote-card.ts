@@ -42,10 +42,13 @@ import { stateColor, type HomeAssistant } from "./kit/types";
 
 import "./nav-pad";
 import "./tv-guide-card";
+import "./home-summary-card";
+import "./jellyfin-card";
+import "./history-card";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.3.0";
+export const CARD_VERSION = "2.4.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -469,11 +472,11 @@ export class PolrAndroidTvRemoteCard extends LitElement {
         <button
           class="control-button"
           type="button"
-          aria-label=${muted ? "Unmute" : "Mute"}
+          aria-label=${muted ? "Activar sonido" : device.muted === false ? "Silenciar" : "Alternar silencio"}
           aria-pressed=${device.muted === undefined ? "undefined" : muted ? "true" : "false"}
           ${press(this._pressOptions("volume_mute"))}
         >
-          <ha-icon icon=${muted ? "mdi:volume-off" : "mdi:volume-high"}></ha-icon>
+          <ha-icon icon=${muted ? "mdi:volume-high" : "mdi:volume-off"}></ha-icon>
         </button>
         ${this._button("volume_up", "mdi:volume-plus", "Volume up", { repeat: true })}
       </div>

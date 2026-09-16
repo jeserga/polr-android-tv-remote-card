@@ -18,6 +18,9 @@ const ALLOWED = new Set([
   "PolrAndroidTvRemoteCardEditor",
   "PolrAtvNavPad",
   "PolrTvGuideCard",
+  "HomeSummaryCard",
+  "JellyfinCard",
+  "HistoryCard",
   "NavDirection",
 ]);
 

@@ -398,3 +398,11 @@ guide_path: /mando-tv/guia
 Use `compact: false` in the separate guide view. The backend integration is required for guide data and services. Empty EPG coverage is shown explicitly; selecting a channel wakes and opens TV through the backend. Favourites belong to the household and persist on the server.
 
 Guide browser checks: `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium node test/harness/guide-shoot.mjs`. They cover accent-insensitive search, shared favourites, observed selection, dialogue focus/Escape, responsive layout, labelled controls and bounded failure recovery. The existing remote gesture harness remains in `npm run shots`.
+
+## Home, Jellyfin and private TV history (2.4.0)
+
+This installation adds three cards backed by the `tv_guide` 1.1.0 enhanced runtime: `custom:polr-home-summary-card`, `custom:polr-jellyfin-card` and `custom:polr-tv-history-card`. The home card uses the living-room lamp, TV and AEMET entities. Jellyfin prompts for playback from the beginning or the saved position and keeps credentials on the server. History requires `user_id` in the card configuration and a matching `history_user_id` in the integration; the server enforces access independently of dashboard visibility.
+
+For the existing remote, configure `volume_entity: media_player.tv_salon_audio`, `context_entity: sensor.tv_salon_contexto` and `audited_control: true`. Navigation and text commands then use the integration's private audit service. Volume comes from Android's active output, including HDMI ARC when available. The mute icon now shows the action: mute while sound is on and restore sound while muted.
+
+Run `bun run build`, `bun run test` and `bun run lint:exports` before publishing. The enhanced cards are designed for mobile layouts with 44-pixel controls; weather and playback metadata retain explicit unknown states.

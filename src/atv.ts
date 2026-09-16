@@ -70,6 +70,7 @@ export type LongPressPhase = "start" | "end";
 const TEXT_PREFIX = "text:";
 
 export interface DeviceState {
+  controlEntry?: string;
   remoteId: string;
   /** null when no media_player could be paired. */
   playerId: string | null;
@@ -179,6 +180,7 @@ export const readDevice = (
     features: (playerAttrs["supported_features"] as number | undefined) ?? 0,
 
     volumeId,
+    controlEntry: config.audited_control && config.context_entity ? hass.states?.[config.context_entity]?.attributes.entry_id : undefined,
     volumeFeatures: (volumeAttrs["supported_features"] as number | undefined) ?? 0,
     volume:
       typeof volumeAttrs["volume_level"] === "number"
@@ -259,7 +261,7 @@ export const sendKey = (
   device: DeviceState,
   command: string,
 ): Promise<unknown> =>
-  hass.callService("remote", "send_command", {
+  device.controlEntry ? hass.callService("tv_guide", "control", {entry_id:device.controlEntry,command}) : hass.callService("remote", "send_command", {
     entity_id: device.remoteId,
     command,
     // Home Assistant otherwise sleeps 400 ms after every command. A zero
@@ -286,7 +288,7 @@ export const sendKeyDirection = (
   // remote.send_command otherwise waits its default 400 ms after each call.
   // END_LONG is queued behind START_LONG by the card, so that default makes a
   // released key visibly stick. Zero keeps ordering while releasing at once.
-  return hass.callService("remote", "send_command", {
+  return device.controlEntry ? hass.callService("tv_guide","control",{entry_id:device.controlEntry,command:`${direction}:${key}`}) : hass.callService("remote", "send_command", {
     entity_id: device.remoteId,
     command: `${direction}:${key}`,
     delay_secs: 0,
