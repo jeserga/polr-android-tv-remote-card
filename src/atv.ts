@@ -71,6 +71,7 @@ const TEXT_PREFIX = "text:";
 
 export interface DeviceState {
   controlEntry?: string;
+  volumeOutput?: string;
   remoteId: string;
   /** null when no media_player could be paired. */
   playerId: string | null;
@@ -180,6 +181,7 @@ export const readDevice = (
     features: (playerAttrs["supported_features"] as number | undefined) ?? 0,
 
     volumeId,
+    volumeOutput: typeof volumeAttrs.output_label === "string" ? volumeAttrs.output_label : undefined,
     controlEntry: config.audited_control && config.context_entity ? hass.states?.[config.context_entity]?.attributes.entry_id : undefined,
     volumeFeatures: (volumeAttrs["supported_features"] as number | undefined) ?? 0,
     volume:

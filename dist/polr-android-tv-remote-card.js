@@ -789,6 +789,7 @@ const he = (t, e, i) => {
     playing: s?.state === "playing",
     features: a.supported_features ?? 0,
     volumeId: c,
+    volumeOutput: typeof u.output_label == "string" ? u.output_label : void 0,
     controlEntry: e.audited_control && e.context_entity ? t.states?.[e.context_entity]?.attributes.entry_id : void 0,
     volumeFeatures: u.supported_features ?? 0,
     volume: typeof u.volume_level == "number" ? u.volume_level : void 0,
@@ -1754,6 +1755,12 @@ const Y = De(Gi), Be = Q`
     border-radius: var(--radius-pill);
     background-color: rgba(var(--rgb-primary-text-color, 0, 0, 0), 0.1);
     overflow: hidden;
+  }
+  .volume-output {
+    text-align: center;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    padding: 0 12px 10px;
   }
   .volume-bar > span {
     display: block;
@@ -4459,6 +4466,7 @@ let J = class extends D {
               <span style="width:${Math.round(t.volume * 100)}%"></span>
             </div>
           ` : l}
+      ${t.volumeOutput ? r`<div class="volume-output">${t.volumeOutput}${e ? ` · ${Math.round(t.volume * 100)} %` : ""}${i ? " · Silencio" : ""}</div>` : l}
     `;
   }
   _renderTextInput() {

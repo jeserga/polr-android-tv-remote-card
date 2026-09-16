@@ -487,6 +487,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
             </div>
           `
         : nothing}
+      ${device.volumeOutput ? html`<div class="volume-output">${device.volumeOutput}${known ? ` · ${Math.round(device.volume! * 100)} %` : ""}${muted ? " · Silencio" : ""}</div>` : nothing}
     `;
   }
 
