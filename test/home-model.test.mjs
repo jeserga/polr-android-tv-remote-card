@@ -22,5 +22,8 @@ test('sessions retain content changes but split at an off state or monitoring ou
 });
 test('durations distinguish missing data from zero',()=>{
   assert.equal(duration(undefined),'—');assert.equal(duration(NaN),'—');
-  assert.equal(duration(-5),'0 min');assert.equal(duration(3650),'1 h 0 min');
+  assert.equal(duration(-5),'0 s');assert.equal(duration(3650),'1 h 0 min');
+});
+test('a recent switch-off immediately closes the current session',()=>{
+  assert.equal(sessionsFromSegments([{start:0,end:10,power:'on'},{start:10,end:15,power:'off'}],16)[0].active,false);
 });
