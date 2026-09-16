@@ -4,7 +4,7 @@ import type {HomeAssistant} from "./kit/types";
 import {duration,clockTime,madridDay,sessionsFromSegments} from "./home-model";
 import {dayBounds} from "./guide-model";
 
-const labels:Record<string,string>={homeassistant:"Home Assistant",observed:"Observado",physical_button:"Botón físico",infrared:"Mando infrarrojo",airmouse:"AirMouse",virtual_remote:"Mando virtual",external_input:"Entrada externa",system:"Sistema",command:"Acción",input:"Pulsación",power:"Encendido/apagado",playback:"Reproducción",audio:"Audio",error:"Error",monitor:"Seguimiento"};
+const labels:Record<string,string>={homeassistant:"Home Assistant",observed:"Observado",physical_button:"Botón físico",infrared:"Receptor IR",airmouse:"AirMouse",virtual_remote:"Mando virtual",external_input:"Entrada externa",system:"Sistema",command:"Acción",input:"Pulsación",power:"Encendido/apagado",playback:"Reproducción",audio:"Audio",error:"Error",monitor:"Seguimiento"};
 
 @customElement("polr-tv-history-card")
 export class HistoryCard extends LitElement {

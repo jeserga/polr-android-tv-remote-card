@@ -3230,7 +3230,7 @@ var mo = Object.defineProperty, vo = Object.getOwnPropertyDescriptor, z = (t, e,
     (n = t[a]) && (s = (o ? n(e, i, s) : n(s)) || s);
   return o && s && mo(e, i, s), s;
 };
-const ht = { homeassistant: "Home Assistant", observed: "Observado", physical_button: "Botón físico", infrared: "Mando infrarrojo", airmouse: "AirMouse", virtual_remote: "Mando virtual", external_input: "Entrada externa", system: "Sistema", command: "Acción", input: "Pulsación", power: "Encendido/apagado", playback: "Reproducción", audio: "Audio", error: "Error", monitor: "Seguimiento" };
+const ht = { homeassistant: "Home Assistant", observed: "Observado", physical_button: "Botón físico", infrared: "Receptor IR", airmouse: "AirMouse", virtual_remote: "Mando virtual", external_input: "Entrada externa", system: "Sistema", command: "Acción", input: "Pulsación", power: "Encendido/apagado", playback: "Reproducción", audio: "Audio", error: "Error", monitor: "Seguimiento" };
 let T = class extends D {
   constructor() {
     super(...arguments), this.config = {}, this.result = { events: [], segments: [], daily: [] }, this.from = R(), this.to = R(), this.kind = "", this.origin = "", this.query = "", this.mode = "sessions", this.error = "", this.loading = !1, this.loaded = !1, this.generation = 0;
