@@ -109,6 +109,17 @@ const node = () => ({ dispatchEvent: () => true });
 const config = (extra) =>
   normalizeConfig({ type: "custom:polr-android-tv-remote-card", entity: "remote.main_tv", ...extra });
 
+test("audited controls keep navigation, holds and text on the private service", async () => {
+  const hass=fixture();
+  hass.states['sensor.context']={state:'on',attributes:{entry_id:'guide'}};
+  const device=readDevice(hass,config({context_entity:'sensor.context',audited_control:true}));
+  await sendKey(hass,device,'DPAD_UP');
+  await sendText(hass,device,'Buscar película');
+  assert.equal(hass.calls[0].domain,'tv_guide');
+  assert.equal(hass.calls[0].data.command,'DPAD_UP');
+  assert.equal(hass.calls[1].data.command,'text:Buscar película');
+});
+
 test("a media_player on the same device is paired to the remote", () => {
   const hass = fixture();
   assert.equal(resolvePlayer(hass, config()), "media_player.main_tv");

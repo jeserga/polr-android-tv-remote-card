@@ -180,6 +180,8 @@ export interface PolrAtvRemoteCardConfig {
   volume_entity?: string;
   /** Optional tv_guide context sensor for launcher, tuner and input state. */
   context_entity?: string;
+  /** Opt-in audited command service supplied by tv_guide. */
+  audited_control?: boolean;
   /** Header title. Defaults to the entity's friendly name. */
   name?: string;
 

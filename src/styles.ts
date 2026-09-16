@@ -254,6 +254,12 @@ export const remoteStyles = css`
     background-color: rgba(var(--rgb-primary-text-color, 0, 0, 0), 0.1);
     overflow: hidden;
   }
+  .volume-output {
+    text-align: center;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    padding: 0 12px 10px;
+  }
   .volume-bar > span {
     display: block;
     height: 100%;
