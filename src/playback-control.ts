@@ -55,7 +55,7 @@ class PlaybackControl extends LitElement {
         @pointerdown=${() => { this.seekItem = p.item_id; }} @keydown=${() => { this.seekItem = p.item_id; }}
         @input=${(e: Event) => { this.draft = Number((e.target as HTMLInputElement).value); }}
         @change=${(e: Event) => this.seek(Number((e.target as HTMLInputElement).value))}>
-      <div class="seek"><label for="position">Ir a</label><input id="position" type="text" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Momento exacto, horas minutos y segundos" .value=${this.editing ? this.text : playbackTime(position)} ?disabled=${disabled}
+      <div class="seek"><label for="position">Ir a</label><input id="position" type="text" inputmode="text" placeholder="hh:mm:ss" aria-label="Momento exacto, horas minutos y segundos" .value=${this.editing ? this.text : playbackTime(position)} ?disabled=${disabled}
         @focus=${() => { this.editing = true; this.text = playbackTime(position); this.seekItem = p.item_id; }} @input=${(e: Event) => { this.text = (e.target as HTMLInputElement).value; }} @keydown=${(e: KeyboardEvent) => { if (e.key === "Enter") void this.seek(parsePlaybackTime(this.text)); }}>
         <button ?disabled=${disabled} @click=${() => this.seek(parsePlaybackTime(this.editing ? this.text : playbackTime(position)))}>${this.busy ? "…" : "Ir"}</button>
         ${!live.fresh ? html`<small>Sin lectura reciente</small>` : !p.seekable ? html`<small>Sin salto disponible</small>` : nothing}

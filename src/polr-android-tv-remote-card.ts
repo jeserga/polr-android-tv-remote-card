@@ -50,7 +50,7 @@ import "./soundbar-control";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.5.0";
+export const CARD_VERSION = "2.5.1";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 

@@ -3402,7 +3402,7 @@ let M = class extends C {
       this.draft = Number(s.target.value);
     }}
         @change=${(s) => this.seek(Number(s.target.value))}>
-      <div class="seek"><label for="position">Ir a</label><input id="position" type="text" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Momento exacto, horas minutos y segundos" .value=${this.editing ? this.text : rt(i)} ?disabled=${o}
+      <div class="seek"><label for="position">Ir a</label><input id="position" type="text" inputmode="text" placeholder="hh:mm:ss" aria-label="Momento exacto, horas minutos y segundos" .value=${this.editing ? this.text : rt(i)} ?disabled=${o}
         @focus=${() => {
       this.editing = !0, this.text = rt(i), this.seekItem = t.item_id;
     }} @input=${(s) => {
@@ -4384,7 +4384,7 @@ var Lo = Object.defineProperty, Ro = Object.getOwnPropertyDescriptor, kt = (t, e
     (r = t[a]) && (s = (o ? r(e, i, s) : r(s)) || s);
   return o && s && Lo(e, i, s), s;
 };
-const Ho = "2.5.0", Mt = "polr-android-tv-remote-card";
+const Ho = "2.5.1", Mt = "polr-android-tv-remote-card";
 let ot = class extends C {
   constructor() {
     super(...arguments), this._text = "", this._sending = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new io();
