@@ -5,7 +5,7 @@ import type { HomeAssistant } from "./kit/types";
 declare global { interface HTMLElementTagNameMap { "polr-soundbar-control": SoundbarControl; } }
 
 interface SoundbarState {
-  power?: string; connected?: boolean; volume_level?: number; keep_awake?: boolean;
+  power?: string; output?: string; connected?: boolean; volume_level?: number; keep_awake?: boolean;
   suspended?: boolean; error?: string; busy?: boolean; limitation?: string;
   capabilities?: { on?: boolean; off?: boolean; keep_awake?: boolean; bass?: boolean; treble?: boolean };
 }
@@ -28,14 +28,14 @@ class SoundbarControl extends LitElement {
   protected override render() {
     const s=this.soundbar;
     if(!s) return nothing;
-    const on=s.power==="on", cap=s.capabilities||{};
-    const label=on?"Encendida":s.power==="standby"?"En reposo":s.connected===false?"No detectada":"Sin lectura actual";
+    const on=s.power==="on"&&s.output==="soundbar", cap=s.capabilities||{};
+    const label=on?"Encendida":s.power==="standby"?"En reposo":s.connected===false?"No detectada":s.output==="speaker"?"HDMI inactivo":"Sin lectura actual";
     return html`<section aria-label="Barra de sonido">
       <div class="heading"><ha-icon icon="mdi:soundbar"></ha-icon><strong>Hisense HS2100</strong><span>${label}${on&&typeof s.volume_level==="number"?` · ${Math.round(s.volume_level*100)} %`:""}</span></div>
       <div class="buttons"><button ?disabled=${this.busy||s.busy||!this.tvOn||!cap.on||on} @click=${()=>this.send("soundbar_on")}><ha-icon icon="mdi:power"></ha-icon>Encender barra</button>
         <button ?disabled=${this.busy||s.busy||!this.tvOn||!cap.off||!on} title=${cap.off?"Apagar la barra":"Usa el mando de la barra para apagarla"} @click=${()=>this.send("soundbar_off")}><ha-icon icon="mdi:power-standby"></ha-icon>Apagar barra</button></div>
       <label class="lock"><ha-icon icon=${s.keep_awake?"mdi:lock":"mdi:lock-open-variant-outline"}></ha-icon><span>Reactivar si se duerme</span><input type="checkbox" role="switch" .checked=${!!s.keep_awake} ?disabled=${this.busy||!cap.keep_awake} @change=${(e:Event)=>this.send("soundbar_keep_awake",{enabled:(e.target as HTMLInputElement).checked})}></label>
-      <p>Solo con la TV encendida. Puede haber una pausa breve al reactivarse.</p>
+      <p>Solo con la TV encendida. Puede tardar alrededor de un minuto en recuperar HDMI.</p>
       ${s.limitation?html`<p>${s.limitation}</p>`:nothing}
       ${s.suspended?html`<p class="error">Reactivación detenida tras tres fallos. Desactiva y activa el interruptor para reintentar.</p>`:nothing}
       ${this.error||s.error?html`<p class="error" role="alert">${this.error||s.error}</p>`:nothing}

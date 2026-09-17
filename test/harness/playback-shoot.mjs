@@ -32,11 +32,16 @@ try {
     const b=document.createElement('polr-soundbar-control');b.hass=hass;b.entryId='entry';b.tvOn=true;b.soundbar={power:'standby',connected:true,keep_awake:false,capabilities:{on:true,off:false,keep_awake:true},limitation:'Apagado y graves/agudos: mando de la barra.'};document.body.append(b);await b.updateComplete;
     const buttons=b.shadowRoot.querySelectorAll('button');buttons[0].click();await new Promise(r=>setTimeout(r,20));
     const checkbox=b.shadowRoot.querySelector('input');checkbox.checked=true;checkbox.dispatchEvent(new Event('change'));await new Promise(r=>setTimeout(r,20));
+    const offDisabled=buttons[1].disabled;
+    b.soundbar={...b.soundbar,power:'on',output:'speaker'};await b.updateComplete;
+    const cachedPowerCanWake=!buttons[0].disabled&&b.shadowRoot.textContent.includes('HDMI inactivo');
+    b.soundbar={...b.soundbar,output:'soundbar',volume_level:.04};await b.updateComplete;
+    const confirmedArcButtonDisabled=buttons[0].disabled;
     const overflow=document.documentElement.scrollWidth>innerWidth;
-    return {beforeRelease,first,afterChangedItem,exact,offDisabled:buttons[1].disabled,services:calls.map(c=>c.s),overflow};
+    return {beforeRelease,first,afterChangedItem,exact,offDisabled,cachedPowerCanWake,confirmedArcButtonDisabled,services:calls.map(c=>c.s),overflow};
   });
   assert.equal(result.beforeRelease,0);assert.equal(result.first.data.position,600);assert.equal(result.afterChangedItem,1);
   assert.equal(result.exact.data.position,754);assert.equal(result.exact.data.expected_item_id,'b'.repeat(32));
-  assert(result.offDisabled);assert(!result.overflow);assert(result.services.includes('soundbar_on'));assert(result.services.includes('soundbar_keep_awake'));
+  assert(result.offDisabled);assert(result.cachedPowerCanWake);assert(result.confirmedArcButtonDisabled);assert(!result.overflow);assert(result.services.includes('soundbar_on'));assert(result.services.includes('soundbar_keep_awake'));
   assert.deepEqual(errors,[]);await page.screenshot({path:out+'/mobile.png',fullPage:true});console.log(JSON.stringify(result));
 } finally {await browser.close();}

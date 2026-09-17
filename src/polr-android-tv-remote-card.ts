@@ -50,7 +50,7 @@ import "./soundbar-control";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.5.1";
+export const CARD_VERSION = "2.5.2";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -689,7 +689,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
                 ${this._renderCustomSections()}
                 ${config.show_apps ? this._renderApps() : nothing}
               `}
-        ${context?.soundbar ? html`<polr-soundbar-control .hass=${this.hass} .soundbar=${context.soundbar} .entryId=${context.entry_id} .tvOn=${device.on}></polr-soundbar-control>` : nothing}
+        ${context?.soundbar ? html`<polr-soundbar-control .hass=${this.hass} .soundbar=${{...context.soundbar,output:context.audio?.output}} .entryId=${context.entry_id} .tvOn=${device.on}></polr-soundbar-control>` : nothing}
       </ha-card>
     `;
   }

@@ -3477,13 +3477,13 @@ let j = class extends C {
   render() {
     const t = this.soundbar;
     if (!t) return l;
-    const e = t.power === "on", i = t.capabilities || {}, o = e ? "Encendida" : t.power === "standby" ? "En reposo" : t.connected === !1 ? "No detectada" : "Sin lectura actual";
+    const e = t.power === "on" && t.output === "soundbar", i = t.capabilities || {}, o = e ? "Encendida" : t.power === "standby" ? "En reposo" : t.connected === !1 ? "No detectada" : t.output === "speaker" ? "HDMI inactivo" : "Sin lectura actual";
     return n`<section aria-label="Barra de sonido">
       <div class="heading"><ha-icon icon="mdi:soundbar"></ha-icon><strong>Hisense HS2100</strong><span>${o}${e && typeof t.volume_level == "number" ? ` · ${Math.round(t.volume_level * 100)} %` : ""}</span></div>
       <div class="buttons"><button ?disabled=${this.busy || t.busy || !this.tvOn || !i.on || e} @click=${() => this.send("soundbar_on")}><ha-icon icon="mdi:power"></ha-icon>Encender barra</button>
         <button ?disabled=${this.busy || t.busy || !this.tvOn || !i.off || !e} title=${i.off ? "Apagar la barra" : "Usa el mando de la barra para apagarla"} @click=${() => this.send("soundbar_off")}><ha-icon icon="mdi:power-standby"></ha-icon>Apagar barra</button></div>
       <label class="lock"><ha-icon icon=${t.keep_awake ? "mdi:lock" : "mdi:lock-open-variant-outline"}></ha-icon><span>Reactivar si se duerme</span><input type="checkbox" role="switch" .checked=${!!t.keep_awake} ?disabled=${this.busy || !i.keep_awake} @change=${(s) => this.send("soundbar_keep_awake", { enabled: s.target.checked })}></label>
-      <p>Solo con la TV encendida. Puede haber una pausa breve al reactivarse.</p>
+      <p>Solo con la TV encendida. Puede tardar alrededor de un minuto en recuperar HDMI.</p>
       ${t.limitation ? n`<p>${t.limitation}</p>` : l}
       ${t.suspended ? n`<p class="error">Reactivación detenida tras tres fallos. Desactiva y activa el interruptor para reintentar.</p>` : l}
       ${this.error || t.error ? n`<p class="error" role="alert">${this.error || t.error}</p>` : l}
@@ -4384,7 +4384,7 @@ var Lo = Object.defineProperty, Ro = Object.getOwnPropertyDescriptor, kt = (t, e
     (r = t[a]) && (s = (o ? r(e, i, s) : r(s)) || s);
   return o && s && Lo(e, i, s), s;
 };
-const Ho = "2.5.1", Mt = "polr-android-tv-remote-card";
+const Ho = "2.5.2", Mt = "polr-android-tv-remote-card";
 let ot = class extends C {
   constructor() {
     super(...arguments), this._text = "", this._sending = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new io();
@@ -4818,7 +4818,7 @@ let ot = class extends C {
                 ${this._renderCustomSections()}
                 ${t.show_apps ? this._renderApps() : l}
               ` : n`<div class="empty-state">This device is unavailable.</div>`}
-        ${s?.soundbar ? n`<polr-soundbar-control .hass=${this.hass} .soundbar=${s.soundbar} .entryId=${s.entry_id} .tvOn=${e.on}></polr-soundbar-control>` : l}
+        ${s?.soundbar ? n`<polr-soundbar-control .hass=${this.hass} .soundbar=${{ ...s.soundbar, output: s.audio?.output }} .entryId=${s.entry_id} .tvOn=${e.on}></polr-soundbar-control>` : l}
       </ha-card>
     `;
   }
