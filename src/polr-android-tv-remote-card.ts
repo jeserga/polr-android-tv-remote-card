@@ -45,10 +45,12 @@ import "./tv-guide-card";
 import "./home-summary-card";
 import "./jellyfin-card";
 import "./history-card";
+import "./playback-control";
+import "./soundbar-control";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.4.0";
+export const CARD_VERSION = "2.5.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -633,10 +635,12 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     // Drives every tint in the card, the way hui-tile-card does.
     const tile = stateColor("media_player", device.on ? "on" : "off");
     const live = device.available;
+    const context = config.context_entity ? this.hass.states[config.context_entity]?.attributes : undefined;
 
     return html`
       <ha-card class=${config.show_header ? "" : "headerless"} style="--tile-color:${tile}">
         ${config.show_header ? this._renderHeader(device) : nothing}
+        ${context?.playback ? html`<polr-playback-control .hass=${this.hass} .playback=${context.playback} .entryId=${context.entry_id}></polr-playback-control>` : nothing}
         ${config.show_header && device.playerId === null
           ? html`<div class="notice warn">
               <ha-icon icon="mdi:information-outline"></ha-icon>
@@ -685,6 +689,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
                 ${this._renderCustomSections()}
                 ${config.show_apps ? this._renderApps() : nothing}
               `}
+        ${context?.soundbar ? html`<polr-soundbar-control .hass=${this.hass} .soundbar=${context.soundbar} .entryId=${context.entry_id} .tvOn=${device.on}></polr-soundbar-control>` : nothing}
       </ha-card>
     `;
   }

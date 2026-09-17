@@ -23,6 +23,12 @@ whether the set is on and what app is running, rather than firing commands blind
 
 ## Installation
 
+### Jellyfin playback and soundbar controls (2.5.0)
+
+With the companion `tv_guide` 1.2 integration and `context_entity` configured, the remote adds the current Jellyfin title, elapsed/remaining time, duration, a one-second seek slider and an `hh:mm:ss` field. Seeking sends the expected item identity so a late gesture cannot move a different episode. Progress freezes when paused or stale. The Android TV 0.19.10 pause workaround briefly resumes playback before restoring pause; the displayed position is the confirmed result.
+
+The soundbar section shows confirmed power and volume, available power actions and an optional persistent “Reactivate if it sleeps” switch. Controls follow backend capabilities. On the verified Xiaomi P1/Hisense HS2100 installation, HDMI ARC wake works; independent shutdown and bass/treble adjustment require the soundbar remote. Enabling recovery does not prevent the TV from sleeping.
+
 ### HACS
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=polr-android-tv-remote-card&category=Lovelace&owner=jeserga)
