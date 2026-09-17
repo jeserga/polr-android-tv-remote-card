@@ -35,6 +35,7 @@ jobs:
         run: |
           npm run shots
           npm run shots:guide
+          npm run shots:playback
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -43,6 +44,7 @@ jobs:
           path: |
             test/harness/shots/
             test/harness/shots-tv-guide/
+            test/harness/shots-playback/
           if-no-files-found: ignore
 
       - name: Committed bundle is current

@@ -1,0 +1,47 @@
+import puppeteer from 'puppeteer';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {mkdirSync} from 'node:fs';
+import assert from 'node:assert/strict';
+const browser=await puppeteer.launch({headless:true,executablePath:process.env.PUPPETEER_EXECUTABLE_PATH,args:['--no-sandbox','--allow-file-access-from-files']});
+const out=resolve('test/harness/shots-playback');mkdirSync(out,{recursive:true});
+try {
+  const page=await browser.newPage(), errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.setViewport({width:360,height:740});
+  await page.goto(pathToFileURL(resolve('test/harness/index.html')).href,{waitUntil:'networkidle0'});
+  await page.waitForFunction(()=>document.title==='ready');
+  const result=await page.evaluate(async()=>{
+    document.body.innerHTML='';document.body.style.margin='0';
+    const calls=[];const hass={callService:async(d,s,data)=>{calls.push({d,s,data});return {};} };
+    const p=document.createElement('polr-playback-control');
+    p.hass=hass;p.entryId='entry';p.playback={source:'jellyfin',item_id:'a'.repeat(32),title:'Serie · T2 E3 · Un episodio de prueba',state:'paused',position:100,duration:3600,observed_at:Date.now()/1000,seekable:true};
+    document.body.append(p);await p.updateComplete;
+    const range=p.shadowRoot.querySelector('input[type=range]');
+    range.dispatchEvent(new PointerEvent('pointerdown'));range.value='600';range.dispatchEvent(new Event('input'));
+    await p.updateComplete;const beforeRelease=calls.length;
+    range.dispatchEvent(new Event('change'));await new Promise(r=>setTimeout(r,20));
+    const first=calls[0];
+    range.dispatchEvent(new PointerEvent('pointerdown'));range.value='800';range.dispatchEvent(new Event('input'));
+    p.playback={...p.playback,item_id:'b'.repeat(32)};await p.updateComplete;
+    range.dispatchEvent(new Event('change'));await p.updateComplete;
+    const afterChangedItem=calls.length;
+    const text=p.shadowRoot.querySelector('input[type=text]');text.dispatchEvent(new Event('focus'));text.value='00:12:34';text.dispatchEvent(new Event('input'));text.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter'}));
+    await new Promise(r=>setTimeout(r,20));
+    const exact=calls.at(-1);
+    const b=document.createElement('polr-soundbar-control');b.hass=hass;b.entryId='entry';b.tvOn=true;b.soundbar={power:'standby',connected:true,keep_awake:false,capabilities:{on:true,off:false,keep_awake:true},limitation:'Apagado y graves/agudos: mando de la barra.'};document.body.append(b);await b.updateComplete;
+    const buttons=b.shadowRoot.querySelectorAll('button');buttons[0].click();await new Promise(r=>setTimeout(r,20));
+    const checkbox=b.shadowRoot.querySelector('input');checkbox.checked=true;checkbox.dispatchEvent(new Event('change'));await new Promise(r=>setTimeout(r,20));
+    const offDisabled=buttons[1].disabled;
+    b.soundbar={...b.soundbar,power:'on',output:'speaker'};await b.updateComplete;
+    const cachedPowerCanWake=!buttons[0].disabled&&b.shadowRoot.textContent.includes('HDMI inactivo');
+    b.soundbar={...b.soundbar,output:'soundbar',volume_level:.04};await b.updateComplete;
+    const confirmedArcButtonDisabled=buttons[0].disabled;
+    const overflow=document.documentElement.scrollWidth>innerWidth;
+    return {beforeRelease,first,afterChangedItem,exact,offDisabled,cachedPowerCanWake,confirmedArcButtonDisabled,services:calls.map(c=>c.s),overflow};
+  });
+  assert.equal(result.beforeRelease,0);assert.equal(result.first.data.position,600);assert.equal(result.afterChangedItem,1);
+  assert.equal(result.exact.data.position,754);assert.equal(result.exact.data.expected_item_id,'b'.repeat(32));
+  assert(result.offDisabled);assert(result.cachedPowerCanWake);assert(result.confirmedArcButtonDisabled);assert(!result.overflow);assert(result.services.includes('soundbar_on'));assert(result.services.includes('soundbar_keep_awake'));
+  assert.deepEqual(errors,[]);await page.screenshot({path:out+'/mobile.png',fullPage:true});console.log(JSON.stringify(result));
+} finally {await browser.close();}
