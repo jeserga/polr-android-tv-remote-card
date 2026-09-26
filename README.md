@@ -388,6 +388,12 @@ unreachable by keyboard.
 
 An optional `context_entity` on the remote header displays the app or observed tuner channel. The companion `polr-tv-guide-card` uses the authenticated `tv_guide` integration for current/next programmes, shared channel favourites, an observed channel selector and a searchable TV/radio catalogue. The full mode adds a desktop timetable and mobile agenda; programme times use Europe/Madrid, including DST.
 
+## Scheduled TV power (2.6.0)
+
+When `context_entity` points at the companion `tv_guide` integration, the remote includes a scheduled shutdown section. It accepts an hours, minutes and seconds duration or an exact Madrid date and time, displays the shutdown time and countdown, and lets you replace or cancel the schedule. The “Al terminar lo que se reproduce” button asks Home Assistant for a fixed estimate from a fresh, identified playback session; playback changes after scheduling do not move the deadline. The TV warning appears through the companion Android reader in the last minute, with cancellation in the remote.
+
+The same section has an inactivity switch. On the tested Xiaomi TV, the supported native option is 24 hours; the backend saves the previous value and restores it when disabled. The card displays the effective duration and any pending or failed change. These controls require `tv_guide` 1.3.0 and reader APK 1.1.0; cards without that context continue to render as before.
+
 ```yaml
 type: custom:polr-android-tv-remote-card
 entity: remote.tv_salon

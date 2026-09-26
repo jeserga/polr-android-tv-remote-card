@@ -46,11 +46,12 @@ import "./home-summary-card";
 import "./jellyfin-card";
 import "./history-card";
 import "./playback-control";
+import "./power-control";
 import "./soundbar-control";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.5.2";
+export const CARD_VERSION = "2.6.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -641,6 +642,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
       <ha-card class=${config.show_header ? "" : "headerless"} style="--tile-color:${tile}">
         ${config.show_header ? this._renderHeader(device) : nothing}
         ${context?.playback ? html`<polr-playback-control .hass=${this.hass} .playback=${context.playback} .entryId=${context.entry_id}></polr-playback-control>` : nothing}
+        ${context?.power_off && context?.idle_standby ? html`<polr-power-control .hass=${this.hass} .entryId=${context.entry_id} .tvOn=${device.on} .playback=${context.playback} .powerOff=${context.power_off} .idleStandby=${context.idle_standby}></polr-power-control>` : nothing}
         ${config.show_header && device.playerId === null
           ? html`<div class="notice warn">
               <ha-icon icon="mdi:information-outline"></ha-icon>
