@@ -418,3 +418,7 @@ This installation adds three cards backed by the `tv_guide` 1.1.0 enhanced runti
 For the existing remote, configure `volume_entity: media_player.tv_salon_audio`, `context_entity: sensor.tv_salon_contexto` and `audited_control: true`. Navigation and text commands then use the integration's private audit service. Volume comes from Android's active output, including HDMI ARC when available. The mute icon now shows the action: mute while sound is on and restore sound while muted.
 
 Run `bun run build`, `bun run test` and `bun run lint:exports` before publishing. The enhanced cards are designed for mobile layouts with 44-pixel controls; weather and playback metadata retain explicit unknown states.
+
+## Children's YouTube favorites (2.7.0)
+
+With the local `tv_guide` 1.4.0 integration, a section tile may call `tv_guide.youtube_kids_play` with `data: {favorite_id: luli_pampin}` or `sunny_bunnies` and an optional `entry_id`. The backend verifies the child's profile and current app, serializes requests, and confirms actual playback. Set `context_entity` to the integration's context sensor to display shared progress/errors and disable both YouTube favorites while a request is running. The home summary card also includes the Luli Pampín shortcut beside Bluey and Television, with a three-column layout suitable for narrow mobile screens. Video selection and profile recognition are managed by the integration, rather than hardcoded remote key sequences.

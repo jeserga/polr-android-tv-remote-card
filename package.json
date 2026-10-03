@@ -1,6 +1,6 @@
 {
   "name": "polr-android-tv-remote-card",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "A Lovelace remote for the Android TV Remote integration.",
   "main": "dist/polr-android-tv-remote-card.js",
   "repository": {
@@ -24,7 +24,8 @@
     "lint:exports": "node scripts/unused-exports.mjs",
     "shots:guide": "node test/harness/guide-shoot.mjs",
     "shots:playback": "node test/harness/playback-shoot.mjs",
-    "shots:power": "node test/harness/power-shoot.mjs"
+    "shots:power": "node test/harness/power-shoot.mjs",
+    "shots:youtube": "node test/harness/youtube-shoot.mjs"
   },
   "dependencies": {
     "lit": "^3.2.1"

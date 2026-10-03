@@ -51,7 +51,7 @@ import "./soundbar-control";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.6.0";
+export const CARD_VERSION = "2.7.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -300,6 +300,12 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     if (!this.hass || !device) return;
     const hass = this.hass;
     this._releaseNativeSessions();
+    if (app.action?.action === "service" && app.action.service === "tv_guide.youtube_kids_play") {
+      // The backend serializes favorites. Keep manual keys available so they
+      // can interrupt profile navigation instead of waiting behind this call.
+      this._run(runAppAction(hass, device, app.action, this));
+      return;
+    }
     this._enqueueControl(() => runAppAction(hass, device, app.action, this));
   }
 
@@ -566,16 +572,18 @@ export class PolrAndroidTvRemoteCard extends LitElement {
             // A tile with no entity is never lit: an IR command has no state,
             // and showing it as off would be a claim the card cannot make.
             const active = this.hass ? isActive(this.hass, tile.entity) : false;
+            const kidsBusy = tile.action?.action === "service" && tile.action.service === "tv_guide.youtube_kids_play" && !!(config.context_entity && this.hass?.states[config.context_entity]?.attributes.youtube_operation?.state === "running");
             return html`
               <button
                 class="app-tile ${active ? "active" : ""}"
+                ?disabled=${kidsBusy}
                 type="button"
                 aria-label=${tile.name ?? "Launch app"}
                 title=${tile.name ?? ""}
                 aria-pressed=${tile.entity ? String(active) : nothing}
                 style=${tile.color ? `--app-color:${tile.color}` : ""}
                 ${press({
-                  onPress: () => this._launch(tile),
+                  onPress: () => { if (!kidsBusy) this._launch(tile); },
                   haptics: config.haptics,
                   coordinator: this._pressCoordinator,
                 })}
@@ -641,6 +649,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     return html`
       <ha-card class=${config.show_header ? "" : "headerless"} style="--tile-color:${tile}">
         ${config.show_header ? this._renderHeader(device) : nothing}
+        ${context?.youtube_operation && ["running", "error"].includes(context.youtube_operation.state) ? html`<div class="notice ${context.youtube_operation.state === "error" ? "error" : "warn"}" role=${context.youtube_operation.state === "error" ? "alert" : "status"}><ha-icon icon="mdi:youtube"></ha-icon><span class="grow">${context.youtube_operation.message}</span></div>` : nothing}
         ${context?.playback ? html`<polr-playback-control .hass=${this.hass} .playback=${context.playback} .entryId=${context.entry_id}></polr-playback-control>` : nothing}
         ${context?.power_off && context?.idle_standby ? html`<polr-power-control .hass=${this.hass} .entryId=${context.entry_id} .tvOn=${device.on} .playback=${context.playback} .powerOff=${context.power_off} .idleStandby=${context.idle_standby}></polr-power-control>` : nothing}
         ${config.show_header && device.playerId === null
