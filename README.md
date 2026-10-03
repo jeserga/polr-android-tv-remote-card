@@ -427,3 +427,7 @@ With the local `tv_guide` 1.4.0 integration, a section tile may call `tv_guide.y
 ## Luli Pampín playlist menu (2.8.0)
 
 With `tv_guide` 1.5.0, the Luli favorite and home shortcut open a shared dialog with shuffle and video selection. The integration provides the thirty ranked videos and their individual YouTube links through `tv_guide/youtube_playlist`. Selecting a video calls `tv_guide.youtube_playlist_play` with that `video_id`; shuffle omits it. The chosen clip starts first, followed by the remaining twenty-nine without repeats. Both cards show shared preparation status and disable duplicate requests; the dialog also displays queue progress and failures. The existing `youtube_kids_play` Luli tile configuration continues to work. `bun run shots:luli` verifies real touch activation, ranked links, both service calls, focus restoration, responsive layouts, Sunny and concurrent manual navigation.
+
+## Sunny Bunnies playlist menu (2.9.0)
+
+With `tv_guide` 1.6.0, the Sunny favorite opens the same menu with its fifty most popular videos from the official Spanish channel. Both favorites use Carmen María Hernández Trillo. The dialog requests the chosen catalog using `favorite_id`; Sunny playback includes `favorite_id: sunny_bunnies`, while existing Luli calls keep their default. Selecting one starts it first and shuffles the remaining forty-nine without repeats. Queue progress is shown for the matching favorite. `bun run shots:luli` covers both ranked lists, both shuffle/selection calls and manual navigation during a pending request.

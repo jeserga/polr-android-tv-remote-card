@@ -262,11 +262,11 @@ ht.elementStyles = [], ht.shadowRootOptions = { mode: "open" }, ht[$t("elementPr
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Zt = globalThis, pe = (t) => t, zt = Zt.trustedTypes, he = zt ? zt.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, He = "$lit$", Z = `lit$${Math.random().toFixed(9).slice(2)}$`, Ue = "?" + Z, ui = `<${Ue}>`, nt = document, At = () => nt.createComment(""), St = (t) => t === null || typeof t != "object" && typeof t != "function", Jt = Array.isArray, mi = (t) => Jt(t) || typeof t?.[Symbol.iterator] == "function", Lt = `[ 	
+const Qt = globalThis, pe = (t) => t, zt = Qt.trustedTypes, he = zt ? zt.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, He = "$lit$", Q = `lit$${Math.random().toFixed(9).slice(2)}$`, Ue = "?" + Q, ui = `<${Ue}>`, nt = document, At = () => nt.createComment(""), St = (t) => t === null || typeof t != "object" && typeof t != "function", Zt = Array.isArray, mi = (t) => Zt(t) || typeof t?.[Symbol.iterator] == "function", Lt = `[ 	
 \f\r]`, bt = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ue = /-->/g, me = />/g, et = RegExp(`>|${Lt}(?:([^\\s"'>=/]+)(${Lt}*=${Lt}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ve = /'/g, ge = /"/g, je = /^(?:script|style|textarea|title)$/i, Ve = (t) => (e, ...i) => ({ _$litType$: t, strings: e, values: i }), n = Ve(1), vi = Ve(2), F = Symbol.for("lit-noChange"), l = Symbol.for("lit-nothing"), fe = /* @__PURE__ */ new WeakMap(), st = nt.createTreeWalker(nt, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ve = /'/g, ge = /"/g, je = /^(?:script|style|textarea|title)$/i, Ve = (t) => (e, ...i) => ({ _$litType$: t, strings: e, values: i }), n = Ve(1), vi = Ve(2), K = Symbol.for("lit-noChange"), l = Symbol.for("lit-nothing"), fe = /* @__PURE__ */ new WeakMap(), st = nt.createTreeWalker(nt, 129);
 function qe(t, e) {
-  if (!Jt(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  if (!Zt(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return he !== void 0 ? he.createHTML(e) : e;
 }
 const gi = (t, e) => {
@@ -277,7 +277,7 @@ const gi = (t, e) => {
     let u, _, h = -1, m = 0;
     for (; m < p.length && (r.lastIndex = m, _ = r.exec(p), _ !== null); ) m = r.lastIndex, r === bt ? _[1] === "!--" ? r = ue : _[1] !== void 0 ? r = me : _[2] !== void 0 ? (je.test(_[2]) && (a = RegExp("</" + _[2], "g")), r = et) : _[3] !== void 0 && (r = et) : r === et ? _[0] === ">" ? (r = a ?? bt, h = -1) : _[1] === void 0 ? h = -2 : (h = r.lastIndex - _[2].length, u = _[1], r = _[3] === void 0 ? et : _[3] === '"' ? ge : ve) : r === ge || r === ve ? r = et : r === ue || r === me ? r = bt : (r = et, a = void 0);
     const v = r === et && t[c + 1].startsWith("/>") ? " " : "";
-    s += r === bt ? p + ui : h >= 0 ? (o.push(u), p.slice(0, h) + He + p.slice(h) + Z + v) : p + Z + (h === -2 ? c : v);
+    s += r === bt ? p + ui : h >= 0 ? (o.push(u), p.slice(0, h) + He + p.slice(h) + Q + v) : p + Q + (h === -2 ? c : v);
   }
   return [qe(t, s + (t[i] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), o];
 };
@@ -294,11 +294,11 @@ class Tt {
     for (; (a = st.nextNode()) !== null && p.length < c; ) {
       if (a.nodeType === 1) {
         if (a.hasAttributes()) for (const h of a.getAttributeNames()) if (h.endsWith(He)) {
-          const m = _[r++], v = a.getAttribute(h).split(Z), y = /([.?@])?(.*)/.exec(m);
-          p.push({ type: 1, index: s, name: y[2], strings: v, ctor: y[1] === "." ? bi : y[1] === "?" ? _i : y[1] === "@" ? yi : Dt }), a.removeAttribute(h);
-        } else h.startsWith(Z) && (p.push({ type: 6, index: s }), a.removeAttribute(h));
+          const m = _[r++], v = a.getAttribute(h).split(Q), y = /([.?@])?(.*)/.exec(m);
+          p.push({ type: 1, index: s, name: y[2], strings: v, ctor: y[1] === "." ? bi : y[1] === "?" ? _i : y[1] === "@" ? yi : It }), a.removeAttribute(h);
+        } else h.startsWith(Q) && (p.push({ type: 6, index: s }), a.removeAttribute(h));
         if (je.test(a.tagName)) {
-          const h = a.textContent.split(Z), m = h.length - 1;
+          const h = a.textContent.split(Q), m = h.length - 1;
           if (m > 0) {
             a.textContent = zt ? zt.emptyScript : "";
             for (let v = 0; v < m; v++) a.append(h[v], At()), st.nextNode(), p.push({ type: 2, index: ++s });
@@ -308,7 +308,7 @@ class Tt {
       } else if (a.nodeType === 8) if (a.data === Ue) p.push({ type: 2, index: s });
       else {
         let h = -1;
-        for (; (h = a.data.indexOf(Z, h + 1)) !== -1; ) p.push({ type: 7, index: s }), h += Z.length - 1;
+        for (; (h = a.data.indexOf(Q, h + 1)) !== -1; ) p.push({ type: 7, index: s }), h += Q.length - 1;
       }
       s++;
     }
@@ -319,7 +319,7 @@ class Tt {
   }
 }
 function vt(t, e, i = t, o) {
-  if (e === F) return e;
+  if (e === K) return e;
   let a = o !== void 0 ? i._$Co?.[o] : i._$Cl;
   const s = St(e) ? void 0 : e._$litDirective$;
   return a?.constructor !== s && (a?._$AO?.(!1), s === void 0 ? a = void 0 : (a = new s(t), a._$AT(t, i, o)), o !== void 0 ? (i._$Co ??= [])[o] = a : i._$Cl = a), a !== void 0 && (e = vt(t, a._$AS(t, e.values), a, o)), e;
@@ -371,7 +371,7 @@ class gt {
     return this._$AB;
   }
   _$AI(e, i = this) {
-    e = vt(this, e, i), St(e) ? e === l || e == null || e === "" ? (this._$AH !== l && this._$AR(), this._$AH = l) : e !== this._$AH && e !== F && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : mi(e) ? this.k(e) : this._(e);
+    e = vt(this, e, i), St(e) ? e === l || e == null || e === "" ? (this._$AH !== l && this._$AR(), this._$AH = l) : e !== this._$AH && e !== K && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : mi(e) ? this.k(e) : this._(e);
   }
   O(e) {
     return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -395,7 +395,7 @@ class gt {
     return i === void 0 && fe.set(e.strings, i = new Tt(e)), i;
   }
   k(e) {
-    Jt(this._$AH) || (this._$AH = [], this._$AR());
+    Zt(this._$AH) || (this._$AH = [], this._$AR());
     const i = this._$AH;
     let o, a = 0;
     for (const s of e) a === i.length ? i.push(o = new gt(this.O(At()), this.O(At()), this, this.options)) : o = i[a], o._$AI(s), a++;
@@ -411,7 +411,7 @@ class gt {
     this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
   }
 }
-class Dt {
+class It {
   get tagName() {
     return this.element.tagName;
   }
@@ -424,11 +424,11 @@ class Dt {
   _$AI(e, i = this, o, a) {
     const s = this.strings;
     let r = !1;
-    if (s === void 0) e = vt(this, e, i, 0), r = !St(e) || e !== this._$AH && e !== F, r && (this._$AH = e);
+    if (s === void 0) e = vt(this, e, i, 0), r = !St(e) || e !== this._$AH && e !== K, r && (this._$AH = e);
     else {
       const c = e;
       let p, u;
-      for (e = s[0], p = 0; p < s.length - 1; p++) u = vt(this, c[o + p], i, p), u === F && (u = this._$AH[p]), r ||= !St(u) || u !== this._$AH[p], u === l ? e = l : e !== l && (e += (u ?? "") + s[p + 1]), this._$AH[p] = u;
+      for (e = s[0], p = 0; p < s.length - 1; p++) u = vt(this, c[o + p], i, p), u === K && (u = this._$AH[p]), r ||= !St(u) || u !== this._$AH[p], u === l ? e = l : e !== l && (e += (u ?? "") + s[p + 1]), this._$AH[p] = u;
     }
     r && !a && this.j(e);
   }
@@ -436,7 +436,7 @@ class Dt {
     e === l ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
   }
 }
-class bi extends Dt {
+class bi extends It {
   constructor() {
     super(...arguments), this.type = 3;
   }
@@ -444,7 +444,7 @@ class bi extends Dt {
     this.element[this.name] = e === l ? void 0 : e;
   }
 }
-class _i extends Dt {
+class _i extends It {
   constructor() {
     super(...arguments), this.type = 4;
   }
@@ -452,12 +452,12 @@ class _i extends Dt {
     this.element.toggleAttribute(this.name, !!e && e !== l);
   }
 }
-class yi extends Dt {
+class yi extends It {
   constructor(e, i, o, a, s) {
     super(e, i, o, a, s), this.type = 5;
   }
   _$AI(e, i = this) {
-    if ((e = vt(this, e, i, 0) ?? l) === F) return;
+    if ((e = vt(this, e, i, 0) ?? l) === K) return;
     const o = this._$AH, a = e === l && o !== l || e.capture !== o.capture || e.once !== o.once || e.passive !== o.passive, s = e !== l && (o === l || a);
     a && this.element.removeEventListener(this.name, this, o), s && this.element.addEventListener(this.name, this, e), this._$AH = e;
   }
@@ -476,8 +476,8 @@ class xi {
     vt(this, e);
   }
 }
-const $i = { I: gt }, wi = Zt.litHtmlPolyfillSupport;
-wi?.(Tt, gt), (Zt.litHtmlVersions ??= []).push("3.3.3");
+const $i = { I: gt }, wi = Qt.litHtmlPolyfillSupport;
+wi?.(Tt, gt), (Qt.litHtmlVersions ??= []).push("3.3.3");
 const ki = (t, e, i) => {
   const o = i?.renderBefore ?? e;
   let a = o._$litPart$;
@@ -492,7 +492,7 @@ const ki = (t, e, i) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Qt = globalThis;
+const Jt = globalThis;
 let T = class extends ht {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
@@ -512,13 +512,13 @@ let T = class extends ht {
     super.disconnectedCallback(), this._$Do?.setConnected(!1);
   }
   render() {
-    return F;
+    return K;
   }
 };
-T._$litElement$ = !0, T.finalized = !0, Qt.litElementHydrateSupport?.({ LitElement: T });
-const Ai = Qt.litElementPolyfillSupport;
+T._$litElement$ = !0, T.finalized = !0, Jt.litElementHydrateSupport?.({ LitElement: T });
+const Ai = Jt.litElementPolyfillSupport;
 Ai?.({ LitElement: T });
-(Qt.litElementVersions ??= []).push("4.2.2");
+(Jt.litElementVersions ??= []).push("4.2.2");
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -690,13 +690,13 @@ const ye = (t, e, i) => {
       const z = a[h++];
       z !== null && Rt(z);
     }
-    return this.ut = r, Oi(t, p), F;
+    return this.ut = r, Oi(t, p), K;
   }
 }), Et = (t, e, i) => {
   t.dispatchEvent(
     new CustomEvent(e, { detail: i, bubbles: !0, composed: !0 })
   );
-}, Di = (t, e) => Et(t, "hass-more-info", { entityId: e }), Ii = (t, e, i = "var(--state-inactive-color, #9e9e9e)") => e === "unavailable" || e === "unknown" ? "var(--state-unavailable-color, var(--disabled-color))" : `var(--state-${t}-${e}-color, var(--state-icon-color, ${i}))`, Ni = (t) => typeof t == "object" && t !== null && !Array.isArray(t), ut = (t) => Ni(t) && typeof t.action == "string", jt = (t) => t !== void 0 && t.action !== "none", ee = (t) => {
+}, Ii = (t, e) => Et(t, "hass-more-info", { entityId: e }), Di = (t, e, i = "var(--state-inactive-color, #9e9e9e)") => e === "unavailable" || e === "unknown" ? "var(--state-unavailable-color, var(--disabled-color))" : `var(--state-${t}-${e}-color, var(--state-icon-color, ${i}))`, Ni = (t) => typeof t == "object" && t !== null && !Array.isArray(t), ut = (t) => Ni(t) && typeof t.action == "string", jt = (t) => t !== void 0 && t.action !== "none", ee = (t) => {
   const e = (t ?? "").split(".");
   if (e.length !== 2) return null;
   const [i, o] = e;
@@ -712,7 +712,7 @@ const ye = (t, e, i) => {
       return Promise.resolve();
     case "more-info": {
       const a = i.entity ?? o;
-      return a && t && Di(t, a), Promise.resolve();
+      return a && t && Ii(t, a), Promise.resolve();
     }
     case "toggle": {
       const a = o;
@@ -735,7 +735,7 @@ const ye = (t, e, i) => {
       return e.callService(r, c, p ?? {}, i.target);
     }
   }
-}, B = {
+}, W = {
   PAUSE: 1,
   VOLUME_MUTE: 8,
   PREVIOUS_TRACK: 16,
@@ -834,7 +834,7 @@ const ye = (t, e, i) => {
   const r = i.playerId;
   switch (o) {
     case "power":
-      return r && mt(i, i.on ? B.TURN_OFF : B.TURN_ON) ? t.callService(
+      return r && mt(i, i.on ? W.TURN_OFF : W.TURN_ON) ? t.callService(
         "media_player",
         i.on ? "turn_off" : "turn_on",
         { entity_id: r }
@@ -842,26 +842,26 @@ const ye = (t, e, i) => {
         entity_id: i.remoteId
       });
     case "play_pause":
-      if (r && mt(i, B.PAUSE))
+      if (r && mt(i, W.PAUSE))
         return t.callService("media_player", "media_play_pause", {
           entity_id: r
         });
       break;
     case "next":
-      if (r && mt(i, B.NEXT_TRACK))
+      if (r && mt(i, W.NEXT_TRACK))
         return t.callService("media_player", "media_next_track", {
           entity_id: r
         });
       break;
     case "previous":
-      if (r && mt(i, B.PREVIOUS_TRACK))
+      if (r && mt(i, W.PREVIOUS_TRACK))
         return t.callService("media_player", "media_previous_track", {
           entity_id: r
         });
       break;
     case "volume_up":
     case "volume_down":
-      if (i.volumeId && xe(i, B.VOLUME_STEP))
+      if (i.volumeId && xe(i, W.VOLUME_STEP))
         return t.callService(
           "media_player",
           o === "volume_up" ? "volume_up" : "volume_down",
@@ -869,7 +869,7 @@ const ye = (t, e, i) => {
         );
       break;
     case "volume_mute":
-      if (i.volumeId && i.muted !== void 0 && xe(i, B.VOLUME_MUTE))
+      if (i.volumeId && i.muted !== void 0 && xe(i, W.VOLUME_MUTE))
         return t.callService("media_player", "volume_mute", {
           entity_id: i.volumeId,
           is_volume_muted: !i.muted
@@ -1025,7 +1025,7 @@ const Fi = ["buttons", "dpad", "touchpad"], Ki = ["repeat", "native", "none"], s
   const e = t.toLowerCase().replace(/[^a-z]/g, "");
   if (e)
     return Wt.find((i) => e.includes(i) || i.includes(e));
-}, Ze = {
+}, Qe = {
   up: "up",
   down: "down",
   left: "left",
@@ -1038,7 +1038,7 @@ const Fi = ["buttons", "dpad", "touchpad"], Ki = ["repeat", "native", "none"], s
   volumeup: "volume_up",
   volumedown: "volume_down",
   volumemute: "volume_mute"
-}, Je = {
+}, Ze = {
   showRemote: "show_nav",
   showApps: "show_apps",
   showVolume: "show_volume",
@@ -1048,18 +1048,18 @@ const Fi = ["buttons", "dpad", "touchpad"], Ki = ["repeat", "native", "none"], s
   default: "buttons",
   touch: "touchpad",
   dpad: "dpad"
-}, L = (t) => typeof t == "object" && t !== null && !Array.isArray(t), Qe = (t) => L(t) && typeof t.service == "string", ke = (t, e) => {
+}, R = (t) => typeof t == "object" && t !== null && !Array.isArray(t), Je = (t) => R(t) && typeof t.service == "string", ke = (t, e) => {
   if (typeof t == "string") {
     const i = Xi(t);
     if (i)
       return { tap_action: Vt(i.service, void 0, i.target) };
-    J(
+    Z(
       `override "${e}" points at ${t}, which cannot simply be pressed. Use an action config instead.`
     );
     return;
   }
-  if (!L(t)) {
-    t !== void 0 && J(`override "${e}" is not an entity id or an action config`);
+  if (!R(t)) {
+    t !== void 0 && Z(`override "${e}" is not an entity id or an action config`);
     return;
   }
   if (ut(t.tap_action) || ut(t.hold_action) || ut(t.double_tap_action)) {
@@ -1070,18 +1070,18 @@ const Fi = ["buttons", "dpad", "touchpad"], Ki = ["repeat", "native", "none"], s
     }
     return i;
   }
-  if (Qe(t))
+  if (Je(t))
     return {
       tap_action: Vt(
         t.service,
-        L(t.data) ? t.data : void 0,
-        L(t.target) ? t.target : void 0
+        R(t.data) ? t.data : void 0,
+        R(t.target) ? t.target : void 0
       )
     };
-  J(`override "${e}" is not an entity id or an action config`);
+  Z(`override "${e}" is not an entity id or an action config`);
 };
 let Ae = /* @__PURE__ */ new Set();
-const J = (t) => {
+const Z = (t) => {
   Ae.has(t) || (Ae.add(t), console.warn(`polr-android-tv-remote-card: ${t}`));
 }, Se = (t) => {
   if (typeof t == "string") {
@@ -1090,7 +1090,7 @@ const J = (t) => {
       name: s.label,
       icon: `brand:${t}`,
       action: { action: "activity", activity: s.activity }
-    } : (J(
+    } : (Z(
       `unknown app "${t}" — treating it as an activity. Use an object with an icon and action instead.`
     ), {
       name: t,
@@ -1098,11 +1098,11 @@ const J = (t) => {
       action: { action: "activity", activity: t }
     });
   }
-  if (!L(t)) return null;
-  if (L(t.action))
+  if (!R(t)) return null;
+  if (R(t.action))
     return t;
   const e = typeof t.icon == "string" ? t.icon : void 0, i = typeof t.name == "string" ? t.name : void 0, o = typeof t.color == "string" ? t.color : void 0, a = typeof t.entity == "string" ? t.entity : void 0;
-  return Qe(t) ? {
+  return Je(t) ? {
     ...i ? { name: i } : {},
     ...e ? { icon: e } : {},
     ...o ? { color: o } : {},
@@ -1110,8 +1110,8 @@ const J = (t) => {
     action: {
       action: "service",
       service: t.service,
-      ...L(t.data) ? { data: t.data } : {},
-      ...L(t.target) ? { target: t.target } : {}
+      ...R(t.data) ? { data: t.data } : {},
+      ...R(t.target) ? { target: t.target } : {}
     }
   } : typeof t.url == "string" ? {
     ...i ? { name: i } : {},
@@ -1119,34 +1119,34 @@ const J = (t) => {
     ...o ? { color: o } : {},
     ...a ? { entity: a } : {},
     action: { action: "activity", activity: t.url }
-  } : (J(`app entry has no action, url or service and was skipped: ${JSON.stringify(t)}`), null);
+  } : (Z(`app entry has no action, url or service and was skipped: ${JSON.stringify(t)}`), null);
 }, ti = (t) => {
-  if (!L(t))
+  if (!R(t))
     throw new Error("polr-android-tv-remote-card: invalid configuration");
   const e = typeof t.entity == "string" ? t.entity : typeof t.entity_id == "string" ? t.entity_id : void 0;
   if (!e)
     throw new Error("polr-android-tv-remote-card: 'entity' is required");
   const i = typeof t.remote == "string" ? Gi[t.remote] : void 0;
-  typeof t.remote == "string" && !i && J(`unknown remote style "${t.remote}" — falling back to ${x.pad}`);
+  typeof t.remote == "string" && !i && Z(`unknown remote style "${t.remote}" — falling back to ${x.pad}`);
   const o = Fi.includes(t.pad) ? t.pad : i ?? x.pad, a = typeof t.volume == "boolean" ? t.volume : void 0, s = {};
-  if (L(t.overrides))
+  if (R(t.overrides))
     for (const [f, g] of Object.entries(t.overrides)) {
       const tt = ke(g, f);
       tt && (s[f] = tt);
     }
-  for (const [f, g] of Object.entries(Ze)) {
+  for (const [f, g] of Object.entries(Qe)) {
     if (s[g]) continue;
     const tt = ke(t[f], f);
     tt && (s[g] = tt);
   }
   const r = {};
-  for (const [f, g] of Object.entries(Je))
+  for (const [f, g] of Object.entries(Ze))
     typeof t[f] == "boolean" && (r[g] = t[f]);
   const c = Array.isArray(t.transport_buttons) ? t.transport_buttons : Array.isArray(t.media_controls) ? t.media_controls : void 0, p = c ? c.filter(
     (f) => typeof f == "string" && x.transport_buttons.includes(f)
   ) : x.transport_buttons, u = (Array.isArray(t.sections) ? t.sections : []).map((f) => {
-    if (!L(f))
-      return J(`section is not an object and was skipped: ${JSON.stringify(f)}`), null;
+    if (!R(f))
+      return Z(`section is not an object and was skipped: ${JSON.stringify(f)}`), null;
     const g = (Array.isArray(f.buttons) ? f.buttons : []).map(Se).filter((tt) => tt !== null);
     return {
       ...typeof f.name == "string" ? { name: f.name } : {},
@@ -1156,7 +1156,7 @@ const J = (t) => {
   }).filter((f) => f !== null), h = (Array.isArray(t.apps) ? t.apps : []).map(Se).filter((f) => f !== null), m = (f, g) => f === void 0 ? g : f, v = Ki.includes(t.hold_mode) ? t.hold_mode : t.hold_repeat === !1 ? "none" : x.hold_mode, y = new Set(se), z = Array.isArray(t.native_hold_buttons) ? [...new Set(t.native_hold_buttons)].filter(
     (f) => typeof f == "string" && y.has(f)
   ) : [...x.native_hold_buttons], O = t.native_touch_hold_delay_ms, M = typeof O == "number" && Number.isFinite(O) && O >= qt && O <= Bt ? O : x.native_touch_hold_delay_ms;
-  return O !== void 0 && M !== O && J(
+  return O !== void 0 && M !== O && Z(
     `native_touch_hold_delay_ms must be between ${qt} and ${Bt}; using ${x.native_touch_hold_delay_ms}`
   ), {
     ...t,
@@ -1194,7 +1194,7 @@ const J = (t) => {
     haptics: m(t.haptics, x.haptics),
     overrides: s
   };
-}, Zi = (t) => {
+}, Qi = (t) => {
   const e = /* @__PURE__ */ new Set([
     "entity_id",
     "remote",
@@ -1206,8 +1206,8 @@ const J = (t) => {
     "media_player_entity",
     "showBasic",
     "media_controls",
-    ...Object.keys(Je),
-    ...Object.keys(Ze)
+    ...Object.keys(Ze),
+    ...Object.keys(Qe)
   ]), i = {};
   for (const [o, a] of Object.entries(t))
     e.has(o) || (i[o] = a);
@@ -1260,17 +1260,17 @@ const wt = (t, e) => {
     i.add(t), to(e);
   }
 };
-function Ji(t) {
+function Zi(t) {
   this._$AN !== void 0 ? (Ot(this), this._$AM = t, ei(this)) : this._$AM = t;
 }
-function Qi(t, e = !1, i = 0) {
+function Ji(t, e = !1, i = 0) {
   const o = this._$AH, a = this._$AN;
   if (a !== void 0 && a.size !== 0) if (e) if (Array.isArray(o)) for (let s = i; s < o.length; s++) wt(o[s], !1), Ot(o[s]);
   else o != null && (wt(o, !1), Ot(o));
   else wt(this, t);
 }
 const to = (t) => {
-  t.type == te.CHILD && (t._$AP ??= Qi, t._$AQ ??= Ji);
+  t.type == te.CHILD && (t._$AP ??= Ji, t._$AQ ??= Zi);
 };
 class eo extends Fe {
   constructor() {
@@ -1414,7 +1414,7 @@ class no extends eo {
       throw new Error("press() can only be used on an element");
   }
   render(e) {
-    return F;
+    return K;
   }
   update(e, [i]) {
     if (this._element = e.element, i.disabled && this._active && this.cancelPress(), this._options = i, this._element.classList.toggle(
@@ -1425,7 +1425,7 @@ class no extends eo {
       const o = this._element;
       o.addEventListener("pointerdown", this._onPointerDown), o.addEventListener("pointermove", this._onPointerMove), o.addEventListener("pointerup", this._onPointerUp), o.addEventListener("pointercancel", this._onPointerCancel), o.addEventListener("lostpointercapture", this._onLostPointerCapture), o.addEventListener("pointerleave", this._onPointerLeave), o.addEventListener("click", this._onClick), o.addEventListener("dragstart", this.cancelPress), o.addEventListener("keydown", this._onKeyDown), o.addEventListener("keyup", this._onKeyUp), o.addEventListener("blur", this.cancelPress), o.addEventListener("contextmenu", this._onContextMenu);
     }
-    return F;
+    return K;
   }
   /* ------------------------------------------------------------------ state */
   _beginGesture(e, i) {
@@ -2560,7 +2560,7 @@ const Oe = 0.06, po = {
   Enter: "center",
   " ": "center"
 };
-let D = class extends T {
+let I = class extends T {
   constructor() {
     super(...arguments), this.pad = "buttons", this.repeat = !0, this.nativeButtons = [], this.haptics = !0, this.nativeTouchHoldDelayMs = ae, this._tracking = !1, this._startX = 0, this._startY = 0, this._onPointerDown = (t) => {
       t.button === 0 && (t.preventDefault(), this._touchpad?.setPointerCapture(t.pointerId), this._startX = t.clientX, this._startY = t.clientY, this._tracking = !0, this._moveDot(t));
@@ -2695,37 +2695,37 @@ let D = class extends T {
     `;
   }
 };
-D.styles = [re, ii];
+I.styles = [re, ii];
 V([
   b({ type: String })
-], D.prototype, "pad", 2);
+], I.prototype, "pad", 2);
 V([
   b({ type: Boolean })
-], D.prototype, "repeat", 2);
+], I.prototype, "repeat", 2);
 V([
   b({ attribute: !1 })
-], D.prototype, "nativeButtons", 2);
+], I.prototype, "nativeButtons", 2);
 V([
   b({ type: Boolean })
-], D.prototype, "haptics", 2);
+], I.prototype, "haptics", 2);
 V([
   b({ type: Number })
-], D.prototype, "nativeTouchHoldDelayMs", 2);
+], I.prototype, "nativeTouchHoldDelayMs", 2);
 V([
   b({ attribute: !1 })
-], D.prototype, "pressCoordinator", 2);
+], I.prototype, "pressCoordinator", 2);
 V([
   Be(".touchpad")
-], D.prototype, "_touchpad", 2);
+], I.prototype, "_touchpad", 2);
 V([
   Be(".touchpad-dot")
-], D.prototype, "_dot", 2);
+], I.prototype, "_dot", 2);
 V([
   d()
-], D.prototype, "_tracking", 2);
-D = V([
+], I.prototype, "_tracking", 2);
+I = V([
   U("polr-atv-nav-pad")
-], D);
+], I);
 const j = (t) => new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit" }).format(new Date(t * 1e3)), yt = (t = /* @__PURE__ */ new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(t);
 function kt(t) {
   const [e, i, o] = t.split("-").map(Number), a = (s) => {
@@ -2946,9 +2946,9 @@ const S = (t) => {
   if (t == null || !Number.isFinite(t)) return "—";
   const e = Math.floor(Math.max(0, t) / 60);
   return e === 0 ? `${Math.floor(Math.max(0, t))} s` : e >= 60 ? `${Math.floor(e / 60)} h ${e % 60} min` : `${e} min`;
-}, rt = (t, e = !1) => new Date(typeof t == "number" ? t * 1e3 : t).toLocaleString("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", ...e ? { second: "2-digit" } : {} }), W = (t = /* @__PURE__ */ new Date()) => t.toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" }), fo = (t) => ({ icon: t === !0 ? "mdi:volume-high" : "mdi:volume-off", label: t === !0 ? "Activar sonido" : t === !1 ? "Silenciar" : "Alternar silencio (estado desconocido)" }), bo = (t) => ({ sunny: "weather-sunny", clear: "weather-sunny", "clear-night": "weather-night", cloudy: "weather-cloudy", partlycloudy: "weather-partly-cloudy", rainy: "weather-rainy", pouring: "weather-pouring", lightning: "weather-lightning", "lightning-rainy": "weather-lightning-rainy", snowy: "weather-snowy", fog: "weather-fog", windy: "weather-windy" })[t] ?? "weather-partly-cloudy", _o = (t, e = /* @__PURE__ */ new Date()) => {
-  const i = W(e);
-  return t.filter((o) => o.datetime && W(new Date(o.datetime)) >= i).slice(0, 5);
+}, rt = (t, e = !1) => new Date(typeof t == "number" ? t * 1e3 : t).toLocaleString("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", ...e ? { second: "2-digit" } : {} }), F = (t = /* @__PURE__ */ new Date()) => t.toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" }), fo = (t) => ({ icon: t === !0 ? "mdi:volume-high" : "mdi:volume-off", label: t === !0 ? "Activar sonido" : t === !1 ? "Silenciar" : "Alternar silencio (estado desconocido)" }), bo = (t) => ({ sunny: "weather-sunny", clear: "weather-sunny", "clear-night": "weather-night", cloudy: "weather-cloudy", partlycloudy: "weather-partly-cloudy", rainy: "weather-rainy", pouring: "weather-pouring", lightning: "weather-lightning", "lightning-rainy": "weather-lightning-rainy", snowy: "weather-snowy", fog: "weather-fog", windy: "weather-windy" })[t] ?? "weather-partly-cloudy", _o = (t, e = /* @__PURE__ */ new Date()) => {
+  const i = F(e);
+  return t.filter((o) => o.datetime && F(new Date(o.datetime)) >= i).slice(0, 5);
 };
 function yo(t, e = Date.now() / 1e3) {
   const i = [...t].sort((r, c) => r.start - c.start), o = [];
@@ -2964,14 +2964,26 @@ function yo(t, e = Date.now() / 1e3) {
   const s = i[i.length - 1];
   return o.reverse().map((r) => ({ ...r, active: s?.power === "on" && r.end === s.end && e - r.end < 20 }));
 }
-var xo = Object.defineProperty, $o = Object.getOwnPropertyDescriptor, G = (t, e, i, o) => {
+var xo = Object.defineProperty, $o = Object.getOwnPropertyDescriptor, q = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? $o(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && xo(e, i, a), a;
 };
-let R = class extends T {
+let D = class extends T {
   constructor() {
-    super(...arguments), this.choosing = !1, this.error = "", this.pending = !1, this.loaded = !1, this.backdropPressed = !1;
+    super(...arguments), this.favoriteId = "luli_pampin", this.choosing = !1, this.error = "", this.pending = !1, this.loaded = !1, this.backdropPressed = !1;
+  }
+  get name() {
+    return this.favoriteId === "sunny_bunnies" ? "Sunny Bunnies" : "Luli Pampín";
+  }
+  get count() {
+    return this.catalog?.videos.length ?? (this.favoriteId === "sunny_bunnies" ? 50 : 30);
+  }
+  get icon() {
+    return this.favoriteId === "sunny_bunnies" ? "sunny-bunnies" : "luli-pampin";
+  }
+  get currentQueue() {
+    return !this.queue?.favorite_id || this.queue.favorite_id === this.favoriteId ? this.queue : void 0;
   }
   updated(t) {
     const e = this.shadowRoot?.querySelector("dialog");
@@ -2980,7 +2992,7 @@ let R = class extends T {
   async load() {
     this.error = "";
     try {
-      this.catalog = await this.hass.callWS({ type: "tv_guide/youtube_playlist", entry_id: this.entryId });
+      this.catalog = await this.hass.callWS({ type: "tv_guide/youtube_playlist", entry_id: this.entryId, favorite_id: this.favoriteId });
     } catch (t) {
       this.error = t.message || "No se pudo cargar la lista";
     }
@@ -2992,7 +3004,7 @@ let R = class extends T {
     if (!(this.pending || this.operation?.state === "running")) {
       this.pending = !0, this.error = "";
       try {
-        await this.hass.callService("tv_guide", "youtube_playlist_play", { entry_id: this.entryId, ...t ? { video_id: t } : {} }), this.close();
+        await this.hass.callService("tv_guide", "youtube_playlist_play", { entry_id: this.entryId, ...this.favoriteId === "sunny_bunnies" ? { favorite_id: this.favoriteId } : {}, ...t ? { video_id: t } : {} }), this.close();
       } catch (e) {
         this.error = e.message || "No se pudo reproducir la lista";
       } finally {
@@ -3010,13 +3022,13 @@ let R = class extends T {
       this.backdropPressed && e.target === e.currentTarget && this.close(), this.backdropPressed = !1;
     }}>
       <div class="content">
-        <div class="heading"><img src="/local/tv-remote/icons/luli-pampin.png?v=20261003" alt=""><div><h2 id="luli-title">Luli Pampín</h2><p>Los 30 vídeos más populares</p></div><button class="icon" aria-label="Cerrar" @click=${() => this.close()}>✕</button></div>
+        <div class="heading"><img src=${"/local/tv-remote/icons/" + this.icon + ".png?v=20261003"} alt=""><div><h2 id="luli-title">${this.name}</h2><p>Los ${this.count} vídeos más populares</p></div><button class="icon" aria-label="Cerrar" @click=${() => this.close()}>✕</button></div>
         <div class="actions"><button class="shuffle" ?disabled=${t || !this.catalog} @click=${() => void this.play()}><ha-icon icon="mdi:shuffle-variant"></ha-icon>Reproducción aleatoria</button><button aria-expanded=${String(this.choosing)} ?disabled=${!this.catalog} @click=${() => {
       this.choosing = !this.choosing;
     }}><ha-icon icon="mdi:playlist-play"></ha-icon>Elegir vídeo</button></div>
-        <p class="explanation">${this.choosing ? "Elige el primero. Después se reproducirán los otros 29 en orden aleatorio, sin repetir." : "Reproduce los 30 en orden aleatorio, sin repetir vídeos."}</p>
-        ${this.queue?.active ? n`<p role="status">Vídeo ${this.queue.index} de 30 · ${this.queue.remaining} pendientes</p>` : l}
-        ${this.queue?.error ? n`<p class="error" role="alert">${this.queue.error}</p>` : l}
+        <p class="explanation">${this.choosing ? `Elige el primero. Después se reproducirán los otros ${this.count - 1} en orden aleatorio, sin repetir.` : `Reproduce los ${this.count} en orden aleatorio, sin repetir vídeos.`}</p>
+        ${this.currentQueue?.active ? n`<p role="status">Vídeo ${this.currentQueue.index} de ${this.count} · ${this.currentQueue.remaining} pendientes</p>` : l}
+        ${this.currentQueue?.error ? n`<p class="error" role="alert">${this.currentQueue.error}</p>` : l}
         ${this.operation?.state === "running" ? n`<p role="status">${this.operation.message}</p>` : l}
         ${this.error ? n`<p class="error" role="alert">${this.error}</p>` : l}
         ${!this.catalog && this.error ? n`<button @click=${() => void this.load()}>Volver a cargar</button>` : l}
@@ -3026,42 +3038,45 @@ let R = class extends T {
     </dialog>`;
   }
 };
-R.styles = H`
+D.styles = H`
     :host{color:var(--primary-text-color)}*{box-sizing:border-box}dialog{position:fixed;margin:auto;border:1px solid var(--divider-color);border-radius:20px;padding:0;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 32px);background:var(--ha-card-background,var(--card-background-color,#fff));color:inherit;box-shadow:0 16px 60px #0005}dialog::backdrop{background:#0008}.content{padding:18px}.heading{display:flex;align-items:center;gap:12px}.heading img{width:44px;height:44px;border-radius:12px}.heading>div{flex:1;min-width:0}h2{font-size:21px;margin:0}p{margin:8px 0;font-size:14px;line-height:1.5}.heading p{color:var(--secondary-text-color);margin:3px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}button,a{font:inherit;color:inherit;touch-action:manipulation}button{border:0;cursor:pointer;min-height:48px;border-radius:12px;background:var(--secondary-background-color,#eee);display:flex;justify-content:center;align-items:center;gap:8px;padding:10px}.icon{min-width:44px;background:transparent}.shuffle{color:var(--text-primary-color,#fff);background:var(--primary-color,#03a9f4)}button:disabled{opacity:.45;cursor:default}.explanation,.source{color:var(--secondary-text-color);font-size:13px}.error{color:var(--error-color)}ol{padding:0;margin:14px 0;list-style:none}li{display:flex;align-items:stretch;border-top:1px solid var(--divider-color)}.video{flex:1;min-width:0;text-align:left;background:transparent;justify-content:flex-start;border-radius:6px;padding:12px 4px;gap:10px}.rank{width:24px;flex-shrink:0;color:var(--secondary-text-color);font-size:14px;text-align:center}.details{flex:1;min-width:0;display:grid;gap:5px}.details strong{font-size:14px;line-height:1.4;overflow-wrap:anywhere}.details small{font-size:12px;color:var(--secondary-text-color)}li>a{width:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center}ha-icon{--mdc-icon-size:22px;flex-shrink:0}button:focus-visible,a:focus-visible{outline:2px solid var(--primary-color);outline-offset:-2px}@media(max-width:420px){.content{padding:14px}.actions{grid-template-columns:1fr}}
   `;
-G([
+q([
   b({ attribute: !1 })
-], R.prototype, "hass", 2);
-G([
+], D.prototype, "hass", 2);
+q([
   b({ attribute: !1 })
-], R.prototype, "entryId", 2);
-G([
+], D.prototype, "entryId", 2);
+q([
   b({ attribute: !1 })
-], R.prototype, "operation", 2);
-G([
+], D.prototype, "favoriteId", 2);
+q([
   b({ attribute: !1 })
-], R.prototype, "queue", 2);
-G([
+], D.prototype, "operation", 2);
+q([
+  b({ attribute: !1 })
+], D.prototype, "queue", 2);
+q([
   d()
-], R.prototype, "catalog", 2);
-G([
+], D.prototype, "catalog", 2);
+q([
   d()
-], R.prototype, "choosing", 2);
-G([
+], D.prototype, "choosing", 2);
+q([
   d()
-], R.prototype, "error", 2);
-G([
+], D.prototype, "error", 2);
+q([
   d()
-], R.prototype, "pending", 2);
-R = G([
+], D.prototype, "pending", 2);
+D = q([
   U("polr-youtube-favorite")
-], R);
+], D);
 var wo = Object.defineProperty, ko = Object.getOwnPropertyDescriptor, lt = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? ko(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && wo(e, i, a), a;
 };
-let K = class extends T {
+let Y = class extends T {
   constructor() {
     super(...arguments), this.config = {}, this.weather = { forecast: [], alerts: [] }, this.error = "", this.pending = "", this.luliOpen = !1, this.loaded = !1;
   }
@@ -3136,7 +3151,7 @@ let K = class extends T {
       </ha-card>
       <ha-card class="weather">
         <div class="heading"><span><ha-icon icon="mdi:weather-partly-cloudy"></ha-icon><strong>Tiempo</strong><small>${y?.attributes.temperature != null ? `${Math.round(y.attributes.temperature)}°` : ""}</small></span><button class="link" @click=${() => this.navigate("/tiempo-aemet/resumen")}>Ver más<ha-icon icon="mdi:chevron-right"></ha-icon></button></div>
-        <div class="forecast">${O.map((g) => n`<div><small>${W(new Date(g.datetime)) === W() ? "Hoy" : W(new Date(g.datetime)) === W(new Date(Date.now() + 864e5)) ? "Mañana" : new Date(g.datetime).toLocaleDateString("es-ES", { weekday: "short", timeZone: "Europe/Madrid" })}</small><ha-icon icon=${"mdi:" + bo(g.condition)}></ha-icon><b>${Math.round(g.temperature)}° <span>${g.templow != null ? Math.round(g.templow) + "°" : ""}</span></b><small class="rain">${g.precipitation_probability != null ? Math.round(g.precipitation_probability) + " %" : g.precipitation != null ? g.precipitation + " mm" : "—"}</small></div>`)}</div>
+        <div class="forecast">${O.map((g) => n`<div><small>${F(new Date(g.datetime)) === F() ? "Hoy" : F(new Date(g.datetime)) === F(new Date(Date.now() + 864e5)) ? "Mañana" : new Date(g.datetime).toLocaleDateString("es-ES", { weekday: "short", timeZone: "Europe/Madrid" })}</small><ha-icon icon=${"mdi:" + bo(g.condition)}></ha-icon><b>${Math.round(g.temperature)}° <span>${g.templow != null ? Math.round(g.templow) + "°" : ""}</span></b><small class="rain">${g.precipitation_probability != null ? Math.round(g.precipitation_probability) + " %" : g.precipitation != null ? g.precipitation + " mm" : "—"}</small></div>`)}</div>
         ${z || this.weather.weather_error ? n`<small class="warning">${this.weather.weather_error ?? "Previsión sin actualizar"}</small>` : l}
         <button class="alertline" @click=${() => this.navigate("/tiempo-aemet/resumen")}><ha-icon icon="mdi:weather-rainy"></ha-icon><span>${v?.attributes.time ? n`Lluvia · ${rt(v.attributes.time)}<small>${v.attributes.probability ?? "—"} % · ${v.attributes.amount ?? "—"} mm</small>` : v?.state ?? "Lluvia: sin datos"}</span></button>
         ${(this.weather.alerts ?? []).length ? (this.weather.alerts ?? []).map((g) => n`<button class=${"alertline " + g.level} @click=${() => this.navigate("/tiempo-aemet/resumen")}><ha-icon icon="mdi:alert-outline"></ha-icon><span>${g.event}<small>${g.active ? "Activo hasta " + rt(g.end) : rt(g.start)} · ${this.weather.zone}</small></span></button>`) : n`<div class="alertline quiet"><ha-icon icon="mdi:shield-check-outline"></ha-icon><span>${this.weather.alerts_available ? "Sin avisos amarillos, naranjas o rojos" : "Avisos: sin datos"}</span></div>`}
@@ -3145,29 +3160,29 @@ let K = class extends T {
     </div>`;
   }
 };
-K.styles = H`
+Y.styles = H`
     :host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}.home{max-width:760px;margin:0 auto;padding:8px;display:grid;gap:9px}ha-card{padding:8px 12px;border-radius:18px;overflow:hidden}button,input,select{font:inherit;color:inherit}button{border:0;background:var(--secondary-background-color);border-radius:11px;min-height:44px;min-width:44px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;touch-action:manipulation}button:disabled{opacity:.45;cursor:default}ha-icon{--mdc-icon-size:22px;flex-shrink:0}small{font-size:12px;color:var(--secondary-text-color)}.heading,.heading>span,.row,.volume,.brightness{display:flex;align-items:center;gap:8px}.heading{justify-content:space-between;min-height:44px}.heading strong{font-size:16px}.heading>span{min-width:0;gap:7px}.link{font-size:12px;background:transparent;padding:0 3px}.brightness{margin-top:3px}.brightness button{font-weight:600;font-size:13px;padding:0 12px}.brightness input{flex:1;min-width:0;accent-color:var(--primary-color);height:44px;cursor:pointer}.live{color:var(--success-color,#268657)}.now{padding:3px 0 6px}.app{font-size:12px;color:var(--secondary-text-color)}.title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:19px;margin-top:2px}.volume{justify-content:space-between;margin:2px 0 5px}.audio{display:grid;gap:2px}.audio strong{font-size:17px;font-variant-numeric:tabular-nums}.shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shortcuts button{min-width:0;padding:3px 6px;font-size:12px;font-weight:600}.shortcuts span{min-width:0;line-height:16px}.shortcuts img{width:26px;height:26px;border-radius:6px}.channel{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--secondary-text-color)}select{flex:1;min-width:0;height:44px;padding:0 9px;border:1px solid var(--divider-color);border-radius:10px;background:var(--card-background-color);font-size:14px;color:var(--primary-text-color)}.forecast{display:grid;grid-template-columns:repeat(5,1fr);padding:4px 0 6px}.forecast>div{display:grid;justify-items:center;gap:3px}.forecast ha-icon{--mdc-icon-size:25px;color:var(--primary-color)}.forecast b{font-size:14px;white-space:nowrap}.forecast b span{color:var(--secondary-text-color);font-weight:400;font-size:12px}.forecast .rain{font-size:11px;color:var(--primary-color)}.alertline{display:flex;gap:9px;text-align:left;width:100%;background:transparent;min-height:44px;border-top:1px solid var(--divider-color);border-radius:0;padding:5px 0;font-size:12px;line-height:16px}.alertline span{min-width:0}.alertline small{display:block;font-size:11px}.alertline ha-icon{--mdc-icon-size:19px;color:var(--primary-color)}.quiet{align-items:center;font-size:11px;color:var(--secondary-text-color)}.amarillo ha-icon{color:#aa7b00}.naranja ha-icon{color:#cf6d00}.rojo ha-icon{color:#d33}.warning{display:block;color:var(--warning-color)}.error,.status{padding:10px;border-radius:10px;background:var(--card-background-color);font-size:13px}.error{color:var(--error-color)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}@media(min-width:900px){.home{max-width:1160px;grid-template-columns:1fr 1fr;align-items:start;padding:20px;gap:16px}.lamp{grid-column:1}.tv{grid-column:1}.weather{grid-column:2;grid-row:1/span 2}ha-card{padding:14px 18px}.forecast{padding:20px 0}.forecast ha-icon{--mdc-icon-size:36px}.alertline{min-height:55px}.title{font-size:17px;line-height:23px}}`;
 lt([
   b({ attribute: !1 })
-], K.prototype, "hass", 2);
+], Y.prototype, "hass", 2);
 lt([
   d()
-], K.prototype, "config", 2);
+], Y.prototype, "config", 2);
 lt([
   d()
-], K.prototype, "weather", 2);
+], Y.prototype, "weather", 2);
 lt([
   d()
-], K.prototype, "error", 2);
+], Y.prototype, "error", 2);
 lt([
   d()
-], K.prototype, "pending", 2);
+], Y.prototype, "pending", 2);
 lt([
   d()
-], K.prototype, "luliOpen", 2);
-K = lt([
+], Y.prototype, "luliOpen", 2);
+Y = lt([
   U("polr-home-summary-card")
-], K);
+], Y);
 var Ao = Object.defineProperty, So = Object.getOwnPropertyDescriptor, P = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? So(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
@@ -3326,7 +3341,7 @@ P([
 k = P([
   U("polr-jellyfin-card")
 ], k);
-var To = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, N = (t, e, i, o) => {
+var To = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, L = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? Eo(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && To(e, i, a), a;
@@ -3334,7 +3349,7 @@ var To = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, N = (t, e,
 const xt = { homeassistant: "Home Assistant", observed: "Observado", physical_button: "Botón físico", infrared: "Receptor IR", airmouse: "AirMouse", virtual_remote: "Mando virtual", external_input: "Entrada externa", system: "Sistema", command: "Acción", input: "Pulsación", power: "Encendido/apagado", playback: "Reproducción", audio: "Audio", error: "Error", monitor: "Seguimiento" };
 let C = class extends T {
   constructor() {
-    super(...arguments), this.config = {}, this.result = { events: [], segments: [], daily: [] }, this.from = W(), this.to = W(), this.kind = "", this.origin = "", this.query = "", this.mode = "sessions", this.error = "", this.loading = !1, this.loaded = !1, this.generation = 0;
+    super(...arguments), this.config = {}, this.result = { events: [], segments: [], daily: [] }, this.from = F(), this.to = F(), this.kind = "", this.origin = "", this.query = "", this.mode = "sessions", this.error = "", this.loading = !1, this.loaded = !1, this.generation = 0;
   }
   setConfig(t) {
     this.config = { entity: "sensor.tv_salon_contexto", ...t };
@@ -3347,7 +3362,7 @@ let C = class extends T {
   }
   connectedCallback() {
     super.connectedCallback(), this.timer = setInterval(() => {
-      this.allowed && !this.loading && this.mode !== "events" && this.to === W() && this.load();
+      this.allowed && !this.loading && this.mode !== "events" && this.to === F() && this.load();
     }, 15e3);
   }
   updated(t) {
@@ -3398,40 +3413,40 @@ let C = class extends T {
 };
 C.styles = H`
     :host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}.body{padding:22px;max-width:1200px;margin:auto}h2,p{margin:0}h2{font-size:23px}header{display:flex;justify-content:space-between;align-items:center}header p{font-size:12px;color:var(--secondary-text-color);margin-top:6px}button,input,select{font:inherit;color:inherit}button{border:0;min-height:44px;border-radius:10px;background:var(--secondary-background-color);padding:8px 12px;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.4}input,select{background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:9px;padding:10px;min-width:0;min-height:44px}.tools{display:flex;gap:12px;align-items:end;margin:20px 0}.tools label{display:grid;gap:5px;font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stats>div{padding:16px;background:var(--secondary-background-color);border-radius:12px;display:grid;gap:6px}.stats strong{font-size:23px}.stats small,small{font-size:12px;color:var(--secondary-text-color)}nav{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}nav [aria-pressed=true]{background:var(--primary-color);color:var(--text-primary-color,#fff)}details{border-bottom:1px solid var(--divider-color)}summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 4px;cursor:pointer;min-height:60px;font-size:13px}summary small{display:block;margin-top:5px}summary strong{font-size:13px}summary time{font-size:12px;min-width:110px;color:var(--secondary-text-color)}summary>span{flex:1;min-width:0}summary::-webkit-details-marker{display:none}.contents{padding:0 6px 15px}.contents>div{display:flex;gap:14px;padding:10px 0}.contents time{font-size:11px;min-width:110px;color:var(--secondary-text-color)}.contents strong{font-size:13px}.contents small{display:block;margin-top:4px}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.filters input{flex:1;min-width:150px}.event-detail{padding:10px 12px 18px;font-size:12px;overflow-wrap:anywhere}.event-detail>div{display:flex;gap:20px;padding:5px 0;justify-content:space-between}.event-detail>div b{min-width:90px;font-weight:500}.event-detail>div span{text-align:right;white-space:pre-wrap}.event-detail p{margin:10px 0}.error{color:var(--error-color);padding:14px}.notice{font-size:12px;background:var(--secondary-background-color);padding:12px;border-radius:10px}.empty{padding:24px 0;color:var(--secondary-text-color);font-size:13px}.more{margin-top:15px}footer{font-size:11px;color:var(--secondary-text-color);line-height:1.5;margin-top:25px}.denied{padding:24px}button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}@media(max-width:600px){.body{padding:14px}.tools{gap:7px;flex-wrap:wrap}.tools label{flex:1}.tools input{width:100%;font-size:12px}.stats>div{padding:10px 8px}.stats strong{font-size:17px}.stats small{font-size:10px}summary{gap:9px}summary time{min-width:90px;font-size:10px}.contents time{min-width:88px;font-size:10px}.contents strong{font-size:12px}.filters select{flex:1;font-size:12px}nav{gap:5px}nav button{font-size:12px;padding:7px 9px}}`;
-N([
+L([
   b({ attribute: !1 })
 ], C.prototype, "hass", 2);
-N([
+L([
   d()
 ], C.prototype, "config", 2);
-N([
+L([
   d()
 ], C.prototype, "result", 2);
-N([
+L([
   d()
 ], C.prototype, "from", 2);
-N([
+L([
   d()
 ], C.prototype, "to", 2);
-N([
+L([
   d()
 ], C.prototype, "kind", 2);
-N([
+L([
   d()
 ], C.prototype, "origin", 2);
-N([
+L([
   d()
 ], C.prototype, "query", 2);
-N([
+L([
   d()
 ], C.prototype, "mode", 2);
-N([
+L([
   d()
 ], C.prototype, "error", 2);
-N([
+L([
   d()
 ], C.prototype, "loading", 2);
-C = N([
+C = L([
   U("polr-tv-history-card")
 ], C);
 function pt(t) {
@@ -3442,16 +3457,16 @@ function Me(t) {
   const e = /^(\d{1,3}):([0-5]\d):([0-5]\d)$/.exec(t.trim());
   return e ? Number(e[1]) * 3600 + Number(e[2]) * 60 + Number(e[3]) : null;
 }
-function De(t, e) {
+function Ie(t, e) {
   const i = t.observed_at ? e - t.observed_at : 1 / 0, o = i >= -2 && i <= 15, a = Math.max(0, t.duration || 0);
   return { position: Math.max(0, Math.min(a, (t.position || 0) + (o && t.state === "playing" ? Math.max(0, i) : 0))), fresh: o, canSeek: o && t.seekable === !0 && a > 0 && !!t.item_id };
 }
-var Po = Object.defineProperty, Co = Object.getOwnPropertyDescriptor, q = (t, e, i, o) => {
+var Po = Object.defineProperty, Co = Object.getOwnPropertyDescriptor, B = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? Co(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Po(e, i, a), a;
 };
-let I = class extends T {
+let N = class extends T {
   constructor() {
     super(...arguments), this.playback = {}, this.now = Date.now() / 1e3, this.draft = null, this.text = "", this.editing = !1, this.busy = !1, this.error = "";
   }
@@ -3475,7 +3490,7 @@ let I = class extends T {
       this.error = "Usa hh:mm:ss dentro de la duración del vídeo.";
       return;
     }
-    if (!this.hass || this.busy || !De(this.playback, Date.now() / 1e3).canSeek) return;
+    if (!this.hass || this.busy || !Ie(this.playback, Date.now() / 1e3).canSeek) return;
     const e = this.playback.item_id;
     this.busy = !0, this.error = "";
     try {
@@ -3489,7 +3504,7 @@ let I = class extends T {
   render() {
     const t = this.playback;
     if (t.source !== "jellyfin" || !["playing", "paused"].includes(t.state || "")) return l;
-    const e = De(t, this.now), i = this.draft ?? e.position, o = !e.canSeek || this.busy;
+    const e = Ie(t, this.now), i = this.draft ?? e.position, o = !e.canSeek || this.busy;
     return n`<section aria-label="Reproducción de Jellyfin">
       <div class="title"><ha-icon icon="mdi:play-circle-outline"></ha-icon><strong>${t.title}</strong></div>
       <div class="times"><span>${t.state === "paused" ? "En pausa · " : ""}${pt(i)} / ${pt(t.duration || 0)}</span><span>Quedan ${pt((t.duration || 0) - i)}</span></div>
@@ -3517,43 +3532,43 @@ let I = class extends T {
     </section>`;
   }
 };
-I.styles = H`
+N.styles = H`
     :host{display:block}section{padding:10px 16px;border-top:1px solid var(--divider-color,#ddd);border-bottom:1px solid var(--divider-color,#ddd)}
     .title{display:flex;align-items:center;gap:6px;font-size:13px}.title strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}ha-icon{--mdc-icon-size:20px;flex:none}
     .times{display:flex;justify-content:space-between;gap:6px;font-size:11px;color:var(--secondary-text-color);margin-top:5px;font-variant-numeric:tabular-nums}.range{width:100%;height:44px;margin:0;accent-color:var(--primary-color)}
     .seek{display:flex;align-items:center;gap:8px;font-size:12px}.seek input{min-width:0;width:85px;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:0 8px;height:42px;text-align:center;font:inherit;font-variant-numeric:tabular-nums}
     button{height:44px;min-width:44px;border:0;border-radius:10px;color:var(--primary-text-color);background:var(--secondary-background-color);cursor:pointer}button:disabled,input:disabled{opacity:.45}.error{font-size:12px;color:var(--error-color);margin-top:6px}.pause-hint{display:block;font-size:10px;color:var(--secondary-text-color);margin-top:5px}
   `;
-q([
+B([
   b({ attribute: !1 })
-], I.prototype, "hass", 2);
-q([
+], N.prototype, "hass", 2);
+B([
   b({ attribute: !1 })
-], I.prototype, "playback", 2);
-q([
+], N.prototype, "playback", 2);
+B([
   b()
-], I.prototype, "entryId", 2);
-q([
+], N.prototype, "entryId", 2);
+B([
   d()
-], I.prototype, "now", 2);
-q([
+], N.prototype, "now", 2);
+B([
   d()
-], I.prototype, "draft", 2);
-q([
+], N.prototype, "draft", 2);
+B([
   d()
-], I.prototype, "text", 2);
-q([
+], N.prototype, "text", 2);
+B([
   d()
-], I.prototype, "editing", 2);
-q([
+], N.prototype, "editing", 2);
+B([
   d()
-], I.prototype, "busy", 2);
-q([
+], N.prototype, "busy", 2);
+B([
   d()
-], I.prototype, "error", 2);
-I = q([
+], N.prototype, "error", 2);
+N = B([
   U("polr-playback-control")
-], I);
+], N);
 const zo = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Europe/Madrid",
   year: "numeric",
@@ -3580,7 +3595,7 @@ function Mo(t) {
     hourCycle: "h23"
   }).format(t * 1e3);
 }
-function Do(t, e, i) {
+function Io(t, e, i) {
   const o = [t, e, i];
   if (o.some((p) => !/^\d+$/.test(p))) return null;
   const [a, s, r] = o.map(Number);
@@ -3588,7 +3603,7 @@ function Do(t, e, i) {
   const c = a * 3600 + s * 60 + r;
   return Number.isSafeInteger(c) && c >= 1 && c <= 30 * 86400 ? c : null;
 }
-function Io(t, e) {
+function Do(t, e) {
   const i = Math.max(0, Math.ceil(t - e)), o = Math.floor(i / 3600), a = Math.floor(i / 60) % 60;
   return `${o} h ${String(a).padStart(2, "0")} min ${String(i % 60).padStart(2, "0")} s`;
 }
@@ -3627,7 +3642,7 @@ let $ = class extends T {
       return;
     }
     if (this.mode === "duration") {
-      const t = Do(this.hours, this.minutes, this.seconds);
+      const t = Io(this.hours, this.minutes, this.seconds);
       if (t === null) {
         this.error = "Introduce de 1 segundo a 30 días; minutos y segundos entre 0 y 59.";
         return;
@@ -3667,7 +3682,7 @@ let $ = class extends T {
     }}>
         <ha-icon icon="mdi:timer-outline"></ha-icon><span>Apagado programado</span><ha-icon icon=${this.expanded ? "mdi:chevron-up" : "mdi:chevron-down"}></ha-icon>
       </button>
-      ${t !== null ? n`<div class="status" role="status">Se apagará el ${Mo(t)} <span>· Quedan ${Io(t, this.now)}</span></div>` : l}
+      ${t !== null ? n`<div class="status" role="status">Se apagará el ${Mo(t)} <span>· Quedan ${Do(t, this.now)}</span></div>` : l}
       ${this.powerOff.error ? n`<div class="error" role="alert">${this.powerOff.error}</div>` : l}
       ${this.expanded ? n`<div class="body">
         <div class="modes" role="group" aria-label="Forma de programar el apagado">
@@ -3773,7 +3788,7 @@ var Ro = Object.defineProperty, Ho = Object.getOwnPropertyDescriptor, ct = (t, e
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Ro(e, i, a), a;
 };
-let Y = class extends T {
+let X = class extends T {
   constructor() {
     super(...arguments), this.tvOn = !1, this.busy = !1, this.error = "";
   }
@@ -3805,38 +3820,38 @@ let Y = class extends T {
     </section>`;
   }
 };
-Y.styles = H`
+X.styles = H`
     :host{display:block}section{padding:14px 16px;border-top:1px solid var(--divider-color,#ddd)}.heading{display:flex;gap:7px;align-items:center;font-size:13px}.heading span{margin-left:auto;font-size:11px;color:var(--secondary-text-color)}ha-icon{--mdc-icon-size:20px;flex:none}
     .buttons{display:flex;gap:8px;margin-top:10px}.buttons button{flex:1;min-width:0;height:44px;border:0;border-radius:10px;background:var(--secondary-background-color);color:var(--primary-text-color);display:flex;gap:5px;align-items:center;justify-content:center;font-size:12px;cursor:pointer}button:disabled{opacity:.45;cursor:default}
     .lock{display:flex;gap:8px;align-items:center;min-height:44px;font-size:13px;cursor:pointer}.lock input{margin-left:auto;width:22px;height:22px;accent-color:var(--primary-color)}p{font-size:11px;color:var(--secondary-text-color);margin:4px 0;line-height:1.4}.error{color:var(--error-color)}
   `;
 ct([
   b({ attribute: !1 })
-], Y.prototype, "hass", 2);
+], X.prototype, "hass", 2);
 ct([
   b({ attribute: !1 })
-], Y.prototype, "soundbar", 2);
+], X.prototype, "soundbar", 2);
 ct([
   b()
-], Y.prototype, "entryId", 2);
+], X.prototype, "entryId", 2);
 ct([
   b({ type: Boolean })
-], Y.prototype, "tvOn", 2);
+], X.prototype, "tvOn", 2);
 ct([
   d()
-], Y.prototype, "busy", 2);
+], X.prototype, "busy", 2);
 ct([
   d()
-], Y.prototype, "error", 2);
-Y = ct([
+], X.prototype, "error", 2);
+X = ct([
   U("polr-soundbar-control")
-], Y);
-var Uo = Object.defineProperty, jo = Object.getOwnPropertyDescriptor, It = (t, e, i, o) => {
+], X);
+var Uo = Object.defineProperty, jo = Object.getOwnPropertyDescriptor, Dt = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? jo(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Uo(e, i, a), a;
 };
-const Ie = [
+const De = [
   { value: "activity", label: "Launch app or link", hint: "App name from the integration, or a deep link such as https://www.netflix.com/title" },
   { value: "app", label: "Open app id", hint: "Android package id, e.g. com.netflix.ninja. Needs a paired media player." },
   { value: "key", label: "Send a key", hint: "Android key code, e.g. GUIDE or MEDIA_REWIND" },
@@ -4040,7 +4055,7 @@ const Ie = [
   hold_mode: "Native hold mirrors key down/up and requires Android TV Remote on Home Assistant 2026.9 or newer.",
   native_touch_hold_delay_ms: "A touch or pen must remain continuously down for this long. Mouse and keyboard use 750 ms."
 };
-let X = class extends T {
+let G = class extends T {
   constructor() {
     super(...arguments), this._editing = null, this._computeLabel = (t) => Fo[t.name] ?? t.name, this._computeHelper = (t) => Ko[t.name];
   }
@@ -4056,18 +4071,18 @@ let X = class extends T {
    */
   get _formData() {
     const t = { ...this._config };
-    for (const e of X.ACTION_BUTTONS)
+    for (const e of G.ACTION_BUTTONS)
       t[`${e}_action`] = this._config.overrides[e]?.tap_action;
     return t;
   }
   /** Emit a full v2 config. This is what upgrades stored v1 YAML. */
   _emit(t) {
-    Et(this, "config-changed", { config: Zi(t) });
+    Et(this, "config-changed", { config: Qi(t) });
   }
   _formChanged(t) {
     t.stopPropagation();
     const e = { ...t.detail.value }, i = { ...this._config.overrides };
-    for (const o of X.ACTION_BUTTONS) {
+    for (const o of G.ACTION_BUTTONS) {
       const a = `${o}_action`;
       if (!(a in e)) continue;
       const s = e[a];
@@ -4228,7 +4243,7 @@ let X = class extends T {
     `;
   }
   _renderAppForm(t, e, i) {
-    const o = Kt(e.action), a = Ie.find((r) => r.value === o), s = Yo(e.action);
+    const o = Kt(e.action), a = De.find((r) => r.value === o), s = Yo(e.action);
     return n`
       <li class="form-host">
         <div class="form">
@@ -4295,7 +4310,7 @@ let X = class extends T {
                 .value=${o}
                 @change=${(r) => this._setActionKind(t, i, r.target.value)}
               >
-                ${Ie.map(
+                ${De.map(
       (r) => n`
                     <option value=${r.value} ?selected=${r.value === o}>
                       ${r.label}
@@ -4526,13 +4541,13 @@ let X = class extends T {
     `;
   }
 };
-X.ACTION_BUTTONS = [
+G.ACTION_BUTTONS = [
   "power",
   "volume_up",
   "volume_down",
   "volume_mute"
 ];
-X.styles = [
+G.styles = [
   re,
   H`
       :host {
@@ -4656,18 +4671,18 @@ X.styles = [
       }
     `
 ];
-It([
+Dt([
   b({ attribute: !1 })
-], X.prototype, "hass", 2);
-It([
+], G.prototype, "hass", 2);
+Dt([
   d()
-], X.prototype, "_config", 2);
-It([
+], G.prototype, "_config", 2);
+Dt([
   d()
-], X.prototype, "_editing", 2);
-X = It([
+], G.prototype, "_editing", 2);
+G = Dt([
   U("polr-android-tv-remote-card-editor")
-], X);
+], G);
 const Kt = (t) => t.action === "activity" || t.action === "app" || t.action === "key" ? t.action : "action", Ne = (t) => {
   switch (t.action) {
     case "activity":
@@ -4694,15 +4709,15 @@ const Kt = (t) => t.action === "activity" || t.action === "app" || t.action === 
   const e = Ge(t);
   return e ? `brand:${e}` : "mdi:application";
 };
-var Go = Object.defineProperty, Zo = Object.getOwnPropertyDescriptor, ft = (t, e, i, o) => {
-  for (var a = o > 1 ? void 0 : o ? Zo(e, i) : e, s = t.length - 1, r; s >= 0; s--)
+var Go = Object.defineProperty, Qo = Object.getOwnPropertyDescriptor, ft = (t, e, i, o) => {
+  for (var a = o > 1 ? void 0 : o ? Qo(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Go(e, i, a), a;
 };
-const Jo = "2.8.0", Nt = "polr-android-tv-remote-card";
-let Q = class extends T {
+const Zo = "2.9.0", Nt = "polr-android-tv-remote-card";
+let J = class extends T {
   constructor() {
-    super(...arguments), this._text = "", this._sending = !1, this._luliOpen = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new ro();
+    super(...arguments), this._text = "", this._sending = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new ro();
   }
   static getConfigElement() {
     return document.createElement(`${Nt}-editor`);
@@ -4848,8 +4863,10 @@ let Q = class extends T {
     const e = this._device;
     if (!this.hass || !e) return;
     const i = this.hass;
-    if (this._releaseNativeSessions(), t.action?.action === "service" && t.action.service === "tv_guide.youtube_kids_play" && t.action.data?.favorite_id === "luli_pampin") {
-      this._luliOpen = !0;
+    this._releaseNativeSessions();
+    const o = t.action?.action === "service" ? t.action.data?.favorite_id : void 0;
+    if (t.action?.action === "service" && t.action.service === "tv_guide.youtube_kids_play" && (o === "luli_pampin" || o === "sunny_bunnies")) {
+      this._youtubeFavorite = o;
       return;
     }
     if (t.action?.action === "service" && t.action.service === "tv_guide.youtube_kids_play") {
@@ -4937,7 +4954,7 @@ let Q = class extends T {
    * codes work regardless — it is only the *player* route that needs the bit.
    */
   _renderTransport(t) {
-    const e = t.playerId === null, i = e || mt(t, B.PREVIOUS_TRACK), o = e || mt(t, B.NEXT_TRACK), a = new Set(this._config.transport_buttons), s = [
+    const e = t.playerId === null, i = e || mt(t, W.PREVIOUS_TRACK), o = e || mt(t, W.NEXT_TRACK), a = new Set(this._config.transport_buttons), s = [
       a.has("previous") && i ? this._button("previous", "mdi:skip-previous", "Previous") : l,
       a.has("rewind") ? this._button("rewind", "mdi:rewind", "Rewind", { repeat: !0 }) : l,
       a.has("play_pause") ? this._button(
@@ -5099,11 +5116,12 @@ let Q = class extends T {
           </div>
         </ha-card>
       `;
-    const i = Ii("media_player", e.on ? "on" : "off"), o = e.available, a = t.context_entity ? this.hass.states[t.context_entity]?.attributes : void 0;
+    const i = Di("media_player", e.on ? "on" : "off"), o = e.available, a = t.context_entity ? this.hass.states[t.context_entity]?.attributes : void 0;
     return n`
       <ha-card class=${t.show_header ? "" : "headerless"} style="--tile-color:${i}">
-        ${this._luliOpen ? n`<polr-youtube-favorite .hass=${this.hass} .entryId=${a?.entry_id} .operation=${a?.youtube_operation} .queue=${a?.youtube_queue} @close=${async () => {
-      this._luliOpen = !1, await this.updateComplete, this.shadowRoot?.querySelector('[aria-label="Luli Pampín"]')?.focus();
+        ${this._youtubeFavorite ? n`<polr-youtube-favorite .favoriteId=${this._youtubeFavorite} .hass=${this.hass} .entryId=${a?.entry_id} .operation=${a?.youtube_operation} .queue=${a?.youtube_queue} @close=${async () => {
+      const s = this._youtubeFavorite === "sunny_bunnies" ? "Sunny Bunnies" : "Luli Pampín";
+      this._youtubeFavorite = void 0, await this.updateComplete, this.shadowRoot?.querySelector(`[aria-label="${s}"]`)?.focus();
     }}></polr-youtube-favorite>` : l}
         ${t.show_header ? this._renderHeader(e) : l}
         ${a?.youtube_operation && ["running", "error"].includes(a.youtube_operation.state) ? n`<div class="notice ${a.youtube_operation.state === "error" ? "error" : "warn"}" role=${a.youtube_operation.state === "error" ? "alert" : "status"}><ha-icon icon="mdi:youtube"></ha-icon><span class="grow">${a.youtube_operation.message}</span></div>` : l}
@@ -5154,25 +5172,25 @@ let Q = class extends T {
     `;
   }
 };
-Q.styles = [re, ii];
+J.styles = [re, ii];
 ft([
   b({ attribute: !1 })
-], Q.prototype, "hass", 2);
+], J.prototype, "hass", 2);
 ft([
   d()
-], Q.prototype, "_config", 2);
+], J.prototype, "_config", 2);
 ft([
   d()
-], Q.prototype, "_text", 2);
+], J.prototype, "_text", 2);
 ft([
   d()
-], Q.prototype, "_sending", 2);
+], J.prototype, "_sending", 2);
 ft([
   d()
-], Q.prototype, "_luliOpen", 2);
-Q = ft([
+], J.prototype, "_youtubeFavorite", 2);
+J = ft([
   U(Nt)
-], Q);
+], J);
 window.customCards = window.customCards ?? [];
 window.customCards.push({
   type: Nt,
@@ -5181,9 +5199,9 @@ window.customCards.push({
   preview: !0,
   documentationURL: "https://github.com/jeserga/polr-android-tv-remote-card"
 });
-console.info(`%c ${Nt} %c ${Jo} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
+console.info(`%c ${Nt} %c ${Zo} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
 export {
-  Jo as CARD_VERSION,
-  Q as PolrAndroidTvRemoteCard
+  Zo as CARD_VERSION,
+  J as PolrAndroidTvRemoteCard
 };
 //# sourceMappingURL=polr-android-tv-remote-card.js.map

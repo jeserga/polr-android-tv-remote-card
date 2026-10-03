@@ -8,6 +8,7 @@ declare global { interface HTMLElementTagNameMap { "polr-youtube-favorite": YouT
 class YouTubeFavorite extends LitElement {
   @property({attribute:false}) hass?: HomeAssistant;
   @property({attribute:false}) entryId?: string;
+  @property({attribute:false}) favoriteId = "luli_pampin";
   @property({attribute:false}) operation?: any;
   @property({attribute:false}) queue?: any;
   @state() private catalog?: any;
@@ -16,6 +17,11 @@ class YouTubeFavorite extends LitElement {
   @state() private pending = false;
   private loaded = false;
   private backdropPressed = false;
+  private get name() {return this.favoriteId === "sunny_bunnies" ? "Sunny Bunnies" : "Luli Pampín";}
+  private get count() {return this.catalog?.videos.length ?? (this.favoriteId === "sunny_bunnies" ? 50 : 30);}
+  private get icon() {return this.favoriteId === "sunny_bunnies" ? "sunny-bunnies" : "luli-pampin";}
+  private get currentQueue() {return (!this.queue?.favorite_id || this.queue.favorite_id === this.favoriteId) ? this.queue : undefined;}
+
 
   protected override updated(_changed: PropertyValues) {
     const dialog = this.shadowRoot?.querySelector("dialog");
@@ -24,7 +30,7 @@ class YouTubeFavorite extends LitElement {
   }
   private async load() {
     this.error = "";
-    try {this.catalog = await this.hass!.callWS({type:"tv_guide/youtube_playlist",entry_id:this.entryId});}
+    try {this.catalog = await this.hass!.callWS({type:"tv_guide/youtube_playlist",entry_id:this.entryId,favorite_id:this.favoriteId});}
     catch (e) {this.error = (e as Error).message || "No se pudo cargar la lista";}
   }
   private close() {this.dispatchEvent(new CustomEvent("close",{bubbles:true,composed:true}));}
@@ -32,7 +38,7 @@ class YouTubeFavorite extends LitElement {
     if (this.pending || this.operation?.state === "running") return;
     this.pending = true; this.error = "";
     try {
-      await this.hass!.callService("tv_guide","youtube_playlist_play",{entry_id:this.entryId,...(videoId?{video_id:videoId}:{})});
+      await this.hass!.callService("tv_guide","youtube_playlist_play",{entry_id:this.entryId,...(this.favoriteId === "sunny_bunnies" ? {favorite_id:this.favoriteId}:{}),...(videoId?{video_id:videoId}:{})});
       this.close();
     } catch (e) {this.error = (e as Error).message || "No se pudo reproducir la lista";}
     finally {this.pending = false;}
@@ -41,11 +47,11 @@ class YouTubeFavorite extends LitElement {
     const busy = this.pending || this.operation?.state === "running";
     return html`<dialog aria-labelledby="luli-title" @cancel=${(e:Event)=>{e.preventDefault();this.close();}} @pointerdown=${(e:PointerEvent)=>{this.backdropPressed=e.target===e.currentTarget;}} @click=${(e:MouseEvent)=>{if(this.backdropPressed&&e.target===e.currentTarget)this.close();this.backdropPressed=false;}}>
       <div class="content">
-        <div class="heading"><img src="/local/tv-remote/icons/luli-pampin.png?v=20261003" alt=""><div><h2 id="luli-title">Luli Pampín</h2><p>Los 30 vídeos más populares</p></div><button class="icon" aria-label="Cerrar" @click=${()=>this.close()}>✕</button></div>
+        <div class="heading"><img src=${"/local/tv-remote/icons/"+this.icon+".png?v=20261003"} alt=""><div><h2 id="luli-title">${this.name}</h2><p>Los ${this.count} vídeos más populares</p></div><button class="icon" aria-label="Cerrar" @click=${()=>this.close()}>✕</button></div>
         <div class="actions"><button class="shuffle" ?disabled=${busy||!this.catalog} @click=${()=>void this.play()}><ha-icon icon="mdi:shuffle-variant"></ha-icon>Reproducción aleatoria</button><button aria-expanded=${String(this.choosing)} ?disabled=${!this.catalog} @click=${()=>{this.choosing=!this.choosing;}}><ha-icon icon="mdi:playlist-play"></ha-icon>Elegir vídeo</button></div>
-        <p class="explanation">${this.choosing?"Elige el primero. Después se reproducirán los otros 29 en orden aleatorio, sin repetir.":"Reproduce los 30 en orden aleatorio, sin repetir vídeos."}</p>
-        ${this.queue?.active?html`<p role="status">Vídeo ${this.queue.index} de 30 · ${this.queue.remaining} pendientes</p>`:nothing}
-        ${this.queue?.error?html`<p class="error" role="alert">${this.queue.error}</p>`:nothing}
+        <p class="explanation">${this.choosing?`Elige el primero. Después se reproducirán los otros ${this.count-1} en orden aleatorio, sin repetir.`:`Reproduce los ${this.count} en orden aleatorio, sin repetir vídeos.`}</p>
+        ${this.currentQueue?.active?html`<p role="status">Vídeo ${this.currentQueue.index} de ${this.count} · ${this.currentQueue.remaining} pendientes</p>`:nothing}
+        ${this.currentQueue?.error?html`<p class="error" role="alert">${this.currentQueue.error}</p>`:nothing}
         ${this.operation?.state==="running"?html`<p role="status">${this.operation.message}</p>`:nothing}
         ${this.error?html`<p class="error" role="alert">${this.error}</p>`:nothing}
         ${!this.catalog&&this.error?html`<button @click=${()=>void this.load()}>Volver a cargar</button>`:nothing}
