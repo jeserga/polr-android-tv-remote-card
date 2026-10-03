@@ -48,10 +48,11 @@ import "./history-card";
 import "./playback-control";
 import "./power-control";
 import "./soundbar-control";
+import "./youtube-favorite";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.7.0";
+export const CARD_VERSION = "2.8.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -64,6 +65,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
   @state() private _config?: ResolvedConfig;
   @state() private _text = "";
   @state() private _sending = false;
+  @state() private _luliOpen = false;
 
   /** Every control command keeps gesture order; valid rapid taps are queued, never dropped. */
   private _controlQueue: Promise<void> = Promise.resolve();
@@ -300,6 +302,10 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     if (!this.hass || !device) return;
     const hass = this.hass;
     this._releaseNativeSessions();
+    if (app.action?.action === "service" && app.action.service === "tv_guide.youtube_kids_play" && app.action.data?.favorite_id === "luli_pampin") {
+      this._luliOpen = true;
+      return;
+    }
     if (app.action?.action === "service" && app.action.service === "tv_guide.youtube_kids_play") {
       // The backend serializes favorites. Keep manual keys available so they
       // can interrupt profile navigation instead of waiting behind this call.
@@ -648,6 +654,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
 
     return html`
       <ha-card class=${config.show_header ? "" : "headerless"} style="--tile-color:${tile}">
+        ${this._luliOpen ? html`<polr-youtube-favorite .hass=${this.hass} .entryId=${context?.entry_id} .operation=${context?.youtube_operation} .queue=${context?.youtube_queue} @close=${async()=>{this._luliOpen=false;await this.updateComplete;this.shadowRoot?.querySelector<HTMLButtonElement>('[aria-label="Luli Pampín"]')?.focus();}}></polr-youtube-favorite>` : nothing}
         ${config.show_header ? this._renderHeader(device) : nothing}
         ${context?.youtube_operation && ["running", "error"].includes(context.youtube_operation.state) ? html`<div class="notice ${context.youtube_operation.state === "error" ? "error" : "warn"}" role=${context.youtube_operation.state === "error" ? "alert" : "status"}><ha-icon icon="mdi:youtube"></ha-icon><span class="grow">${context.youtube_operation.message}</span></div>` : nothing}
         ${context?.playback ? html`<polr-playback-control .hass=${this.hass} .playback=${context.playback} .entryId=${context.entry_id}></polr-playback-control>` : nothing}

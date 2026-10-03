@@ -2,6 +2,7 @@ import {LitElement,html,css,nothing,type PropertyValues} from "lit";
 import {customElement,property,state} from "lit/decorators.js";
 import type {HomeAssistant} from "./kit/types";
 import {muteAction,dayForecast,weatherIcon,clockTime,madridDay} from "./home-model";
+import "./youtube-favorite";
 
 @customElement("polr-home-summary-card")
 export class HomeSummaryCard extends LitElement {
@@ -10,6 +11,7 @@ export class HomeSummaryCard extends LitElement {
   @state() private weather:any={forecast:[],alerts:[]};
   @state() private error="";
   @state() private pending="";
+  @state() private luliOpen=false;
   private loaded=false;
   private timer?:ReturnType<typeof setInterval>;
   setConfig(config:any){this.config={light:"light.lampara",context:"sensor.tv_salon_contexto",remote:"remote.tv_salon",...config};}
@@ -53,6 +55,7 @@ export class HomeSummaryCard extends LitElement {
     const forecast=dayForecast(this.weather.forecast??[]);
     const youtube=context.youtube_operation;const kidsBusy=youtube?.state==="running";
     return html`<div class="home">
+      ${this.luliOpen?html`<polr-youtube-favorite .hass=${this.hass} .entryId=${context.entry_id} .operation=${youtube} .queue=${context.youtube_queue} @close=${async()=>{this.luliOpen=false;await this.updateComplete;this.shadowRoot?.querySelector<HTMLButtonElement>('[aria-label="Luli Pampín · Opciones de reproducción"]')?.focus();}}></polr-youtube-favorite>`:nothing}
       <ha-card class="lamp">
         <div class="heading"><span><ha-icon icon="mdi:floor-lamp"></ha-icon><strong>Lámpara</strong><small>${!available?"Sin conexión":lit?`${brightness} %`:"Apagada"}</small></span>${this.button("mdi:power",lit?"Apagar lámpara":"Encender lámpara",()=>void this.call("light",lit?"turn_off":"turn_on",{entity_id:this.config.light}),!available)}</div>
         <div class="brightness"><button ?disabled=${!available||!!this.pending} @click=${()=>void this.call("light","turn_on",{entity_id:this.config.light,brightness_pct:1})}>1 %</button><input aria-label="Intensidad de la lámpara" type="range" min="1" max="100" .value=${String(lit?Math.max(1,brightness):1)} ?disabled=${!available||!!this.pending} @change=${(e:Event)=>void this.call("light","turn_on",{entity_id:this.config.light,brightness_pct:Number((e.target as HTMLInputElement).value)})}><button ?disabled=${!available||!!this.pending} @click=${()=>void this.call("light","turn_on",{entity_id:this.config.light,brightness_pct:100})}>100 %</button></div>
@@ -61,7 +64,7 @@ export class HomeSummaryCard extends LitElement {
         <div class="heading"><span><ha-icon icon="mdi:television"></ha-icon><strong>TV</strong><small class=${on?"live":""}>${on?"Encendida":off?"Apagada":"Sin conexión"}</small></span><div class="row">${this.button("mdi:power",on?"Apagar TV":"Encender TV",()=>void this.call("script","tv_salon_power",{}))}<button class="link" @click=${()=>this.navigate("/mando-tv/mando")}><ha-icon icon="mdi:remote-tv"></ha-icon>Mando</button></div></div>
         ${on?html`<div class="now"><span class="app">${context.label??"TV del salón"}${playback.state==="paused"?" · En pausa":""}</span><strong class="title" title=${current??""}>${current??(context.kind==="home"?"Menú principal":"Contenido no disponible")}</strong></div>`:nothing}
         <div class="volume"><span class="audio"><small>${on?(audio.output_label??"Audio"):"Audio"}</small><strong>${on?(audio.is_volume_muted?"Silencio":volume):"—"}</strong></span><div class="row">${this.button("mdi:volume-minus","Bajar volumen",()=>void this.call("tv_guide","control",{entry_id:context.entry_id,command:"VOLUME_DOWN"}),!on)}${this.button(mute.icon,mute.label,()=>void this.call("tv_guide","control",{entry_id:context.entry_id,command:"MUTE"}),!on)}${this.button("mdi:volume-plus","Subir volumen",()=>void this.call("tv_guide","control",{entry_id:context.entry_id,command:"VOLUME_UP"}),!on)}</div></div>
-        <div class="shortcuts"><button @click=${()=>void this.call("script","tv_bluey_ninos",{},"Abriendo Bluey")} ?disabled=${!!this.pending||kidsBusy}><img src="/local/tv-remote/icons/bluey.png?v=20260903" alt="">Bluey</button><button aria-label="Reproducir Luli Pampín con Paloma" @click=${()=>void this.call("tv_guide","youtube_kids_play",{entry_id:context.entry_id,favorite_id:"luli_pampin"},"Abriendo Luli Pampín")} ?disabled=${!!this.pending||kidsBusy}><img src="/local/tv-remote/icons/luli-pampin.png?v=20261003" alt=""><span>Luli Pampín</span></button><button @click=${()=>void this.call("script","tv_salon_abrir_app",{aplicacion:"television"},"Abriendo televisión")} ?disabled=${!!this.pending}><ha-icon icon="mdi:television-classic"></ha-icon>Televisión</button></div>
+        <div class="shortcuts"><button @click=${()=>void this.call("script","tv_bluey_ninos",{},"Abriendo Bluey")} ?disabled=${!!this.pending||kidsBusy}><img src="/local/tv-remote/icons/bluey.png?v=20260903" alt="">Bluey</button><button aria-label="Luli Pampín · Opciones de reproducción" @click=${()=>{this.luliOpen=true;}} ?disabled=${!!this.pending||kidsBusy}><img src="/local/tv-remote/icons/luli-pampin.png?v=20261003" alt=""><span>Luli Pampín</span></button><button @click=${()=>void this.call("script","tv_salon_abrir_app",{aplicacion:"television"},"Abriendo televisión")} ?disabled=${!!this.pending}><ha-icon icon="mdi:television-classic"></ha-icon>Televisión</button></div>
         ${youtube&&["running","error"].includes(youtube.state)?html`<div role=${youtube.state==="error"?"alert":"status"} class=${youtube.state==="error"?"error":"status"}>${youtube.message}</div>`:nothing}
         ${on&&context.kind==="tv"?html`<label class="channel"><span>Canal</span><select aria-label="Cambiar canal" ?disabled=${!!this.pending||!!context.busy} @change=${(e:Event)=>void this.call("select","select_option",{entity_id:"select.tv_salon_canal",option:(e.target as HTMLSelectElement).value},"Cambiando canal")}>${(channel?.attributes.options??[]).map((o:string)=>html`<option value=${o} ?selected=${channel?.state===o}>${o}</option>`)}</select></label>`:nothing}
       </ha-card>

@@ -422,3 +422,8 @@ Run `bun run build`, `bun run test` and `bun run lint:exports` before publishing
 ## Children's YouTube favorites (2.7.0)
 
 With the local `tv_guide` 1.4.0 integration, a section tile may call `tv_guide.youtube_kids_play` with `data: {favorite_id: luli_pampin}` or `sunny_bunnies` and an optional `entry_id`. The backend verifies the child's profile and current app, serializes requests, and confirms actual playback. Set `context_entity` to the integration's context sensor to display shared progress/errors and disable both YouTube favorites while a request is running. The home summary card also includes the Luli Pampín shortcut beside Bluey and Television, with a three-column layout suitable for narrow mobile screens. Video selection and profile recognition are managed by the integration, rather than hardcoded remote key sequences.
+
+
+## Luli Pampín playlist menu (2.8.0)
+
+With `tv_guide` 1.5.0, the Luli favorite and home shortcut open a shared dialog with shuffle and video selection. The integration provides the thirty ranked videos and their individual YouTube links through `tv_guide/youtube_playlist`. Selecting a video calls `tv_guide.youtube_playlist_play` with that `video_id`; shuffle omits it. The chosen clip starts first, followed by the remaining twenty-nine without repeats. Both cards show shared preparation status and disable duplicate requests; the dialog also displays queue progress and failures. The existing `youtube_kids_play` Luli tile configuration continues to work. `bun run shots:luli` verifies real touch activation, ranked links, both service calls, focus restoration, responsive layouts, Sunny and concurrent manual navigation.
