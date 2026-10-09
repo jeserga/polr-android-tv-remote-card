@@ -1,5 +1,5 @@
 .DS_Store
-node_modules/
+node_modules
 *.log
 test/.build/
 test/harness/shots/
@@ -9,3 +9,4 @@ test/harness/shots/
 test/harness/shots-tv-guide/
 test/harness/shots-playback/
 test/harness/shots-luli/
+test/harness/shots-home-shortcuts/

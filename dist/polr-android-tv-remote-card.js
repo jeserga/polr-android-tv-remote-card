@@ -22,7 +22,7 @@ let Re = class {
     return this.cssText;
   }
 };
-const oi = (t) => new Re(typeof t == "string" ? t : t + "", void 0, Xt), H = (t, ...e) => {
+const oi = (t) => new Re(typeof t == "string" ? t : t + "", void 0, Xt), U = (t, ...e) => {
   const i = t.length === 1 ? t[0] : e.reduce((o, a, s) => o + ((r) => {
     if (r._$cssResult$ === !0) return r.cssText;
     if (typeof r == "number") return r;
@@ -262,9 +262,9 @@ ht.elementStyles = [], ht.shadowRootOptions = { mode: "open" }, ht[$t("elementPr
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Qt = globalThis, pe = (t) => t, zt = Qt.trustedTypes, he = zt ? zt.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, He = "$lit$", Q = `lit$${Math.random().toFixed(9).slice(2)}$`, Ue = "?" + Q, ui = `<${Ue}>`, nt = document, At = () => nt.createComment(""), St = (t) => t === null || typeof t != "object" && typeof t != "function", Zt = Array.isArray, mi = (t) => Zt(t) || typeof t?.[Symbol.iterator] == "function", Lt = `[ 	
+const Qt = globalThis, pe = (t) => t, zt = Qt.trustedTypes, he = zt ? zt.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, He = "$lit$", Z = `lit$${Math.random().toFixed(9).slice(2)}$`, Ue = "?" + Z, ui = `<${Ue}>`, nt = document, At = () => nt.createComment(""), St = (t) => t === null || typeof t != "object" && typeof t != "function", Zt = Array.isArray, mi = (t) => Zt(t) || typeof t?.[Symbol.iterator] == "function", Lt = `[ 	
 \f\r]`, bt = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ue = /-->/g, me = />/g, et = RegExp(`>|${Lt}(?:([^\\s"'>=/]+)(${Lt}*=${Lt}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ve = /'/g, ge = /"/g, je = /^(?:script|style|textarea|title)$/i, Ve = (t) => (e, ...i) => ({ _$litType$: t, strings: e, values: i }), n = Ve(1), vi = Ve(2), K = Symbol.for("lit-noChange"), l = Symbol.for("lit-nothing"), fe = /* @__PURE__ */ new WeakMap(), st = nt.createTreeWalker(nt, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ve = /'/g, ge = /"/g, je = /^(?:script|style|textarea|title)$/i, Ve = (t) => (e, ...i) => ({ _$litType$: t, strings: e, values: i }), n = Ve(1), vi = Ve(2), Y = Symbol.for("lit-noChange"), l = Symbol.for("lit-nothing"), fe = /* @__PURE__ */ new WeakMap(), st = nt.createTreeWalker(nt, 129);
 function qe(t, e) {
   if (!Zt(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return he !== void 0 ? he.createHTML(e) : e;
@@ -274,10 +274,10 @@ const gi = (t, e) => {
   let a, s = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", r = bt;
   for (let c = 0; c < i; c++) {
     const p = t[c];
-    let u, _, h = -1, m = 0;
-    for (; m < p.length && (r.lastIndex = m, _ = r.exec(p), _ !== null); ) m = r.lastIndex, r === bt ? _[1] === "!--" ? r = ue : _[1] !== void 0 ? r = me : _[2] !== void 0 ? (je.test(_[2]) && (a = RegExp("</" + _[2], "g")), r = et) : _[3] !== void 0 && (r = et) : r === et ? _[0] === ">" ? (r = a ?? bt, h = -1) : _[1] === void 0 ? h = -2 : (h = r.lastIndex - _[2].length, u = _[1], r = _[3] === void 0 ? et : _[3] === '"' ? ge : ve) : r === ge || r === ve ? r = et : r === ue || r === me ? r = bt : (r = et, a = void 0);
-    const v = r === et && t[c + 1].startsWith("/>") ? " " : "";
-    s += r === bt ? p + ui : h >= 0 ? (o.push(u), p.slice(0, h) + He + p.slice(h) + Q + v) : p + Q + (h === -2 ? c : v);
+    let u, _, h = -1, v = 0;
+    for (; v < p.length && (r.lastIndex = v, _ = r.exec(p), _ !== null); ) v = r.lastIndex, r === bt ? _[1] === "!--" ? r = ue : _[1] !== void 0 ? r = me : _[2] !== void 0 ? (je.test(_[2]) && (a = RegExp("</" + _[2], "g")), r = et) : _[3] !== void 0 && (r = et) : r === et ? _[0] === ">" ? (r = a ?? bt, h = -1) : _[1] === void 0 ? h = -2 : (h = r.lastIndex - _[2].length, u = _[1], r = _[3] === void 0 ? et : _[3] === '"' ? ge : ve) : r === ge || r === ve ? r = et : r === ue || r === me ? r = bt : (r = et, a = void 0);
+    const g = r === et && t[c + 1].startsWith("/>") ? " " : "";
+    s += r === bt ? p + ui : h >= 0 ? (o.push(u), p.slice(0, h) + He + p.slice(h) + Z + g) : p + Z + (h === -2 ? c : g);
   }
   return [qe(t, s + (t[i] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), o];
 };
@@ -294,21 +294,21 @@ class Tt {
     for (; (a = st.nextNode()) !== null && p.length < c; ) {
       if (a.nodeType === 1) {
         if (a.hasAttributes()) for (const h of a.getAttributeNames()) if (h.endsWith(He)) {
-          const m = _[r++], v = a.getAttribute(h).split(Q), y = /([.?@])?(.*)/.exec(m);
-          p.push({ type: 1, index: s, name: y[2], strings: v, ctor: y[1] === "." ? bi : y[1] === "?" ? _i : y[1] === "@" ? yi : It }), a.removeAttribute(h);
-        } else h.startsWith(Q) && (p.push({ type: 6, index: s }), a.removeAttribute(h));
+          const v = _[r++], g = a.getAttribute(h).split(Z), y = /([.?@])?(.*)/.exec(v);
+          p.push({ type: 1, index: s, name: y[2], strings: g, ctor: y[1] === "." ? bi : y[1] === "?" ? _i : y[1] === "@" ? yi : It }), a.removeAttribute(h);
+        } else h.startsWith(Z) && (p.push({ type: 6, index: s }), a.removeAttribute(h));
         if (je.test(a.tagName)) {
-          const h = a.textContent.split(Q), m = h.length - 1;
-          if (m > 0) {
+          const h = a.textContent.split(Z), v = h.length - 1;
+          if (v > 0) {
             a.textContent = zt ? zt.emptyScript : "";
-            for (let v = 0; v < m; v++) a.append(h[v], At()), st.nextNode(), p.push({ type: 2, index: ++s });
-            a.append(h[m], At());
+            for (let g = 0; g < v; g++) a.append(h[g], At()), st.nextNode(), p.push({ type: 2, index: ++s });
+            a.append(h[v], At());
           }
         }
       } else if (a.nodeType === 8) if (a.data === Ue) p.push({ type: 2, index: s });
       else {
         let h = -1;
-        for (; (h = a.data.indexOf(Q, h + 1)) !== -1; ) p.push({ type: 7, index: s }), h += Q.length - 1;
+        for (; (h = a.data.indexOf(Z, h + 1)) !== -1; ) p.push({ type: 7, index: s }), h += Z.length - 1;
       }
       s++;
     }
@@ -319,7 +319,7 @@ class Tt {
   }
 }
 function vt(t, e, i = t, o) {
-  if (e === K) return e;
+  if (e === Y) return e;
   let a = o !== void 0 ? i._$Co?.[o] : i._$Cl;
   const s = St(e) ? void 0 : e._$litDirective$;
   return a?.constructor !== s && (a?._$AO?.(!1), s === void 0 ? a = void 0 : (a = new s(t), a._$AT(t, i, o)), o !== void 0 ? (i._$Co ??= [])[o] = a : i._$Cl = a), a !== void 0 && (e = vt(t, a._$AS(t, e.values), a, o)), e;
@@ -371,7 +371,7 @@ class gt {
     return this._$AB;
   }
   _$AI(e, i = this) {
-    e = vt(this, e, i), St(e) ? e === l || e == null || e === "" ? (this._$AH !== l && this._$AR(), this._$AH = l) : e !== this._$AH && e !== K && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : mi(e) ? this.k(e) : this._(e);
+    e = vt(this, e, i), St(e) ? e === l || e == null || e === "" ? (this._$AH !== l && this._$AR(), this._$AH = l) : e !== this._$AH && e !== Y && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : mi(e) ? this.k(e) : this._(e);
   }
   O(e) {
     return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -424,11 +424,11 @@ class It {
   _$AI(e, i = this, o, a) {
     const s = this.strings;
     let r = !1;
-    if (s === void 0) e = vt(this, e, i, 0), r = !St(e) || e !== this._$AH && e !== K, r && (this._$AH = e);
+    if (s === void 0) e = vt(this, e, i, 0), r = !St(e) || e !== this._$AH && e !== Y, r && (this._$AH = e);
     else {
       const c = e;
       let p, u;
-      for (e = s[0], p = 0; p < s.length - 1; p++) u = vt(this, c[o + p], i, p), u === K && (u = this._$AH[p]), r ||= !St(u) || u !== this._$AH[p], u === l ? e = l : e !== l && (e += (u ?? "") + s[p + 1]), this._$AH[p] = u;
+      for (e = s[0], p = 0; p < s.length - 1; p++) u = vt(this, c[o + p], i, p), u === Y && (u = this._$AH[p]), r ||= !St(u) || u !== this._$AH[p], u === l ? e = l : e !== l && (e += (u ?? "") + s[p + 1]), this._$AH[p] = u;
     }
     r && !a && this.j(e);
   }
@@ -457,7 +457,7 @@ class yi extends It {
     super(e, i, o, a, s), this.type = 5;
   }
   _$AI(e, i = this) {
-    if ((e = vt(this, e, i, 0) ?? l) === K) return;
+    if ((e = vt(this, e, i, 0) ?? l) === Y) return;
     const o = this._$AH, a = e === l && o !== l || e.capture !== o.capture || e.once !== o.once || e.passive !== o.passive, s = e !== l && (o === l || a);
     a && this.element.removeEventListener(this.name, this, o), s && this.element.addEventListener(this.name, this, e), this._$AH = e;
   }
@@ -512,7 +512,7 @@ let T = class extends ht {
     super.disconnectedCallback(), this._$Do?.setConnected(!1);
   }
   render() {
-    return K;
+    return Y;
   }
 };
 T._$litElement$ = !0, T.finalized = !0, Jt.litElementHydrateSupport?.({ LitElement: T });
@@ -524,7 +524,7 @@ Ai?.({ LitElement: T });
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const U = (t) => (e, i) => {
+const j = (t) => (e, i) => {
   i !== void 0 ? i.addInitializer(() => {
     customElements.define(t, e);
   }) : customElements.define(t, e);
@@ -666,31 +666,31 @@ const ye = (t, e, i) => {
     const a = Mi(t), { values: s, keys: r } = this.dt(e, i, o);
     if (!Array.isArray(a)) return this.ut = r, s;
     const c = this.ut ??= [], p = [];
-    let u, _, h = 0, m = a.length - 1, v = 0, y = s.length - 1;
-    for (; h <= m && v <= y; ) if (a[h] === null) h++;
-    else if (a[m] === null) m--;
-    else if (c[h] === r[v]) p[v] = it(a[h], s[v]), h++, v++;
-    else if (c[m] === r[y]) p[y] = it(a[m], s[y]), m--, y--;
+    let u, _, h = 0, v = a.length - 1, g = 0, y = s.length - 1;
+    for (; h <= v && g <= y; ) if (a[h] === null) h++;
+    else if (a[v] === null) v--;
+    else if (c[h] === r[g]) p[g] = it(a[h], s[g]), h++, g++;
+    else if (c[v] === r[y]) p[y] = it(a[v], s[y]), v--, y--;
     else if (c[h] === r[y]) p[y] = it(a[h], s[y]), _t(t, p[y + 1], a[h]), h++, y--;
-    else if (c[m] === r[v]) p[v] = it(a[m], s[v]), _t(t, a[h], a[m]), m--, v++;
-    else if (u === void 0 && (u = ye(r, v, y), _ = ye(c, h, m)), u.has(c[h])) if (u.has(c[m])) {
-      const z = _.get(r[v]), O = z !== void 0 ? a[z] : null;
+    else if (c[v] === r[g]) p[g] = it(a[v], s[g]), _t(t, a[h], a[v]), v--, g++;
+    else if (u === void 0 && (u = ye(r, g, y), _ = ye(c, h, v)), u.has(c[h])) if (u.has(c[v])) {
+      const z = _.get(r[g]), O = z !== void 0 ? a[z] : null;
       if (O === null) {
         const M = _t(t, a[h]);
-        it(M, s[v]), p[v] = M;
-      } else p[v] = it(O, s[v]), _t(t, a[h], O), a[z] = null;
-      v++;
-    } else Rt(a[m]), m--;
+        it(M, s[g]), p[g] = M;
+      } else p[g] = it(O, s[g]), _t(t, a[h], O), a[z] = null;
+      g++;
+    } else Rt(a[v]), v--;
     else Rt(a[h]), h++;
-    for (; v <= y; ) {
+    for (; g <= y; ) {
       const z = _t(t, p[y + 1]);
-      it(z, s[v]), p[v++] = z;
+      it(z, s[g]), p[g++] = z;
     }
-    for (; h <= m; ) {
+    for (; h <= v; ) {
       const z = a[h++];
       z !== null && Rt(z);
     }
-    return this.ut = r, Oi(t, p), K;
+    return this.ut = r, Oi(t, p), Y;
   }
 }), Et = (t, e, i) => {
   t.dispatchEvent(
@@ -735,7 +735,7 @@ const ye = (t, e, i) => {
       return e.callService(r, c, p ?? {}, i.target);
     }
   }
-}, W = {
+}, F = {
   PAUSE: 1,
   VOLUME_MUTE: 8,
   PREVIOUS_TRACK: 16,
@@ -834,7 +834,7 @@ const ye = (t, e, i) => {
   const r = i.playerId;
   switch (o) {
     case "power":
-      return r && mt(i, i.on ? W.TURN_OFF : W.TURN_ON) ? t.callService(
+      return r && mt(i, i.on ? F.TURN_OFF : F.TURN_ON) ? t.callService(
         "media_player",
         i.on ? "turn_off" : "turn_on",
         { entity_id: r }
@@ -842,26 +842,26 @@ const ye = (t, e, i) => {
         entity_id: i.remoteId
       });
     case "play_pause":
-      if (r && mt(i, W.PAUSE))
+      if (r && mt(i, F.PAUSE))
         return t.callService("media_player", "media_play_pause", {
           entity_id: r
         });
       break;
     case "next":
-      if (r && mt(i, W.NEXT_TRACK))
+      if (r && mt(i, F.NEXT_TRACK))
         return t.callService("media_player", "media_next_track", {
           entity_id: r
         });
       break;
     case "previous":
-      if (r && mt(i, W.PREVIOUS_TRACK))
+      if (r && mt(i, F.PREVIOUS_TRACK))
         return t.callService("media_player", "media_previous_track", {
           entity_id: r
         });
       break;
     case "volume_up":
     case "volume_down":
-      if (i.volumeId && xe(i, W.VOLUME_STEP))
+      if (i.volumeId && xe(i, F.VOLUME_STEP))
         return t.callService(
           "media_player",
           o === "volume_up" ? "volume_up" : "volume_down",
@@ -869,7 +869,7 @@ const ye = (t, e, i) => {
         );
       break;
     case "volume_mute":
-      if (i.volumeId && i.muted !== void 0 && xe(i, W.VOLUME_MUTE))
+      if (i.volumeId && i.muted !== void 0 && xe(i, F.VOLUME_MUTE))
         return t.callService("media_player", "volume_mute", {
           entity_id: i.volumeId,
           is_volume_muted: !i.muted
@@ -1048,18 +1048,18 @@ const Fi = ["buttons", "dpad", "touchpad"], Ki = ["repeat", "native", "none"], s
   default: "buttons",
   touch: "touchpad",
   dpad: "dpad"
-}, R = (t) => typeof t == "object" && t !== null && !Array.isArray(t), Je = (t) => R(t) && typeof t.service == "string", ke = (t, e) => {
+}, H = (t) => typeof t == "object" && t !== null && !Array.isArray(t), Je = (t) => H(t) && typeof t.service == "string", ke = (t, e) => {
   if (typeof t == "string") {
     const i = Xi(t);
     if (i)
       return { tap_action: Vt(i.service, void 0, i.target) };
-    Z(
+    J(
       `override "${e}" points at ${t}, which cannot simply be pressed. Use an action config instead.`
     );
     return;
   }
-  if (!R(t)) {
-    t !== void 0 && Z(`override "${e}" is not an entity id or an action config`);
+  if (!H(t)) {
+    t !== void 0 && J(`override "${e}" is not an entity id or an action config`);
     return;
   }
   if (ut(t.tap_action) || ut(t.hold_action) || ut(t.double_tap_action)) {
@@ -1074,14 +1074,14 @@ const Fi = ["buttons", "dpad", "touchpad"], Ki = ["repeat", "native", "none"], s
     return {
       tap_action: Vt(
         t.service,
-        R(t.data) ? t.data : void 0,
-        R(t.target) ? t.target : void 0
+        H(t.data) ? t.data : void 0,
+        H(t.target) ? t.target : void 0
       )
     };
-  Z(`override "${e}" is not an entity id or an action config`);
+  J(`override "${e}" is not an entity id or an action config`);
 };
 let Ae = /* @__PURE__ */ new Set();
-const Z = (t) => {
+const J = (t) => {
   Ae.has(t) || (Ae.add(t), console.warn(`polr-android-tv-remote-card: ${t}`));
 }, Se = (t) => {
   if (typeof t == "string") {
@@ -1090,7 +1090,7 @@ const Z = (t) => {
       name: s.label,
       icon: `brand:${t}`,
       action: { action: "activity", activity: s.activity }
-    } : (Z(
+    } : (J(
       `unknown app "${t}" — treating it as an activity. Use an object with an icon and action instead.`
     ), {
       name: t,
@@ -1098,8 +1098,8 @@ const Z = (t) => {
       action: { action: "activity", activity: t }
     });
   }
-  if (!R(t)) return null;
-  if (R(t.action))
+  if (!H(t)) return null;
+  if (H(t.action))
     return t;
   const e = typeof t.icon == "string" ? t.icon : void 0, i = typeof t.name == "string" ? t.name : void 0, o = typeof t.color == "string" ? t.color : void 0, a = typeof t.entity == "string" ? t.entity : void 0;
   return Je(t) ? {
@@ -1110,8 +1110,8 @@ const Z = (t) => {
     action: {
       action: "service",
       service: t.service,
-      ...R(t.data) ? { data: t.data } : {},
-      ...R(t.target) ? { target: t.target } : {}
+      ...H(t.data) ? { data: t.data } : {},
+      ...H(t.target) ? { target: t.target } : {}
     }
   } : typeof t.url == "string" ? {
     ...i ? { name: i } : {},
@@ -1119,44 +1119,44 @@ const Z = (t) => {
     ...o ? { color: o } : {},
     ...a ? { entity: a } : {},
     action: { action: "activity", activity: t.url }
-  } : (Z(`app entry has no action, url or service and was skipped: ${JSON.stringify(t)}`), null);
+  } : (J(`app entry has no action, url or service and was skipped: ${JSON.stringify(t)}`), null);
 }, ti = (t) => {
-  if (!R(t))
+  if (!H(t))
     throw new Error("polr-android-tv-remote-card: invalid configuration");
   const e = typeof t.entity == "string" ? t.entity : typeof t.entity_id == "string" ? t.entity_id : void 0;
   if (!e)
     throw new Error("polr-android-tv-remote-card: 'entity' is required");
   const i = typeof t.remote == "string" ? Gi[t.remote] : void 0;
-  typeof t.remote == "string" && !i && Z(`unknown remote style "${t.remote}" — falling back to ${x.pad}`);
+  typeof t.remote == "string" && !i && J(`unknown remote style "${t.remote}" — falling back to ${x.pad}`);
   const o = Fi.includes(t.pad) ? t.pad : i ?? x.pad, a = typeof t.volume == "boolean" ? t.volume : void 0, s = {};
-  if (R(t.overrides))
-    for (const [f, g] of Object.entries(t.overrides)) {
-      const tt = ke(g, f);
-      tt && (s[f] = tt);
+  if (H(t.overrides))
+    for (const [f, I] of Object.entries(t.overrides)) {
+      const m = ke(I, f);
+      m && (s[f] = m);
     }
-  for (const [f, g] of Object.entries(Qe)) {
-    if (s[g]) continue;
-    const tt = ke(t[f], f);
-    tt && (s[g] = tt);
+  for (const [f, I] of Object.entries(Qe)) {
+    if (s[I]) continue;
+    const m = ke(t[f], f);
+    m && (s[I] = m);
   }
   const r = {};
-  for (const [f, g] of Object.entries(Ze))
-    typeof t[f] == "boolean" && (r[g] = t[f]);
+  for (const [f, I] of Object.entries(Ze))
+    typeof t[f] == "boolean" && (r[I] = t[f]);
   const c = Array.isArray(t.transport_buttons) ? t.transport_buttons : Array.isArray(t.media_controls) ? t.media_controls : void 0, p = c ? c.filter(
     (f) => typeof f == "string" && x.transport_buttons.includes(f)
   ) : x.transport_buttons, u = (Array.isArray(t.sections) ? t.sections : []).map((f) => {
-    if (!R(f))
-      return Z(`section is not an object and was skipped: ${JSON.stringify(f)}`), null;
-    const g = (Array.isArray(f.buttons) ? f.buttons : []).map(Se).filter((tt) => tt !== null);
+    if (!H(f))
+      return J(`section is not an object and was skipped: ${JSON.stringify(f)}`), null;
+    const I = (Array.isArray(f.buttons) ? f.buttons : []).map(Se).filter((m) => m !== null);
     return {
       ...typeof f.name == "string" ? { name: f.name } : {},
       ...typeof f.columns == "number" && f.columns > 0 ? { columns: f.columns } : {},
-      buttons: g
+      buttons: I
     };
-  }).filter((f) => f !== null), h = (Array.isArray(t.apps) ? t.apps : []).map(Se).filter((f) => f !== null), m = (f, g) => f === void 0 ? g : f, v = Ki.includes(t.hold_mode) ? t.hold_mode : t.hold_repeat === !1 ? "none" : x.hold_mode, y = new Set(se), z = Array.isArray(t.native_hold_buttons) ? [...new Set(t.native_hold_buttons)].filter(
+  }).filter((f) => f !== null), h = (Array.isArray(t.apps) ? t.apps : []).map(Se).filter((f) => f !== null), v = (f, I) => f === void 0 ? I : f, g = Ki.includes(t.hold_mode) ? t.hold_mode : t.hold_repeat === !1 ? "none" : x.hold_mode, y = new Set(se), z = Array.isArray(t.native_hold_buttons) ? [...new Set(t.native_hold_buttons)].filter(
     (f) => typeof f == "string" && y.has(f)
   ) : [...x.native_hold_buttons], O = t.native_touch_hold_delay_ms, M = typeof O == "number" && Number.isFinite(O) && O >= qt && O <= Bt ? O : x.native_touch_hold_delay_ms;
-  return O !== void 0 && M !== O && Z(
+  return O !== void 0 && M !== O && J(
     `native_touch_hold_delay_ms must be between ${qt} and ${Bt}; using ${x.native_touch_hold_delay_ms}`
   ), {
     ...t,
@@ -1164,20 +1164,20 @@ const Z = (t) => {
     entity: e,
     ...typeof t.volume_entity == "string" ? { volume_entity: t.volume_entity } : {},
     ...typeof t.name == "string" ? { name: t.name } : {},
-    show_header: m(t.show_header, x.show_header),
-    show_power: m(t.show_power, x.show_power),
-    show_nav: m(t.show_nav, r.show_nav ?? x.show_nav),
+    show_header: v(t.show_header, x.show_header),
+    show_power: v(t.show_power, x.show_power),
+    show_nav: v(t.show_nav, r.show_nav ?? x.show_nav),
     pad: o,
-    show_transport: m(t.show_transport, r.show_transport ?? x.show_transport),
+    show_transport: v(t.show_transport, r.show_transport ?? x.show_transport),
     transport_buttons: p,
-    show_volume: m(t.show_volume, r.show_volume ?? a ?? x.show_volume),
-    show_text_input: m(
+    show_volume: v(t.show_volume, r.show_volume ?? a ?? x.show_volume),
+    show_text_input: v(
       t.show_text_input,
       r.show_text_input ?? x.show_text_input
     ),
-    show_apps: m(t.show_apps, r.show_apps ?? x.show_apps),
+    show_apps: v(t.show_apps, r.show_apps ?? x.show_apps),
     apps_label: typeof t.apps_label == "string" && t.apps_label.trim() ? t.apps_label.trim() : x.apps_label,
-    show_section_labels: m(t.show_section_labels, x.show_section_labels),
+    show_section_labels: v(t.show_section_labels, x.show_section_labels),
     // v1 always drew a favourite button on the default pad, and threw when it
     // had no override to call. Draw it only when it does something.
     show_favorite: s.favorite !== void 0,
@@ -1185,13 +1185,13 @@ const Z = (t) => {
     sections: u,
     // "auto" was the v2-beta spelling, before the tiles became fixed-width.
     app_columns: typeof t.app_columns == "number" && t.app_columns > 0 ? t.app_columns : x.app_columns,
-    hold_mode: v,
+    hold_mode: g,
     native_hold_buttons: z,
     native_touch_hold_delay_ms: M,
     // Keep the resolved legacy value truthful for old rendering paths and
     // third-party code that reads it from the editor's emitted config.
-    hold_repeat: v === "repeat",
-    haptics: m(t.haptics, x.haptics),
+    hold_repeat: g === "repeat",
+    haptics: v(t.haptics, x.haptics),
     overrides: s
   };
 }, Qi = (t) => {
@@ -1414,7 +1414,7 @@ class no extends eo {
       throw new Error("press() can only be used on an element");
   }
   render(e) {
-    return K;
+    return Y;
   }
   update(e, [i]) {
     if (this._element = e.element, i.disabled && this._active && this.cancelPress(), this._options = i, this._element.classList.toggle(
@@ -1425,7 +1425,7 @@ class no extends eo {
       const o = this._element;
       o.addEventListener("pointerdown", this._onPointerDown), o.addEventListener("pointermove", this._onPointerMove), o.addEventListener("pointerup", this._onPointerUp), o.addEventListener("pointercancel", this._onPointerCancel), o.addEventListener("lostpointercapture", this._onLostPointerCapture), o.addEventListener("pointerleave", this._onPointerLeave), o.addEventListener("click", this._onClick), o.addEventListener("dragstart", this.cancelPress), o.addEventListener("keydown", this._onKeyDown), o.addEventListener("keyup", this._onKeyUp), o.addEventListener("blur", this.cancelPress), o.addEventListener("contextmenu", this._onContextMenu);
     }
-    return K;
+    return Y;
   }
   /* ------------------------------------------------------------------ state */
   _beginGesture(e, i) {
@@ -1514,7 +1514,7 @@ class no extends eo {
     this.cancelPress(), this._tapTimer !== void 0 && (window.clearTimeout(this._tapTimer), this._tapTimer = void 0), this._awaitingSecondTap = !1;
   }
 }
-const at = We(no), ii = H`
+const at = We(no), ii = U`
   /*
    * Every section pads its own bottom and relies on the header for the top.
    * With the header hidden the first row sat flush against the card edge, so
@@ -1942,7 +1942,7 @@ const at = We(no), ii = H`
       transition: none;
     }
   }
-`, re = H`
+`, re = U`
   :host {
     /* Mirrors hui-tile-card: inactive by default, state colour when active. */
     --tile-color: var(--state-inactive-color, #9e9e9e);
@@ -2547,7 +2547,7 @@ const at = We(no), ii = H`
     }
   }
 `;
-var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, V = (t, e, i, o) => {
+var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, q = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? co(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && lo(e, i, a), a;
@@ -2560,7 +2560,7 @@ const Oe = 0.06, po = {
   Enter: "center",
   " ": "center"
 };
-let I = class extends T {
+let D = class extends T {
   constructor() {
     super(...arguments), this.pad = "buttons", this.repeat = !0, this.nativeButtons = [], this.haptics = !0, this.nativeTouchHoldDelayMs = ae, this._tracking = !1, this._startX = 0, this._startY = 0, this._onPointerDown = (t) => {
       t.button === 0 && (t.preventDefault(), this._touchpad?.setPointerCapture(t.pointerId), this._startX = t.clientX, this._startY = t.clientY, this._tracking = !0, this._moveDot(t));
@@ -2695,38 +2695,38 @@ let I = class extends T {
     `;
   }
 };
-I.styles = [re, ii];
-V([
+D.styles = [re, ii];
+q([
   b({ type: String })
-], I.prototype, "pad", 2);
-V([
+], D.prototype, "pad", 2);
+q([
   b({ type: Boolean })
-], I.prototype, "repeat", 2);
-V([
+], D.prototype, "repeat", 2);
+q([
   b({ attribute: !1 })
-], I.prototype, "nativeButtons", 2);
-V([
+], D.prototype, "nativeButtons", 2);
+q([
   b({ type: Boolean })
-], I.prototype, "haptics", 2);
-V([
+], D.prototype, "haptics", 2);
+q([
   b({ type: Number })
-], I.prototype, "nativeTouchHoldDelayMs", 2);
-V([
+], D.prototype, "nativeTouchHoldDelayMs", 2);
+q([
   b({ attribute: !1 })
-], I.prototype, "pressCoordinator", 2);
-V([
+], D.prototype, "pressCoordinator", 2);
+q([
   Be(".touchpad")
-], I.prototype, "_touchpad", 2);
-V([
+], D.prototype, "_touchpad", 2);
+q([
   Be(".touchpad-dot")
-], I.prototype, "_dot", 2);
-V([
+], D.prototype, "_dot", 2);
+q([
   d()
-], I.prototype, "_tracking", 2);
-I = V([
-  U("polr-atv-nav-pad")
-], I);
-const j = (t) => new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit" }).format(new Date(t * 1e3)), yt = (t = /* @__PURE__ */ new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(t);
+], D.prototype, "_tracking", 2);
+D = q([
+  j("polr-atv-nav-pad")
+], D);
+const V = (t) => new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit" }).format(new Date(t * 1e3)), yt = (t = /* @__PURE__ */ new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(t);
 function kt(t) {
   const [e, i, o] = t.split("-").map(Number), a = (s) => {
     let r = s;
@@ -2835,8 +2835,8 @@ let w = class extends T {
     const t = this.context, e = t.current, i = this.channels.filter((o) => o.favorite);
     return n`
       ${t.kind === "tv" && t.channel ? n`<div class="now-playing"><div class="eyebrow">AHORA EN ${t.channel.name}</div><h3>${e?.title ?? "Programación no disponible"}</h3>
-        ${e ? n`<div class="time-range"><span>${j(e.start)}</span><span>${j(e.end)}</span></div><progress max="100" value=${uo(e, this.now)} aria-label="Progreso del programa"></progress><button class="text-button" @click=${() => this.details(e)}>Ver información</button>` : l}
-        ${(t.next ?? []).length ? n`<div class="next">${t.next.map((o) => n`<button @click=${() => this.details(o)}><time>${j(o.start)}</time><span>${o.title}</span></button>`)}</div>` : l}
+        ${e ? n`<div class="time-range"><span>${V(e.start)}</span><span>${V(e.end)}</span></div><progress max="100" value=${uo(e, this.now)} aria-label="Progreso del programa"></progress><button class="text-button" @click=${() => this.details(e)}>Ver información</button>` : l}
+        ${(t.next ?? []).length ? n`<div class="next">${t.next.map((o) => n`<button @click=${() => this.details(o)}><time>${V(o.start)}</time><span>${o.title}</span></button>`)}</div>` : l}
         <button class="text-button" @click=${() => {
       const o = this.channels.find((a) => a.key === t.channel.key);
       o && this.favorite(o);
@@ -2866,16 +2866,16 @@ let w = class extends T {
     }}>Ahora</button>` : l}
         <button class="icon" aria-label="Actualizar catálogo y programación" @click=${() => void this.service("refresh", {})}><ha-icon icon="mdi:refresh"></ha-icon></button></div>
       ${this.mode === "list" ? n`<div class="channel-list">${Ke(t, (o) => o.key, (o) => this.channelRow(o))}</div>` : n`
-        <div class="timeline"><div class="ruler"><div class="sticky">${this.day.split("-").reverse().join("/")}</div><div class="hours">${Array.from({ length: Math.round((i - e) / 3600) }, (o, a) => n`<span style=${`left:${a * 3600 / (i - e) * 100}%`}>${j(e + a * 3600)}</span>`)}</div></div>
+        <div class="timeline"><div class="ruler"><div class="sticky">${this.day.split("-").reverse().join("/")}</div><div class="hours">${Array.from({ length: Math.round((i - e) / 3600) }, (o, a) => n`<span style=${`left:${a * 3600 / (i - e) * 100}%`}>${V(e + a * 3600)}</span>`)}</div></div>
           ${t.map((o) => {
       const a = this.programs.filter((s) => s.channel === o.key);
       return n`<div class="track"><button class="sticky" @click=${() => this.tune(o.key)}><strong>${o.number} · ${o.name}</strong>${o.favorite ? " ★" : ""}</button><div class="slots">${a.length ? a.map((s) => {
         const r = mo(s, e, i);
-        return n`<button class="slot ${s.start <= this.now && this.now < s.end ? "live" : ""}" style=${`left:${r.left}%;width:${r.width}%`} @click=${() => this.details(s)} aria-label=${`${o.name}: ${s.title}, ${j(s.start)} a ${j(s.end)}`}><small>${j(s.start)}</small><span>${s.title}</span></button>`;
+        return n`<button class="slot ${s.start <= this.now && this.now < s.end ? "live" : ""}" style=${`left:${r.left}%;width:${r.width}%`} @click=${() => this.details(s)} aria-label=${`${o.name}: ${s.title}, ${V(s.start)} a ${V(s.end)}`}><small>${V(s.start)}</small><span>${s.title}</span></button>`;
       }) : n`<span class="no-epg">Programación no disponible</span>`}</div></div>`;
     })}
         </div>
-        <div class="mobile-guide">${t.map((o) => n`<section>${this.channelRow(o)}<div class="agenda">${this.programs.filter((a) => a.channel === o.key && a.end > Math.max(e, this.now)).map((a) => n`<button @click=${() => this.details(a)}><time>${j(a.start)}</time><span>${a.title}</span></button>`)}</div></section>`)}</div>`}
+        <div class="mobile-guide">${t.map((o) => n`<section>${this.channelRow(o)}<div class="agenda">${this.programs.filter((a) => a.channel === o.key && a.end > Math.max(e, this.now)).map((a) => n`<button @click=${() => this.details(a)}><time>${V(a.start)}</time><span>${a.title}</span></button>`)}</div></section>`)}</div>`}
       ${t.length ? l : n`<p class="hint">No hay canales con este filtro.</p>`}
       <footer>Programación de la TV, <a href="https://www.tdtchannels.com" target="_blank" rel="noopener noreferrer">TDTChannels</a> y <a href="https://epgshare01.online" target="_blank" rel="noopener noreferrer">EPGShare01</a>. La cobertura depende de cada emisora.</footer>`;
   }
@@ -2886,13 +2886,13 @@ let w = class extends T {
       ${this.context.busy ? n`<p class="notice" role="status">Cambiando a ${this.context.busy}…</p>` : l}
       ${this.error || this.context.error ? n`<p class="error" role="alert">${this.error || this.context.error} <button class="text-button" @click=${() => void this.load()}>Reintentar</button></p>` : l}
       ${this.missing ? n`<p class="hint">${this.missing} favorito(s) ya no aparecen en el catálogo de la TV.</p>` : l}
-      <dialog @close=${() => this.selected = void 0}>${this.selected ? n`<div class="details"><button class="close icon" aria-label="Cerrar información" @click=${() => this.shadowRoot?.querySelector("dialog")?.close()}><ha-icon icon="mdi:close"></ha-icon></button><div class="eyebrow">${this.channels.find((t) => t.key === this.selected.channel)?.name}</div><h2>${this.selected.title}</h2><p>${j(this.selected.start)} – ${j(this.selected.end)}</p><p class="description">${this.selected.description || "Sin descripción disponible."}</p><small>Programación: ${{ tv: "Televisión", tdtchannels: "TDTChannels", epgshare01: "EPGShare01" }[this.selected.source] ?? this.selected.source}</small><button class="primary" @click=${() => {
+      <dialog @close=${() => this.selected = void 0}>${this.selected ? n`<div class="details"><button class="close icon" aria-label="Cerrar información" @click=${() => this.shadowRoot?.querySelector("dialog")?.close()}><ha-icon icon="mdi:close"></ha-icon></button><div class="eyebrow">${this.channels.find((t) => t.key === this.selected.channel)?.name}</div><h2>${this.selected.title}</h2><p>${V(this.selected.start)} – ${V(this.selected.end)}</p><p class="description">${this.selected.description || "Sin descripción disponible."}</p><small>Programación: ${{ tv: "Televisión", tdtchannels: "TDTChannels", epgshare01: "EPGShare01" }[this.selected.source] ?? this.selected.source}</small><button class="primary" @click=${() => {
       this.tune(this.selected.channel), this.shadowRoot?.querySelector("dialog")?.close();
     }}>Ver canal ahora</button></div>` : l}</dialog>
     </div></ha-card>`;
   }
 };
-w.styles = H`
+w.styles = U`
     :host{display:block}*{box-sizing:border-box}ha-card{overflow:hidden}.body{padding:20px;color:var(--primary-text-color)}h2,h3,p{margin:0}h2{font-size:22px}h3{font-size:19px;line-height:1.35;margin:5px 0 10px}button,input,select{font:inherit;color:inherit}button{cursor:pointer;border:0;background:transparent;touch-action:manipulation}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}button:disabled{opacity:.5}.icon{padding:10px;border-radius:50%;display:inline-grid;place-items:center;flex-shrink:0}.star[aria-pressed=true]{color:#e8ae23}ha-icon{--mdc-icon-size:22px}.primary{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--primary-color);color:var(--text-primary-color,#fff);padding:12px 18px;border-radius:12px;width:100%;margin-top:16px;font-weight:600}.text-button{color:var(--primary-color);padding:8px 4px;display:inline-flex;align-items:center;gap:6px}.hint{color:var(--secondary-text-color);font-size:13px;line-height:1.5;margin:10px 0}.eyebrow{font-size:11px;letter-spacing:.08em;font-weight:700;color:var(--secondary-text-color);text-transform:uppercase}.time-range{display:flex;justify-content:space-between;font-size:12px;color:var(--secondary-text-color)}progress{width:100%;height:5px;accent-color:var(--primary-color)}.now-playing{padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid var(--divider-color)}.next{display:grid;margin:8px 0}.next button,.agenda button{display:flex;gap:12px;padding:7px 0;text-align:left;font-size:13px}.next span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}time{color:var(--secondary-text-color);font-variant-numeric:tabular-nums;flex-shrink:0}.section-title{font-weight:600;margin:8px 0}.favorites{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.favorites button,.pills button{background:var(--secondary-background-color);padding:9px 13px;border-radius:20px;font-size:13px}.favorites .chosen,.pills [aria-pressed=true]{background:var(--primary-color);color:var(--text-primary-color,#fff)}.select-label{display:grid;gap:7px;font-size:13px;margin-top:15px}select,input{background:var(--card-background-color);border:1px solid var(--divider-color);padding:11px 12px;border-radius:10px;min-width:0}header{display:flex;justify-content:space-between;gap:12px;align-items:center}header p{color:var(--secondary-text-color);font-size:13px;margin-top:5px}.tools{display:flex;gap:15px;margin:20px 0 12px;flex-wrap:wrap}.tools input{flex:1;min-width:180px}.pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:15px}.toolbar .icon{margin-left:auto}.channel{display:flex;align-items:center;border-bottom:1px solid var(--divider-color);min-height:68px}.channel.active{background:color-mix(in srgb,var(--primary-color) 10%,transparent)}.station{display:flex;align-items:center;gap:14px;text-align:left;padding:12px 8px;flex:1;min-width:0}.station>span:last-child{min-width:0}.station strong{font-size:14px}.station small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--secondary-text-color);font-size:12px;margin-top:4px}.dial{min-width:32px;color:var(--secondary-text-color);font-size:18px;font-variant-numeric:tabular-nums}.channel-list{max-height:70vh;overflow:auto}.timeline{overflow:auto;max-height:70vh;border:1px solid var(--divider-color);border-radius:12px}.track,.ruler{display:grid;grid-template-columns:160px 2880px;min-width:3040px}.sticky{position:sticky;left:0;z-index:3;background:var(--card-background-color);text-align:left;padding:12px;font-size:13px;border-right:1px solid var(--divider-color);overflow:hidden}.track{border-bottom:1px solid var(--divider-color)}.ruler{position:sticky;top:0;z-index:4;background:var(--secondary-background-color);height:42px}.ruler .sticky{background:var(--secondary-background-color)}.hours,.slots{position:relative}.hours span{position:absolute;top:13px;font-size:12px;padding-left:6px;color:var(--secondary-text-color)}.slots{height:65px}.slot{position:absolute;top:5px;height:55px;border-radius:6px;background:var(--secondary-background-color);border-right:2px solid var(--card-background-color);padding:6px 8px;text-align:left;overflow:hidden}.slot small{display:block;color:var(--secondary-text-color);font-size:10px}.slot span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;margin-top:4px}.slot.live{background:color-mix(in srgb,var(--primary-color) 20%,var(--card-background-color));box-shadow:inset 3px 0 var(--primary-color)}.no-epg{font-size:12px;color:var(--secondary-text-color);padding:22px;display:block;position:sticky;left:160px;width:260px}.mobile-guide{display:none}footer{font-size:11px;color:var(--secondary-text-color);line-height:1.5;margin-top:18px}a{color:var(--primary-color)}.notice,.error{padding:12px;border-radius:10px;background:var(--secondary-background-color);font-size:13px;margin-top:12px}.error{color:var(--error-color)}dialog{border:1px solid var(--divider-color);border-radius:18px;max-width:520px;width:calc(100% - 32px);padding:0;color:var(--primary-text-color);background:var(--card-background-color);box-shadow:0 15px 60px #0005}dialog::backdrop{background:#0008}.details{padding:26px}.details h2{font-size:21px;margin:10px 25px 10px 0}.details p{margin:12px 0;font-size:14px;line-height:1.5}.description{white-space:pre-line;max-height:40vh;overflow:auto}.details small{color:var(--secondary-text-color)}.close{position:absolute;right:8px;top:8px}.agenda{padding:0 12px 14px}.agenda button{width:100%}.agenda span{text-align:left}
     @media(max-width:700px){.body{padding:16px}header{align-items:flex-start}header h2{font-size:20px}.tools{display:block}.tools input{width:100%;margin-bottom:12px}.toolbar{gap:6px;flex-wrap:wrap}.toolbar input{max-width:150px}.timeline{display:none}.mobile-guide{display:block;max-height:70vh;overflow:auto}.track{display:none}}
     @media(hover:hover) and (pointer:fine){button:hover{filter:brightness(.94);background-color:color-mix(in srgb,var(--primary-color) 12%,var(--card-background-color))}.primary:hover{background:var(--primary-color)}}
@@ -2940,15 +2940,15 @@ E([
   d()
 ], w.prototype, "missing", 2);
 w = E([
-  U("polr-tv-guide-card")
+  j("polr-tv-guide-card")
 ], w);
 const S = (t) => {
   if (t == null || !Number.isFinite(t)) return "—";
   const e = Math.floor(Math.max(0, t) / 60);
   return e === 0 ? `${Math.floor(Math.max(0, t))} s` : e >= 60 ? `${Math.floor(e / 60)} h ${e % 60} min` : `${e} min`;
-}, rt = (t, e = !1) => new Date(typeof t == "number" ? t * 1e3 : t).toLocaleString("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", ...e ? { second: "2-digit" } : {} }), F = (t = /* @__PURE__ */ new Date()) => t.toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" }), fo = (t) => ({ icon: t === !0 ? "mdi:volume-high" : "mdi:volume-off", label: t === !0 ? "Activar sonido" : t === !1 ? "Silenciar" : "Alternar silencio (estado desconocido)" }), bo = (t) => ({ sunny: "weather-sunny", clear: "weather-sunny", "clear-night": "weather-night", cloudy: "weather-cloudy", partlycloudy: "weather-partly-cloudy", rainy: "weather-rainy", pouring: "weather-pouring", lightning: "weather-lightning", "lightning-rainy": "weather-lightning-rainy", snowy: "weather-snowy", fog: "weather-fog", windy: "weather-windy" })[t] ?? "weather-partly-cloudy", _o = (t, e = /* @__PURE__ */ new Date()) => {
-  const i = F(e);
-  return t.filter((o) => o.datetime && F(new Date(o.datetime)) >= i).slice(0, 5);
+}, rt = (t, e = !1) => new Date(typeof t == "number" ? t * 1e3 : t).toLocaleString("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", ...e ? { second: "2-digit" } : {} }), K = (t = /* @__PURE__ */ new Date()) => t.toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" }), fo = (t) => ({ icon: t === !0 ? "mdi:volume-high" : "mdi:volume-off", label: t === !0 ? "Activar sonido" : t === !1 ? "Silenciar" : "Alternar silencio (estado desconocido)" }), bo = (t) => ({ sunny: "weather-sunny", clear: "weather-sunny", "clear-night": "weather-night", cloudy: "weather-cloudy", partlycloudy: "weather-partly-cloudy", rainy: "weather-rainy", pouring: "weather-pouring", lightning: "weather-lightning", "lightning-rainy": "weather-lightning-rainy", snowy: "weather-snowy", fog: "weather-fog", windy: "weather-windy" })[t] ?? "weather-partly-cloudy", _o = (t, e = /* @__PURE__ */ new Date()) => {
+  const i = K(e);
+  return t.filter((o) => o.datetime && K(new Date(o.datetime)) >= i).slice(0, 5);
 };
 function yo(t, e = Date.now() / 1e3) {
   const i = [...t].sort((r, c) => r.start - c.start), o = [];
@@ -2964,12 +2964,12 @@ function yo(t, e = Date.now() / 1e3) {
   const s = i[i.length - 1];
   return o.reverse().map((r) => ({ ...r, active: s?.power === "on" && r.end === s.end && e - r.end < 20 }));
 }
-var xo = Object.defineProperty, $o = Object.getOwnPropertyDescriptor, q = (t, e, i, o) => {
+var xo = Object.defineProperty, $o = Object.getOwnPropertyDescriptor, B = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? $o(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && xo(e, i, a), a;
 };
-let D = class extends T {
+let N = class extends T {
   constructor() {
     super(...arguments), this.favoriteId = "luli_pampin", this.choosing = !1, this.error = "", this.pending = !1, this.loaded = !1, this.backdropPressed = !1;
   }
@@ -3038,50 +3038,50 @@ let D = class extends T {
     </dialog>`;
   }
 };
-D.styles = H`
+N.styles = U`
     :host{color:var(--primary-text-color)}*{box-sizing:border-box}dialog{position:fixed;margin:auto;border:1px solid var(--divider-color);border-radius:20px;padding:0;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 32px);background:var(--ha-card-background,var(--card-background-color,#fff));color:inherit;box-shadow:0 16px 60px #0005}dialog::backdrop{background:#0008}.content{padding:18px}.heading{display:flex;align-items:center;gap:12px}.heading img{width:44px;height:44px;border-radius:12px}.heading>div{flex:1;min-width:0}h2{font-size:21px;margin:0}p{margin:8px 0;font-size:14px;line-height:1.5}.heading p{color:var(--secondary-text-color);margin:3px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}button,a{font:inherit;color:inherit;touch-action:manipulation}button{border:0;cursor:pointer;min-height:48px;border-radius:12px;background:var(--secondary-background-color,#eee);display:flex;justify-content:center;align-items:center;gap:8px;padding:10px}.icon{min-width:44px;background:transparent}.shuffle{color:var(--text-primary-color,#fff);background:var(--primary-color,#03a9f4)}button:disabled{opacity:.45;cursor:default}.explanation,.source{color:var(--secondary-text-color);font-size:13px}.error{color:var(--error-color)}ol{padding:0;margin:14px 0;list-style:none}li{display:flex;align-items:stretch;border-top:1px solid var(--divider-color)}.video{flex:1;min-width:0;text-align:left;background:transparent;justify-content:flex-start;border-radius:6px;padding:12px 4px;gap:10px}.rank{width:24px;flex-shrink:0;color:var(--secondary-text-color);font-size:14px;text-align:center}.details{flex:1;min-width:0;display:grid;gap:5px}.details strong{font-size:14px;line-height:1.4;overflow-wrap:anywhere}.details small{font-size:12px;color:var(--secondary-text-color)}li>a{width:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center}ha-icon{--mdc-icon-size:22px;flex-shrink:0}button:focus-visible,a:focus-visible{outline:2px solid var(--primary-color);outline-offset:-2px}@media(max-width:420px){.content{padding:14px}.actions{grid-template-columns:1fr}}
   `;
-q([
+B([
   b({ attribute: !1 })
-], D.prototype, "hass", 2);
-q([
+], N.prototype, "hass", 2);
+B([
   b({ attribute: !1 })
-], D.prototype, "entryId", 2);
-q([
+], N.prototype, "entryId", 2);
+B([
   b({ attribute: !1 })
-], D.prototype, "favoriteId", 2);
-q([
+], N.prototype, "favoriteId", 2);
+B([
   b({ attribute: !1 })
-], D.prototype, "operation", 2);
-q([
+], N.prototype, "operation", 2);
+B([
   b({ attribute: !1 })
-], D.prototype, "queue", 2);
-q([
+], N.prototype, "queue", 2);
+B([
   d()
-], D.prototype, "catalog", 2);
-q([
+], N.prototype, "catalog", 2);
+B([
   d()
-], D.prototype, "choosing", 2);
-q([
+], N.prototype, "choosing", 2);
+B([
   d()
-], D.prototype, "error", 2);
-q([
+], N.prototype, "error", 2);
+B([
   d()
-], D.prototype, "pending", 2);
-D = q([
-  U("polr-youtube-favorite")
-], D);
+], N.prototype, "pending", 2);
+N = B([
+  j("polr-youtube-favorite")
+], N);
 var wo = Object.defineProperty, ko = Object.getOwnPropertyDescriptor, lt = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? ko(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && wo(e, i, a), a;
 };
-let Y = class extends T {
+let X = class extends T {
   constructor() {
     super(...arguments), this.config = {}, this.weather = { forecast: [], alerts: [] }, this.error = "", this.pending = "", this.luliOpen = !1, this.loaded = !1;
   }
   setConfig(t) {
-    this.config = { light: "light.lampara", context: "sensor.tv_salon_contexto", remote: "remote.tv_salon", ...t };
+    this.config = { light: "light.lampara", context: "sensor.tv_salon_contexto", remote: "remote.tv_salon", channel_shortcuts: [], ...t };
   }
   getCardSize() {
     return 8;
@@ -3130,59 +3130,59 @@ let Y = class extends T {
   }
   render() {
     if (!this.hass) return l;
-    const t = this.hass.states[this.config.light], e = t?.state === "on", i = !!t && !["unavailable", "unknown"].includes(t.state), o = Math.round((t?.attributes.brightness ?? 0) / 255 * 100), a = this.context, s = this.hass.states[this.config.remote]?.state === "on", r = this.hass.states[this.config.remote]?.state === "off", c = a.audio ?? {}, p = a.playback ?? {}, u = fo(c.is_volume_muted), _ = typeof c.volume_level == "number" ? `${Math.round(c.volume_level * 100)} %` : "—", h = a.kind === "tv" ? a.current?.title : p.title, m = this.hass.states["select.tv_salon_canal"], v = this.hass.states["sensor.aemet_proxima_precipitacion"], y = this.hass.states["weather.aemet"], z = Date.now() / 1e3 - (this.weather.updated || 0) > 1800, O = _o(this.weather.forecast ?? []), M = a.youtube_operation, f = M?.state === "running";
+    const t = this.hass.states[this.config.light], e = t?.state === "on", i = !!t && !["unavailable", "unknown"].includes(t.state), o = Math.round((t?.attributes.brightness ?? 0) / 255 * 100), a = this.context, s = this.hass.states[this.config.remote]?.state === "on", r = this.hass.states[this.config.remote]?.state === "off", c = a.audio ?? {}, p = a.playback ?? {}, u = fo(c.is_volume_muted), _ = typeof c.volume_level == "number" ? `${Math.round(c.volume_level * 100)} %` : "—", h = a.kind === "tv" ? a.current?.title : p.title, v = this.hass.states["select.tv_salon_canal"], g = this.hass.states["sensor.aemet_proxima_precipitacion"], y = this.hass.states["weather.aemet"], z = Date.now() / 1e3 - (this.weather.updated || 0) > 1800, O = _o(this.weather.forecast ?? []), M = a.youtube_operation, f = M?.state === "running", I = this.config.channel_shortcuts ?? [];
     return n`<div class="home">
       ${this.luliOpen ? n`<polr-youtube-favorite .hass=${this.hass} .entryId=${a.entry_id} .operation=${M} .queue=${a.youtube_queue} @close=${async () => {
       this.luliOpen = !1, await this.updateComplete, this.shadowRoot?.querySelector('[aria-label="Luli Pampín · Opciones de reproducción"]')?.focus();
     }}></polr-youtube-favorite>` : l}
       <ha-card class="lamp">
         <div class="heading"><span><ha-icon icon="mdi:floor-lamp"></ha-icon><strong>Lámpara</strong><small>${i ? e ? `${o} %` : "Apagada" : "Sin conexión"}</small></span>${this.button("mdi:power", e ? "Apagar lámpara" : "Encender lámpara", () => void this.call("light", e ? "turn_off" : "turn_on", { entity_id: this.config.light }), !i)}</div>
-        <div class="brightness"><button ?disabled=${!i || !!this.pending} @click=${() => void this.call("light", "turn_on", { entity_id: this.config.light, brightness_pct: 1 })}>1 %</button><input aria-label="Intensidad de la lámpara" type="range" min="1" max="100" .value=${String(e ? Math.max(1, o) : 1)} ?disabled=${!i || !!this.pending} @change=${(g) => void this.call("light", "turn_on", { entity_id: this.config.light, brightness_pct: Number(g.target.value) })}><button ?disabled=${!i || !!this.pending} @click=${() => void this.call("light", "turn_on", { entity_id: this.config.light, brightness_pct: 100 })}>100 %</button></div>
+        <div class="brightness"><button ?disabled=${!i || !!this.pending} @click=${() => void this.call("light", "turn_on", { entity_id: this.config.light, brightness_pct: 1 })}>1 %</button><input aria-label="Intensidad de la lámpara" type="range" min="1" max="100" .value=${String(e ? Math.max(1, o) : 1)} ?disabled=${!i || !!this.pending} @change=${(m) => void this.call("light", "turn_on", { entity_id: this.config.light, brightness_pct: Number(m.target.value) })}><button ?disabled=${!i || !!this.pending} @click=${() => void this.call("light", "turn_on", { entity_id: this.config.light, brightness_pct: 100 })}>100 %</button></div>
       </ha-card>
       <ha-card class="tv">
         <div class="heading"><span><ha-icon icon="mdi:television"></ha-icon><strong>TV</strong><small class=${s ? "live" : ""}>${s ? "Encendida" : r ? "Apagada" : "Sin conexión"}</small></span><div class="row">${this.button("mdi:power", s ? "Apagar TV" : "Encender TV", () => void this.call("script", "tv_salon_power", {}))}<button class="link" @click=${() => this.navigate("/mando-tv/mando")}><ha-icon icon="mdi:remote-tv"></ha-icon>Mando</button></div></div>
         ${s ? n`<div class="now"><span class="app">${a.label ?? "TV del salón"}${p.state === "paused" ? " · En pausa" : ""}</span><strong class="title" title=${h ?? ""}>${h ?? (a.kind === "home" ? "Menú principal" : "Contenido no disponible")}</strong></div>` : l}
         <div class="volume"><span class="audio"><small>${s ? c.output_label ?? "Audio" : "Audio"}</small><strong>${s ? c.is_volume_muted ? "Silencio" : _ : "—"}</strong></span><div class="row">${this.button("mdi:volume-minus", "Bajar volumen", () => void this.call("tv_guide", "control", { entry_id: a.entry_id, command: "VOLUME_DOWN" }), !s)}${this.button(u.icon, u.label, () => void this.call("tv_guide", "control", { entry_id: a.entry_id, command: "MUTE" }), !s)}${this.button("mdi:volume-plus", "Subir volumen", () => void this.call("tv_guide", "control", { entry_id: a.entry_id, command: "VOLUME_UP" }), !s)}</div></div>
-        <div class="shortcuts"><button @click=${() => void this.call("script", "tv_bluey_ninos", {}, "Abriendo Bluey")} ?disabled=${!!this.pending || f}><img src="/local/tv-remote/icons/bluey.png?v=20260903" alt="">Bluey</button><button aria-label="Luli Pampín · Opciones de reproducción" @click=${() => {
+        <div class=${I.length ? "shortcuts with-channels" : "shortcuts"}><button @click=${() => void this.call("script", "tv_bluey_ninos", {}, "Abriendo Bluey")} ?disabled=${!!this.pending || f}><img src="/local/tv-remote/icons/bluey.png?v=20260903" alt="">Bluey</button><button aria-label="Luli Pampín · Opciones de reproducción" @click=${() => {
       this.luliOpen = !0;
-    }} ?disabled=${!!this.pending || f}><img src="/local/tv-remote/icons/luli-pampin.png?v=20261003" alt=""><span>Luli Pampín</span></button><button @click=${() => void this.call("script", "tv_salon_abrir_app", { aplicacion: "television" }, "Abriendo televisión")} ?disabled=${!!this.pending}><ha-icon icon="mdi:television-classic"></ha-icon>Televisión</button></div>
+    }} ?disabled=${!!this.pending || f}><img src="/local/tv-remote/icons/luli-pampin.png?v=20261003" alt=""><span>Luli Pampín</span></button>${I.map((m) => n`<button aria-label=${`Ver ${m.name}`} @click=${() => void this.call("tv_guide", "tune_channel", { entry_id: a.entry_id, channel_key: m.channel_key }, `Abriendo ${m.name}`)} ?disabled=${!!this.pending || !!a.busy || !a.entry_id}><ha-icon icon=${m.icon ?? "mdi:television-classic"}></ha-icon><span>${m.name}</span></button>`)}<button @click=${() => void this.call("script", "tv_salon_abrir_app", { aplicacion: "television" }, "Abriendo televisión")} ?disabled=${!!this.pending}><ha-icon icon="mdi:television-classic"></ha-icon>Televisión</button></div>
         ${M && ["running", "error"].includes(M.state) ? n`<div role=${M.state === "error" ? "alert" : "status"} class=${M.state === "error" ? "error" : "status"}>${M.message}</div>` : l}
-        ${s && a.kind === "tv" ? n`<label class="channel"><span>Canal</span><select aria-label="Cambiar canal" ?disabled=${!!this.pending || !!a.busy} @change=${(g) => void this.call("select", "select_option", { entity_id: "select.tv_salon_canal", option: g.target.value }, "Cambiando canal")}>${(m?.attributes.options ?? []).map((g) => n`<option value=${g} ?selected=${m?.state === g}>${g}</option>`)}</select></label>` : l}
+        ${s && a.kind === "tv" ? n`<label class="channel"><span>Canal</span><select aria-label="Cambiar canal" ?disabled=${!!this.pending || !!a.busy} @change=${(m) => void this.call("select", "select_option", { entity_id: "select.tv_salon_canal", option: m.target.value }, "Cambiando canal")}>${(v?.attributes.options ?? []).map((m) => n`<option value=${m} ?selected=${v?.state === m}>${m}</option>`)}</select></label>` : l}
       </ha-card>
       <ha-card class="weather">
         <div class="heading"><span><ha-icon icon="mdi:weather-partly-cloudy"></ha-icon><strong>Tiempo</strong><small>${y?.attributes.temperature != null ? `${Math.round(y.attributes.temperature)}°` : ""}</small></span><button class="link" @click=${() => this.navigate("/tiempo-aemet/resumen")}>Ver más<ha-icon icon="mdi:chevron-right"></ha-icon></button></div>
-        <div class="forecast">${O.map((g) => n`<div><small>${F(new Date(g.datetime)) === F() ? "Hoy" : F(new Date(g.datetime)) === F(new Date(Date.now() + 864e5)) ? "Mañana" : new Date(g.datetime).toLocaleDateString("es-ES", { weekday: "short", timeZone: "Europe/Madrid" })}</small><ha-icon icon=${"mdi:" + bo(g.condition)}></ha-icon><b>${Math.round(g.temperature)}° <span>${g.templow != null ? Math.round(g.templow) + "°" : ""}</span></b><small class="rain">${g.precipitation_probability != null ? Math.round(g.precipitation_probability) + " %" : g.precipitation != null ? g.precipitation + " mm" : "—"}</small></div>`)}</div>
+        <div class="forecast">${O.map((m) => n`<div><small>${K(new Date(m.datetime)) === K() ? "Hoy" : K(new Date(m.datetime)) === K(new Date(Date.now() + 864e5)) ? "Mañana" : new Date(m.datetime).toLocaleDateString("es-ES", { weekday: "short", timeZone: "Europe/Madrid" })}</small><ha-icon icon=${"mdi:" + bo(m.condition)}></ha-icon><b>${Math.round(m.temperature)}° <span>${m.templow != null ? Math.round(m.templow) + "°" : ""}</span></b><small class="rain">${m.precipitation_probability != null ? Math.round(m.precipitation_probability) + " %" : m.precipitation != null ? m.precipitation + " mm" : "—"}</small></div>`)}</div>
         ${z || this.weather.weather_error ? n`<small class="warning">${this.weather.weather_error ?? "Previsión sin actualizar"}</small>` : l}
-        <button class="alertline" @click=${() => this.navigate("/tiempo-aemet/resumen")}><ha-icon icon="mdi:weather-rainy"></ha-icon><span>${v?.attributes.time ? n`Lluvia · ${rt(v.attributes.time)}<small>${v.attributes.probability ?? "—"} % · ${v.attributes.amount ?? "—"} mm</small>` : v?.state ?? "Lluvia: sin datos"}</span></button>
-        ${(this.weather.alerts ?? []).length ? (this.weather.alerts ?? []).map((g) => n`<button class=${"alertline " + g.level} @click=${() => this.navigate("/tiempo-aemet/resumen")}><ha-icon icon="mdi:alert-outline"></ha-icon><span>${g.event}<small>${g.active ? "Activo hasta " + rt(g.end) : rt(g.start)} · ${this.weather.zone}</small></span></button>`) : n`<div class="alertline quiet"><ha-icon icon="mdi:shield-check-outline"></ha-icon><span>${this.weather.alerts_available ? "Sin avisos amarillos, naranjas o rojos" : "Avisos: sin datos"}</span></div>`}
+        <button class="alertline" @click=${() => this.navigate("/tiempo-aemet/resumen")}><ha-icon icon="mdi:weather-rainy"></ha-icon><span>${g?.attributes.time ? n`Lluvia · ${rt(g.attributes.time)}<small>${g.attributes.probability ?? "—"} % · ${g.attributes.amount ?? "—"} mm</small>` : g?.state ?? "Lluvia: sin datos"}</span></button>
+        ${(this.weather.alerts ?? []).length ? (this.weather.alerts ?? []).map((m) => n`<button class=${"alertline " + m.level} @click=${() => this.navigate("/tiempo-aemet/resumen")}><ha-icon icon="mdi:alert-outline"></ha-icon><span>${m.event}<small>${m.active ? "Activo hasta " + rt(m.end) : rt(m.start)} · ${this.weather.zone}</small></span></button>`) : n`<div class="alertline quiet"><ha-icon icon="mdi:shield-check-outline"></ha-icon><span>${this.weather.alerts_available ? "Sin avisos amarillos, naranjas o rojos" : "Avisos: sin datos"}</span></div>`}
       </ha-card>
       ${this.pending ? n`<div role="status" class="status">${this.pending}…</div>` : l}${this.error ? n`<div role="alert" class="error">${this.error}</div>` : l}
     </div>`;
   }
 };
-Y.styles = H`
-    :host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}.home{max-width:760px;margin:0 auto;padding:8px;display:grid;gap:9px}ha-card{padding:8px 12px;border-radius:18px;overflow:hidden}button,input,select{font:inherit;color:inherit}button{border:0;background:var(--secondary-background-color);border-radius:11px;min-height:44px;min-width:44px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;touch-action:manipulation}button:disabled{opacity:.45;cursor:default}ha-icon{--mdc-icon-size:22px;flex-shrink:0}small{font-size:12px;color:var(--secondary-text-color)}.heading,.heading>span,.row,.volume,.brightness{display:flex;align-items:center;gap:8px}.heading{justify-content:space-between;min-height:44px}.heading strong{font-size:16px}.heading>span{min-width:0;gap:7px}.link{font-size:12px;background:transparent;padding:0 3px}.brightness{margin-top:3px}.brightness button{font-weight:600;font-size:13px;padding:0 12px}.brightness input{flex:1;min-width:0;accent-color:var(--primary-color);height:44px;cursor:pointer}.live{color:var(--success-color,#268657)}.now{padding:3px 0 6px}.app{font-size:12px;color:var(--secondary-text-color)}.title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:19px;margin-top:2px}.volume{justify-content:space-between;margin:2px 0 5px}.audio{display:grid;gap:2px}.audio strong{font-size:17px;font-variant-numeric:tabular-nums}.shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shortcuts button{min-width:0;padding:3px 6px;font-size:12px;font-weight:600}.shortcuts span{min-width:0;line-height:16px}.shortcuts img{width:26px;height:26px;border-radius:6px}.channel{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--secondary-text-color)}select{flex:1;min-width:0;height:44px;padding:0 9px;border:1px solid var(--divider-color);border-radius:10px;background:var(--card-background-color);font-size:14px;color:var(--primary-text-color)}.forecast{display:grid;grid-template-columns:repeat(5,1fr);padding:4px 0 6px}.forecast>div{display:grid;justify-items:center;gap:3px}.forecast ha-icon{--mdc-icon-size:25px;color:var(--primary-color)}.forecast b{font-size:14px;white-space:nowrap}.forecast b span{color:var(--secondary-text-color);font-weight:400;font-size:12px}.forecast .rain{font-size:11px;color:var(--primary-color)}.alertline{display:flex;gap:9px;text-align:left;width:100%;background:transparent;min-height:44px;border-top:1px solid var(--divider-color);border-radius:0;padding:5px 0;font-size:12px;line-height:16px}.alertline span{min-width:0}.alertline small{display:block;font-size:11px}.alertline ha-icon{--mdc-icon-size:19px;color:var(--primary-color)}.quiet{align-items:center;font-size:11px;color:var(--secondary-text-color)}.amarillo ha-icon{color:#aa7b00}.naranja ha-icon{color:#cf6d00}.rojo ha-icon{color:#d33}.warning{display:block;color:var(--warning-color)}.error,.status{padding:10px;border-radius:10px;background:var(--card-background-color);font-size:13px}.error{color:var(--error-color)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}@media(min-width:900px){.home{max-width:1160px;grid-template-columns:1fr 1fr;align-items:start;padding:20px;gap:16px}.lamp{grid-column:1}.tv{grid-column:1}.weather{grid-column:2;grid-row:1/span 2}ha-card{padding:14px 18px}.forecast{padding:20px 0}.forecast ha-icon{--mdc-icon-size:36px}.alertline{min-height:55px}.title{font-size:17px;line-height:23px}}`;
+X.styles = U`
+    :host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}.home{max-width:760px;margin:0 auto;padding:8px;display:grid;gap:9px}ha-card{padding:8px 12px;border-radius:18px;overflow:hidden}button,input,select{font:inherit;color:inherit}button{border:0;background:var(--secondary-background-color);border-radius:11px;min-height:44px;min-width:44px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;touch-action:manipulation}button:disabled{opacity:.45;cursor:default}ha-icon{--mdc-icon-size:22px;flex-shrink:0}small{font-size:12px;color:var(--secondary-text-color)}.heading,.heading>span,.row,.volume,.brightness{display:flex;align-items:center;gap:8px}.heading{justify-content:space-between;min-height:44px}.heading strong{font-size:16px}.heading>span{min-width:0;gap:7px}.link{font-size:12px;background:transparent;padding:0 3px}.brightness{margin-top:3px}.brightness button{font-weight:600;font-size:13px;padding:0 12px}.brightness input{flex:1;min-width:0;accent-color:var(--primary-color);height:44px;cursor:pointer}.live{color:var(--success-color,#268657)}.now{padding:3px 0 6px}.app{font-size:12px;color:var(--secondary-text-color)}.title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:19px;margin-top:2px}.volume{justify-content:space-between;margin:2px 0 5px}.audio{display:grid;gap:2px}.audio strong{font-size:17px;font-variant-numeric:tabular-nums}.shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shortcuts.with-channels{grid-template-columns:repeat(2,minmax(0,1fr))}.shortcuts button{min-width:0;padding:3px 6px;font-size:12px;font-weight:600}.shortcuts span{min-width:0;line-height:16px}.shortcuts img{width:26px;height:26px;border-radius:6px}.channel{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--secondary-text-color)}select{flex:1;min-width:0;height:44px;padding:0 9px;border:1px solid var(--divider-color);border-radius:10px;background:var(--card-background-color);font-size:14px;color:var(--primary-text-color)}.forecast{display:grid;grid-template-columns:repeat(5,1fr);padding:4px 0 6px}.forecast>div{display:grid;justify-items:center;gap:3px}.forecast ha-icon{--mdc-icon-size:25px;color:var(--primary-color)}.forecast b{font-size:14px;white-space:nowrap}.forecast b span{color:var(--secondary-text-color);font-weight:400;font-size:12px}.forecast .rain{font-size:11px;color:var(--primary-color)}.alertline{display:flex;gap:9px;text-align:left;width:100%;background:transparent;min-height:44px;border-top:1px solid var(--divider-color);border-radius:0;padding:5px 0;font-size:12px;line-height:16px}.alertline span{min-width:0}.alertline small{display:block;font-size:11px}.alertline ha-icon{--mdc-icon-size:19px;color:var(--primary-color)}.quiet{align-items:center;font-size:11px;color:var(--secondary-text-color)}.amarillo ha-icon{color:#aa7b00}.naranja ha-icon{color:#cf6d00}.rojo ha-icon{color:#d33}.warning{display:block;color:var(--warning-color)}.error,.status{padding:10px;border-radius:10px;background:var(--card-background-color);font-size:13px}.error{color:var(--error-color)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}@media(min-width:600px){.shortcuts.with-channels{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(min-width:900px){.home{max-width:1160px;grid-template-columns:1fr 1fr;align-items:start;padding:20px;gap:16px}.lamp{grid-column:1}.tv{grid-column:1}.weather{grid-column:2;grid-row:1/span 2}ha-card{padding:14px 18px}.forecast{padding:20px 0}.forecast ha-icon{--mdc-icon-size:36px}.alertline{min-height:55px}.title{font-size:17px;line-height:23px}}`;
 lt([
   b({ attribute: !1 })
-], Y.prototype, "hass", 2);
+], X.prototype, "hass", 2);
 lt([
   d()
-], Y.prototype, "config", 2);
+], X.prototype, "config", 2);
 lt([
   d()
-], Y.prototype, "weather", 2);
+], X.prototype, "weather", 2);
 lt([
   d()
-], Y.prototype, "error", 2);
+], X.prototype, "error", 2);
 lt([
   d()
-], Y.prototype, "pending", 2);
+], X.prototype, "pending", 2);
 lt([
   d()
-], Y.prototype, "luliOpen", 2);
-Y = lt([
-  U("polr-home-summary-card")
-], Y);
+], X.prototype, "luliOpen", 2);
+X = lt([
+  j("polr-home-summary-card")
+], X);
 var Ao = Object.defineProperty, So = Object.getOwnPropertyDescriptor, P = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? So(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
@@ -3294,7 +3294,7 @@ let k = class extends T {
     </div></ha-card>`;
   }
 };
-k.styles = H`
+k.styles = U`
     :host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}.body{padding:20px;max-width:1400px;margin:auto}h2,p{margin:0}h2{font-size:23px}h2 small{font-size:13px;font-weight:400;color:var(--secondary-text-color)}header{display:flex;justify-content:space-between;align-items:center}header p{font-size:13px;color:var(--secondary-text-color);margin-top:6px}button,input,select{font:inherit;color:inherit}button{min-height:44px;border:0;border-radius:10px;background:var(--secondary-background-color);padding:8px 14px;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.45;cursor:default}.tools{display:flex;gap:10px;margin:20px 0 10px}input,select{border:1px solid var(--divider-color);border-radius:10px;padding:12px;background:var(--card-background-color);min-width:0}input{flex:1}nav,.libraries{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}nav button{background:transparent;padding:4px 8px;font-size:13px}.libraries button{border-radius:24px;font-size:12px}.catalog{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:20px 14px;margin-top:20px}.poster{display:block;text-align:left;background:none;padding:0;min-width:0;align-self:start}.art{aspect-ratio:2/3;background:var(--secondary-background-color);border-radius:12px;overflow:hidden;position:relative;display:grid;place-items:center}.art img{width:100%;height:100%;object-fit:cover}.art ha-icon{--mdc-icon-size:45px;color:var(--secondary-text-color)}.poster strong{display:block;font-size:14px;margin-top:8px;line-height:19px}.poster small{display:block;color:var(--secondary-text-color);font-size:11px;margin-top:4px}.seen{position:absolute;top:6px;right:6px;background:#164c3cdd;color:white;padding:3px 6px;border-radius:6px;font-size:10px}.progress{height:5px;position:absolute;bottom:0;left:0;background:var(--primary-color)}footer{display:flex;justify-content:center;gap:14px;align-items:center;margin-top:24px;font-size:12px}.notice,.error{padding:14px;background:var(--secondary-background-color);border-radius:10px;margin:12px 0;font-size:13px}.error{color:var(--error-color)}.error button{margin-left:8px}.notice p{margin-top:7px}dialog{color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:20px;padding:0;width:calc(100% - 28px);max-width:560px;max-height:90dvh}dialog::backdrop{background:#0008}.details{padding:26px}.details h2{padding-right:30px}.details p{margin-top:12px;font-size:14px;line-height:1.5}.close{position:absolute;right:8px;top:8px;padding:8px}.overview{max-height:25vh;overflow:auto}.choices{display:grid;gap:10px;margin-top:20px}.choices button{min-height:48px}.primary{background:var(--primary-color);color:var(--text-primary-color,#fff)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}@media(max-width:600px){.body{padding:14px}.tools{flex-wrap:wrap}.tools input{flex-basis:100%}.tools select{flex:1}.catalog{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 9px}.poster strong{font-size:12px;line-height:16px}.poster small{font-size:10px}.details{padding:22px}.details h2{font-size:20px}}`;
 P([
   b({ attribute: !1 })
@@ -3339,9 +3339,9 @@ P([
   d()
 ], k.prototype, "selected", 2);
 k = P([
-  U("polr-jellyfin-card")
+  j("polr-jellyfin-card")
 ], k);
-var To = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, L = (t, e, i, o) => {
+var To = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, R = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? Eo(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && To(e, i, a), a;
@@ -3349,7 +3349,7 @@ var To = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, L = (t, e,
 const xt = { homeassistant: "Home Assistant", observed: "Observado", physical_button: "Botón físico", infrared: "Receptor IR", airmouse: "AirMouse", virtual_remote: "Mando virtual", external_input: "Entrada externa", system: "Sistema", command: "Acción", input: "Pulsación", power: "Encendido/apagado", playback: "Reproducción", audio: "Audio", error: "Error", monitor: "Seguimiento" };
 let C = class extends T {
   constructor() {
-    super(...arguments), this.config = {}, this.result = { events: [], segments: [], daily: [] }, this.from = F(), this.to = F(), this.kind = "", this.origin = "", this.query = "", this.mode = "sessions", this.error = "", this.loading = !1, this.loaded = !1, this.generation = 0;
+    super(...arguments), this.config = {}, this.result = { events: [], segments: [], daily: [] }, this.from = K(), this.to = K(), this.kind = "", this.origin = "", this.query = "", this.mode = "sessions", this.error = "", this.loading = !1, this.loaded = !1, this.generation = 0;
   }
   setConfig(t) {
     this.config = { entity: "sensor.tv_salon_contexto", ...t };
@@ -3362,7 +3362,7 @@ let C = class extends T {
   }
   connectedCallback() {
     super.connectedCallback(), this.timer = setInterval(() => {
-      this.allowed && !this.loading && this.mode !== "events" && this.to === F() && this.load();
+      this.allowed && !this.loading && this.mode !== "events" && this.to === K() && this.load();
     }, 15e3);
   }
   updated(t) {
@@ -3411,43 +3411,43 @@ let C = class extends T {
     </div></ha-card>`;
   }
 };
-C.styles = H`
+C.styles = U`
     :host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}.body{padding:22px;max-width:1200px;margin:auto}h2,p{margin:0}h2{font-size:23px}header{display:flex;justify-content:space-between;align-items:center}header p{font-size:12px;color:var(--secondary-text-color);margin-top:6px}button,input,select{font:inherit;color:inherit}button{border:0;min-height:44px;border-radius:10px;background:var(--secondary-background-color);padding:8px 12px;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.4}input,select{background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:9px;padding:10px;min-width:0;min-height:44px}.tools{display:flex;gap:12px;align-items:end;margin:20px 0}.tools label{display:grid;gap:5px;font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stats>div{padding:16px;background:var(--secondary-background-color);border-radius:12px;display:grid;gap:6px}.stats strong{font-size:23px}.stats small,small{font-size:12px;color:var(--secondary-text-color)}nav{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}nav [aria-pressed=true]{background:var(--primary-color);color:var(--text-primary-color,#fff)}details{border-bottom:1px solid var(--divider-color)}summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 4px;cursor:pointer;min-height:60px;font-size:13px}summary small{display:block;margin-top:5px}summary strong{font-size:13px}summary time{font-size:12px;min-width:110px;color:var(--secondary-text-color)}summary>span{flex:1;min-width:0}summary::-webkit-details-marker{display:none}.contents{padding:0 6px 15px}.contents>div{display:flex;gap:14px;padding:10px 0}.contents time{font-size:11px;min-width:110px;color:var(--secondary-text-color)}.contents strong{font-size:13px}.contents small{display:block;margin-top:4px}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.filters input{flex:1;min-width:150px}.event-detail{padding:10px 12px 18px;font-size:12px;overflow-wrap:anywhere}.event-detail>div{display:flex;gap:20px;padding:5px 0;justify-content:space-between}.event-detail>div b{min-width:90px;font-weight:500}.event-detail>div span{text-align:right;white-space:pre-wrap}.event-detail p{margin:10px 0}.error{color:var(--error-color);padding:14px}.notice{font-size:12px;background:var(--secondary-background-color);padding:12px;border-radius:10px}.empty{padding:24px 0;color:var(--secondary-text-color);font-size:13px}.more{margin-top:15px}footer{font-size:11px;color:var(--secondary-text-color);line-height:1.5;margin-top:25px}.denied{padding:24px}button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px}@media(max-width:600px){.body{padding:14px}.tools{gap:7px;flex-wrap:wrap}.tools label{flex:1}.tools input{width:100%;font-size:12px}.stats>div{padding:10px 8px}.stats strong{font-size:17px}.stats small{font-size:10px}summary{gap:9px}summary time{min-width:90px;font-size:10px}.contents time{min-width:88px;font-size:10px}.contents strong{font-size:12px}.filters select{flex:1;font-size:12px}nav{gap:5px}nav button{font-size:12px;padding:7px 9px}}`;
-L([
+R([
   b({ attribute: !1 })
 ], C.prototype, "hass", 2);
-L([
+R([
   d()
 ], C.prototype, "config", 2);
-L([
+R([
   d()
 ], C.prototype, "result", 2);
-L([
+R([
   d()
 ], C.prototype, "from", 2);
-L([
+R([
   d()
 ], C.prototype, "to", 2);
-L([
+R([
   d()
 ], C.prototype, "kind", 2);
-L([
+R([
   d()
 ], C.prototype, "origin", 2);
-L([
+R([
   d()
 ], C.prototype, "query", 2);
-L([
+R([
   d()
 ], C.prototype, "mode", 2);
-L([
+R([
   d()
 ], C.prototype, "error", 2);
-L([
+R([
   d()
 ], C.prototype, "loading", 2);
-C = L([
-  U("polr-tv-history-card")
+C = R([
+  j("polr-tv-history-card")
 ], C);
 function pt(t) {
   const e = Math.max(0, Math.floor(t || 0));
@@ -3461,12 +3461,12 @@ function Ie(t, e) {
   const i = t.observed_at ? e - t.observed_at : 1 / 0, o = i >= -2 && i <= 15, a = Math.max(0, t.duration || 0);
   return { position: Math.max(0, Math.min(a, (t.position || 0) + (o && t.state === "playing" ? Math.max(0, i) : 0))), fresh: o, canSeek: o && t.seekable === !0 && a > 0 && !!t.item_id };
 }
-var Po = Object.defineProperty, Co = Object.getOwnPropertyDescriptor, B = (t, e, i, o) => {
+var Po = Object.defineProperty, Co = Object.getOwnPropertyDescriptor, W = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? Co(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Po(e, i, a), a;
 };
-let N = class extends T {
+let L = class extends T {
   constructor() {
     super(...arguments), this.playback = {}, this.now = Date.now() / 1e3, this.draft = null, this.text = "", this.editing = !1, this.busy = !1, this.error = "";
   }
@@ -3532,43 +3532,43 @@ let N = class extends T {
     </section>`;
   }
 };
-N.styles = H`
+L.styles = U`
     :host{display:block}section{padding:10px 16px;border-top:1px solid var(--divider-color,#ddd);border-bottom:1px solid var(--divider-color,#ddd)}
     .title{display:flex;align-items:center;gap:6px;font-size:13px}.title strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}ha-icon{--mdc-icon-size:20px;flex:none}
     .times{display:flex;justify-content:space-between;gap:6px;font-size:11px;color:var(--secondary-text-color);margin-top:5px;font-variant-numeric:tabular-nums}.range{width:100%;height:44px;margin:0;accent-color:var(--primary-color)}
     .seek{display:flex;align-items:center;gap:8px;font-size:12px}.seek input{min-width:0;width:85px;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:0 8px;height:42px;text-align:center;font:inherit;font-variant-numeric:tabular-nums}
     button{height:44px;min-width:44px;border:0;border-radius:10px;color:var(--primary-text-color);background:var(--secondary-background-color);cursor:pointer}button:disabled,input:disabled{opacity:.45}.error{font-size:12px;color:var(--error-color);margin-top:6px}.pause-hint{display:block;font-size:10px;color:var(--secondary-text-color);margin-top:5px}
   `;
-B([
+W([
   b({ attribute: !1 })
-], N.prototype, "hass", 2);
-B([
+], L.prototype, "hass", 2);
+W([
   b({ attribute: !1 })
-], N.prototype, "playback", 2);
-B([
+], L.prototype, "playback", 2);
+W([
   b()
-], N.prototype, "entryId", 2);
-B([
+], L.prototype, "entryId", 2);
+W([
   d()
-], N.prototype, "now", 2);
-B([
+], L.prototype, "now", 2);
+W([
   d()
-], N.prototype, "draft", 2);
-B([
+], L.prototype, "draft", 2);
+W([
   d()
-], N.prototype, "text", 2);
-B([
+], L.prototype, "text", 2);
+W([
   d()
-], N.prototype, "editing", 2);
-B([
+], L.prototype, "editing", 2);
+W([
   d()
-], N.prototype, "busy", 2);
-B([
+], L.prototype, "busy", 2);
+W([
   d()
-], N.prototype, "error", 2);
-N = B([
-  U("polr-playback-control")
-], N);
+], L.prototype, "error", 2);
+L = W([
+  j("polr-playback-control")
+], L);
 const zo = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Europe/Madrid",
   year: "numeric",
@@ -3721,7 +3721,7 @@ let $ = class extends T {
     </section>`;
   }
 };
-$.styles = H`
+$.styles = U`
     :host{display:block}section{border-top:1px solid var(--divider-color,#ddd);border-bottom:1px solid var(--divider-color,#ddd);font-size:13px}
     button,input{font:inherit}button{min-height:42px;border:0;border-radius:10px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer;padding:7px 12px}button:disabled{opacity:.5;cursor:default}
     .section-toggle{display:flex;align-items:center;gap:8px;width:100%;padding:8px 16px;background:transparent;text-align:left}.section-toggle span{flex:1;font-weight:600}.section-toggle ha-icon{--mdc-icon-size:20px}
@@ -3781,14 +3781,14 @@ A([
   d()
 ], $.prototype, "now", 2);
 $ = A([
-  U("polr-power-control")
+  j("polr-power-control")
 ], $);
 var Ro = Object.defineProperty, Ho = Object.getOwnPropertyDescriptor, ct = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? Ho(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Ro(e, i, a), a;
 };
-let X = class extends T {
+let G = class extends T {
   constructor() {
     super(...arguments), this.tvOn = !1, this.busy = !1, this.error = "";
   }
@@ -3820,32 +3820,32 @@ let X = class extends T {
     </section>`;
   }
 };
-X.styles = H`
+G.styles = U`
     :host{display:block}section{padding:14px 16px;border-top:1px solid var(--divider-color,#ddd)}.heading{display:flex;gap:7px;align-items:center;font-size:13px}.heading span{margin-left:auto;font-size:11px;color:var(--secondary-text-color)}ha-icon{--mdc-icon-size:20px;flex:none}
     .buttons{display:flex;gap:8px;margin-top:10px}.buttons button{flex:1;min-width:0;height:44px;border:0;border-radius:10px;background:var(--secondary-background-color);color:var(--primary-text-color);display:flex;gap:5px;align-items:center;justify-content:center;font-size:12px;cursor:pointer}button:disabled{opacity:.45;cursor:default}
     .lock{display:flex;gap:8px;align-items:center;min-height:44px;font-size:13px;cursor:pointer}.lock input{margin-left:auto;width:22px;height:22px;accent-color:var(--primary-color)}p{font-size:11px;color:var(--secondary-text-color);margin:4px 0;line-height:1.4}.error{color:var(--error-color)}
   `;
 ct([
   b({ attribute: !1 })
-], X.prototype, "hass", 2);
+], G.prototype, "hass", 2);
 ct([
   b({ attribute: !1 })
-], X.prototype, "soundbar", 2);
+], G.prototype, "soundbar", 2);
 ct([
   b()
-], X.prototype, "entryId", 2);
+], G.prototype, "entryId", 2);
 ct([
   b({ type: Boolean })
-], X.prototype, "tvOn", 2);
+], G.prototype, "tvOn", 2);
 ct([
   d()
-], X.prototype, "busy", 2);
+], G.prototype, "busy", 2);
 ct([
   d()
-], X.prototype, "error", 2);
-X = ct([
-  U("polr-soundbar-control")
-], X);
+], G.prototype, "error", 2);
+G = ct([
+  j("polr-soundbar-control")
+], G);
 var Uo = Object.defineProperty, jo = Object.getOwnPropertyDescriptor, Dt = (t, e, i, o) => {
   for (var a = o > 1 ? void 0 : o ? jo(e, i) : e, s = t.length - 1, r; s >= 0; s--)
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
@@ -4055,7 +4055,7 @@ const De = [
   hold_mode: "Native hold mirrors key down/up and requires Android TV Remote on Home Assistant 2026.9 or newer.",
   native_touch_hold_delay_ms: "A touch or pen must remain continuously down for this long. Mouse and keyboard use 750 ms."
 };
-let G = class extends T {
+let Q = class extends T {
   constructor() {
     super(...arguments), this._editing = null, this._computeLabel = (t) => Fo[t.name] ?? t.name, this._computeHelper = (t) => Ko[t.name];
   }
@@ -4071,7 +4071,7 @@ let G = class extends T {
    */
   get _formData() {
     const t = { ...this._config };
-    for (const e of G.ACTION_BUTTONS)
+    for (const e of Q.ACTION_BUTTONS)
       t[`${e}_action`] = this._config.overrides[e]?.tap_action;
     return t;
   }
@@ -4082,7 +4082,7 @@ let G = class extends T {
   _formChanged(t) {
     t.stopPropagation();
     const e = { ...t.detail.value }, i = { ...this._config.overrides };
-    for (const o of G.ACTION_BUTTONS) {
+    for (const o of Q.ACTION_BUTTONS) {
       const a = `${o}_action`;
       if (!(a in e)) continue;
       const s = e[a];
@@ -4541,15 +4541,15 @@ let G = class extends T {
     `;
   }
 };
-G.ACTION_BUTTONS = [
+Q.ACTION_BUTTONS = [
   "power",
   "volume_up",
   "volume_down",
   "volume_mute"
 ];
-G.styles = [
+Q.styles = [
   re,
-  H`
+  U`
       :host {
         display: block;
       }
@@ -4673,16 +4673,16 @@ G.styles = [
 ];
 Dt([
   b({ attribute: !1 })
-], G.prototype, "hass", 2);
+], Q.prototype, "hass", 2);
 Dt([
   d()
-], G.prototype, "_config", 2);
+], Q.prototype, "_config", 2);
 Dt([
   d()
-], G.prototype, "_editing", 2);
-G = Dt([
-  U("polr-android-tv-remote-card-editor")
-], G);
+], Q.prototype, "_editing", 2);
+Q = Dt([
+  j("polr-android-tv-remote-card-editor")
+], Q);
 const Kt = (t) => t.action === "activity" || t.action === "app" || t.action === "key" ? t.action : "action", Ne = (t) => {
   switch (t.action) {
     case "activity":
@@ -4714,8 +4714,8 @@ var Go = Object.defineProperty, Qo = Object.getOwnPropertyDescriptor, ft = (t, e
     (r = t[s]) && (a = (o ? r(e, i, a) : r(a)) || a);
   return o && a && Go(e, i, a), a;
 };
-const Zo = "2.9.0", Nt = "polr-android-tv-remote-card";
-let J = class extends T {
+const Zo = "2.9.1", Nt = "polr-android-tv-remote-card";
+let tt = class extends T {
   constructor() {
     super(...arguments), this._text = "", this._sending = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new ro();
   }
@@ -4954,7 +4954,7 @@ let J = class extends T {
    * codes work regardless — it is only the *player* route that needs the bit.
    */
   _renderTransport(t) {
-    const e = t.playerId === null, i = e || mt(t, W.PREVIOUS_TRACK), o = e || mt(t, W.NEXT_TRACK), a = new Set(this._config.transport_buttons), s = [
+    const e = t.playerId === null, i = e || mt(t, F.PREVIOUS_TRACK), o = e || mt(t, F.NEXT_TRACK), a = new Set(this._config.transport_buttons), s = [
       a.has("previous") && i ? this._button("previous", "mdi:skip-previous", "Previous") : l,
       a.has("rewind") ? this._button("rewind", "mdi:rewind", "Rewind", { repeat: !0 }) : l,
       a.has("play_pause") ? this._button(
@@ -5172,25 +5172,25 @@ let J = class extends T {
     `;
   }
 };
-J.styles = [re, ii];
+tt.styles = [re, ii];
 ft([
   b({ attribute: !1 })
-], J.prototype, "hass", 2);
+], tt.prototype, "hass", 2);
 ft([
   d()
-], J.prototype, "_config", 2);
+], tt.prototype, "_config", 2);
 ft([
   d()
-], J.prototype, "_text", 2);
+], tt.prototype, "_text", 2);
 ft([
   d()
-], J.prototype, "_sending", 2);
+], tt.prototype, "_sending", 2);
 ft([
   d()
-], J.prototype, "_youtubeFavorite", 2);
-J = ft([
-  U(Nt)
-], J);
+], tt.prototype, "_youtubeFavorite", 2);
+tt = ft([
+  j(Nt)
+], tt);
 window.customCards = window.customCards ?? [];
 window.customCards.push({
   type: Nt,
@@ -5202,6 +5202,6 @@ window.customCards.push({
 console.info(`%c ${Nt} %c ${Zo} `, "background:#555;color:#fff", "background:#3f51b5;color:#fff");
 export {
   Zo as CARD_VERSION,
-  J as PolrAndroidTvRemoteCard
+  tt as PolrAndroidTvRemoteCard
 };
 //# sourceMappingURL=polr-android-tv-remote-card.js.map

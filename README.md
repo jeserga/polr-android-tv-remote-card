@@ -431,3 +431,17 @@ With `tv_guide` 1.5.0, the Luli favorite and home shortcut open a shared dialog 
 ## Sunny Bunnies playlist menu (2.9.0)
 
 With `tv_guide` 1.6.0, the Sunny favorite opens the same menu with its fifty most popular videos from the official Spanish channel. Both favorites use Carmen María Hernández Trillo. The dialog requests the chosen catalog using `favorite_id`; Sunny playback includes `favorite_id: sunny_bunnies`, while existing Luli calls keep their default. Selecting one starts it first and shuffles the remaining forty-nine without repeats. Queue progress is shown for the matching favorite. `bun run shots:luli` covers both ranked lists, both shuffle/selection calls and manual navigation during a pending request.
+
+## Home channel shortcuts (2.9.1)
+
+The home TV card accepts `channel_shortcuts` with a display name, a stable `channel_key` from `tv_guide/catalog` and an optional MDI icon. Each button calls `tv_guide.tune_channel`, which wakes the TV if needed, opens live television and confirms the requested channel. Buttons remain available while the TV is off and are disabled while tuning or when the integration context is missing. The shortcut grid adapts to the card width.
+
+```yaml
+type: custom:polr-home-summary-card
+channel_shortcuts:
+  - name: Boing
+    channel_key: 9d52d83c6d074b33bf95871d
+    icon: mdi:television-classic
+```
+
+Use the key from your own TV catalog when configuring another installation. `bun run shots:home` verifies both remote and home buttons, tuning while off, duplicate-request blocking, missing context, errors and mobile/desktop layouts.

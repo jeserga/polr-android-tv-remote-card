@@ -52,7 +52,7 @@ import "./youtube-favorite";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.9.0";
+export const CARD_VERSION = "2.9.1";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
