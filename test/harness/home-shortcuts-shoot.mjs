@@ -10,6 +10,7 @@ try {
  await page.setViewport({width:393,height:1000,isMobile:true,hasTouch:true});
  await page.goto(pathToFileURL(resolve('test/harness/index.html')).href,{waitUntil:'networkidle0'});
  await page.waitForFunction(()=>document.title==='ready');
+ await page.setRequestInterception(true);page.on('request',request=>request.url()==='https://icons.test/boing.svg'?request.respond({status:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"><circle cx="13" cy="13" r="13" fill="blue"/></svg>'}):request.continue());
  await page.evaluate(async()=>{
   const meta=document.createElement('meta');meta.name='viewport';meta.content='width=device-width, initial-scale=1';document.head.append(meta);
   document.body.innerHTML='';document.body.style.padding='0';window.calls=[];
@@ -38,6 +39,8 @@ try {
  await page.evaluate(()=>{window.hold=false;finishCall();});await page.waitForFunction(()=>!home.shadowRoot.querySelector('[aria-label="Ver Boing"]').disabled);
  await page.evaluate(()=>window.fail=true);await tap('home','Ver Boing');await page.waitForFunction(()=>home.shadowRoot.querySelector('[role="alert"]')?.textContent.includes('Boing'));
  await page.evaluate(()=>window.fail=false);await tap('home','Ver Boing');await page.waitForFunction(()=>!home.shadowRoot.querySelector('[role="alert"]'));
+ await page.evaluate(async()=>{home.setConfig({channel_shortcuts:[{name:'Boing',channel_key:'boing-channel',icon:'https://icons.test/boing.svg'}]});await home.updateComplete;});
+ await page.waitForFunction(()=>{const b=home.shadowRoot.querySelector('[aria-label="Ver Boing"]');const img=b.querySelector('img');return img?.complete&&img.naturalWidth>0&&!b.querySelector('ha-icon');});
  for(const width of [360,393,1440]){
   await page.setViewport({width,height:1100,isMobile:true,hasTouch:true});
   await page.evaluate(()=>setState('on'));await page.screenshot({path:root+'/buttons-'+width+'.png',fullPage:true});
@@ -46,5 +49,5 @@ try {
  }
  await page.evaluate(async()=>{home.setConfig({});await home.updateComplete;});
  assert.equal(await page.evaluate(()=>home.shadowRoot.querySelector('.shortcuts').children.length),3);
- assert.deepEqual(errors,[]);console.log('Both Boing buttons: correct service/key, available when off, busy and missing context, duplicate blocking, visible errors, original defaults and 360/393/1440 layouts passed.');
+ assert.deepEqual(errors,[]);console.log('Both Boing buttons: correct service/key, available when off, busy and missing context, duplicate blocking, visible errors, image icons, original defaults and 360/393/1440 layouts passed.');
 }finally{await browser.close();}
