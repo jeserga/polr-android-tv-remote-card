@@ -72,6 +72,7 @@ entity: remote.living_room_tv
 | `transport_buttons`   | all five | Which of those to draw; they always render in playback order.           |
 | `show_volume`         | `true`   | Volume down / mute / up, plus a level bar where there is one.           |
 | `volume_entity`       | player   | What the volume buttons drive. See [Volume](#volume).                   |
+| `volume_step`         | unset    | Known percentage points per Android volume key. Enables the target slider and grouped volume changes. |
 | `show_text_input`     | `false`  | Type on the TV. See [Text input](#text-input).                          |
 | `show_apps`           | `true`   | The app launcher.                                                       |
 | `apps_label`          | `Apps`   | Heading above the built-in launcher.                                    |
@@ -281,6 +282,8 @@ If a soundbar or receiver exposes a media player, point the card at it:
 volume_entity: media_player.living_room_soundbar
 ```
 
+For a paired Android remote with a known volume step, set `volume_step: 1` (one percentage point per key). The buttons and slider then show the chosen percentage immediately with an “Aplicando…” indicator and a separate confirmed reading. Rapid changes replace one pending target; the card sends batches of at most five keys, with one batch in flight. Changing direction discards intermediate targets and sends only the remaining difference. Fresh audio telemetry confirms the result; merged ARC keys receive at most three corrections, and a remaining one-point hardware rounding difference may settle to the confirmed value after two corrections. Errors and missing confirmation return to the actual reading. Leaving the card cancels unsent work. Power-off scheduling appears after all other remote controls. Explicit volume action overrides retain their existing behavior.
+
 If volume goes through an **IR bridge**, there is usually no media player at all
 — instead you get one pressable entity per command. A Sofabaton X1S, for
 instance, exposes `button.<name>_volume_up`, `_volume_down` and `_volume_mute`:
@@ -326,8 +329,7 @@ Worth knowing, because it shapes the card:
   `select_source`, and nothing enumerates what is installed on the TV. The one
   runtime signal is the app on screen right now — the editor offers to capture
   that, which is the easiest way to learn a package id.
-- **No volume setting.** Volume *steps* work, `volume_set` does not, so the
-  level bar is read-only and often absent — see [Volume](#volume).
+- **Android volume is step based.** The protocol has no absolute `volume_set`. The default level bar is read-only; configuring a known `volume_step` enables a target slider implemented with grouped keys and confirmation — see [Volume](#volume).
 - **No media title or artwork.** Only the app name is reported.
 
 ## Migrating

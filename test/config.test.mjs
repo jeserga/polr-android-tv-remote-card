@@ -9,6 +9,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
+test("grouped volume is opt-in and only accepts finite positive percentage steps", () => {
+  const config = { type: "custom:polr-android-tv-remote-card", entity: "remote.tv" };
+  for (const volume_step of [undefined, 0, -1, NaN, Infinity, 101, "1"]) {
+    assert.equal(normalizeConfig({ ...config, volume_step }).volume_step, undefined);
+  }
+  for (const volume_step of [0.5, 1, 100]) {
+    assert.equal(normalizeConfig({ ...config, volume_step }).volume_step, volume_step);
+  }
+});
+
 import {
   BRANDS,
   BRAND_IDS,

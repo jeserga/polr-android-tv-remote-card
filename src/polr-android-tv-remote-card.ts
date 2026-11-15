@@ -48,11 +48,12 @@ import "./history-card";
 import "./playback-control";
 import "./power-control";
 import "./soundbar-control";
+import "./volume-control";
 import "./youtube-favorite";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.9.2";
+export const CARD_VERSION = "2.10.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -369,26 +370,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
             `
           : nothing}
       </div>
-      ${this._renderChips(device)}
     `;
-  }
-
-  private _renderChips(device: DeviceState): TemplateResult | typeof nothing {
-    if (!device.on || !device.available) return nothing;
-
-    // Nothing here is invented: each chip needs state the device actually
-    // reports. A TV feeding a soundbar reports neither, and shows no chips.
-    const chips: TemplateResult[] = [];
-    if (device.muted === true) {
-      chips.push(html`<span class="chip warn"><ha-icon icon="mdi:volume-off"></ha-icon>Muted</span>`);
-    } else if (hasVolumeState(device)) {
-      chips.push(html`<span class="chip accent">${Math.round(device.volume! * 100)}%</span>`);
-    }
-    if (!chips.length) return nothing;
-
-    return html`<div class="tile" style="padding-top:0;min-height:0">
-      <div class="chips">${chips}</div>
-    </div>`;
   }
 
   /* -------------------------------------------------------------- rows -- */
@@ -475,12 +457,21 @@ export class PolrAndroidTvRemoteCard extends LitElement {
    * The buttons always work -- worst case they send key codes. The *state* is
    * another matter: androidtv_remote only reports a level when the TV itself
    * handles audio. Hand the sound to a soundbar over ARC and there is no level
-   * and no mute flag, so the bar, the percentage chip and the muted icon would
+   * and no mute flag, so the bar and the muted icon would
    * all be invented. When that is the case the row is just three buttons.
    */
   private _renderVolume(device: DeviceState): TemplateResult {
     const known = hasVolumeState(device);
     const muted = device.muted === true;
+    const config = this._config!;
+    // Explicit actions retain their own transport and gesture semantics.
+    if (known && config.volume_step && ["volume_up", "volume_down", "volume_mute"].every(
+      button => Object.keys(config.overrides[button as ButtonId] ?? {}).length === 0,
+    )) {
+      return html`<polr-volume-control .hass=${this.hass} .device=${device}
+        .step=${config.volume_step} .haptics=${config.haptics} .coordinator=${this._pressCoordinator}
+        @volume-mute=${() => this._press("volume_mute")}></polr-volume-control>`;
+    }
 
     return html`
       <div class="features">
@@ -659,7 +650,6 @@ export class PolrAndroidTvRemoteCard extends LitElement {
         ${config.show_header ? this._renderHeader(device) : nothing}
         ${context?.youtube_operation && ["running", "error"].includes(context.youtube_operation.state) ? html`<div class="notice ${context.youtube_operation.state === "error" ? "error" : "warn"}" role=${context.youtube_operation.state === "error" ? "alert" : "status"}><ha-icon icon="mdi:youtube"></ha-icon><span class="grow">${context.youtube_operation.message}</span></div>` : nothing}
         ${context?.playback ? html`<polr-playback-control .hass=${this.hass} .playback=${context.playback} .entryId=${context.entry_id}></polr-playback-control>` : nothing}
-        ${context?.power_off && context?.idle_standby ? html`<polr-power-control .hass=${this.hass} .entryId=${context.entry_id} .tvOn=${device.on} .playback=${context.playback} .powerOff=${context.power_off} .idleStandby=${context.idle_standby}></polr-power-control>` : nothing}
         ${config.show_header && device.playerId === null
           ? html`<div class="notice warn">
               <ha-icon icon="mdi:information-outline"></ha-icon>
@@ -709,6 +699,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
                 ${config.show_apps ? this._renderApps() : nothing}
               `}
         ${context?.soundbar ? html`<polr-soundbar-control .hass=${this.hass} .soundbar=${{...context.soundbar,output:context.audio?.output}} .entryId=${context.entry_id} .tvOn=${device.on}></polr-soundbar-control>` : nothing}
+        ${context?.power_off && context?.idle_standby ? html`<polr-power-control .hass=${this.hass} .entryId=${context.entry_id} .tvOn=${device.on} .playback=${context.playback} .powerOff=${context.power_off} .idleStandby=${context.idle_standby}></polr-power-control>` : nothing}
       </ha-card>
     `;
   }

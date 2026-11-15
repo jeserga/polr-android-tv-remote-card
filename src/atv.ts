@@ -13,8 +13,8 @@
  *      system `remote.gym_tv` pairs with `media_player.gym_tv_2` — so they are
  *      paired by device_id, never by string manipulation.
  *   2. The media_player supports neither SELECT_SOURCE nor VOLUME_SET. There is
- *      no source list to read apps from, and volume is step-only, which is why
- *      the card renders a volume *bar* and not a slider.
+ *      no source list to read apps from, and volume is step-only. A target
+ *      slider therefore needs an explicitly configured step and confirmation.
  */
 
 import { isActionable, runAction, splitService, type ActionConfig } from "./actions";

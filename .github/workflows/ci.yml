@@ -36,6 +36,7 @@ jobs:
           npm run shots
           npm run shots:guide
           npm run shots:playback
+          npm run shots:volume
           npm run shots:home
 
       - uses: actions/upload-artifact@v4
@@ -46,6 +47,7 @@ jobs:
             test/harness/shots/
             test/harness/shots-tv-guide/
             test/harness/shots-playback/
+            test/harness/shots-volume/
             test/harness/shots-home-shortcuts/
           if-no-files-found: ignore
 

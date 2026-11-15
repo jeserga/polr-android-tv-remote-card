@@ -178,6 +178,8 @@ export interface PolrAtvRemoteCardConfig {
    * itself reports no volume level to display.
    */
   volume_entity?: string;
+  /** Known percentage points per Android volume key; enables coalesced targets. */
+  volume_step?: number;
   /** Optional tv_guide context sensor for launcher, tuner and input state. */
   context_entity?: string;
   /** Opt-in audited command service supplied by tv_guide. */
@@ -649,6 +651,8 @@ export const normalizeConfig = (raw: PolrAtvRemoteCardConfig): ResolvedConfig =>
     ...(typeof raw.volume_entity === "string"
       ? { volume_entity: raw.volume_entity }
       : {}),
+    volume_step: typeof raw.volume_step === "number" && Number.isFinite(raw.volume_step)
+      && raw.volume_step > 0 && raw.volume_step <= 100 ? raw.volume_step : undefined,
     ...(typeof raw.name === "string" ? { name: raw.name } : {}),
 
     show_header: pick(raw.show_header, DEFAULTS.show_header),

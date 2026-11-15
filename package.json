@@ -1,6 +1,6 @@
 {
   "name": "polr-android-tv-remote-card",
-  "version": "2.9.2",
+  "version": "2.10.0",
   "description": "A Lovelace remote for the Android TV Remote integration.",
   "main": "dist/polr-android-tv-remote-card.js",
   "repository": {
@@ -18,7 +18,7 @@
     "watch": "vite build --watch",
     "dev": "npm run watch",
     "typecheck": "tsc --noEmit",
-    "pretest": "esbuild src/config.ts src/atv.ts src/actions.ts src/press-state.ts src/guide-model.ts src/home-model.ts src/playback-model.ts src/power-model.ts --bundle --format=esm --outdir=test/.build --out-extension:.js=.mjs",
+    "pretest": "esbuild src/config.ts src/atv.ts src/actions.ts src/press-state.ts src/guide-model.ts src/home-model.ts src/playback-model.ts src/power-model.ts src/volume-intent.ts --bundle --format=esm --outdir=test/.build --out-extension:.js=.mjs",
     "test": "node --test \"test/*.test.mjs\"",
     "shots": "node test/harness/shoot.mjs",
     "lint:exports": "node scripts/unused-exports.mjs",
@@ -27,7 +27,8 @@
     "shots:power": "node test/harness/power-shoot.mjs",
     "shots:youtube": "node test/harness/youtube-shoot.mjs",
     "shots:luli": "node test/harness/luli-shoot.mjs",
-    "shots:home": "node test/harness/home-shortcuts-shoot.mjs"
+    "shots:home": "node test/harness/home-shortcuts-shoot.mjs",
+    "shots:volume": "node test/harness/volume-shoot.mjs"
   },
   "dependencies": {
     "lit": "^3.2.1"

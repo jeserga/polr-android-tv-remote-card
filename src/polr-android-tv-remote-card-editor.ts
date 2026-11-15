@@ -237,6 +237,7 @@ const SCHEMA = (config: ResolvedConfig) =>
           name: "volume_entity",
           selector: { entity: { filter: [{ domain: "media_player" }] } },
         },
+        { name: "volume_step", selector: { number: { min: 0.1, max: 100, step: 0.1, mode: "box" } } },
         // HA's own interactions editor: tap, hold and double tap, with the
         // full action vocabulary. IR bridges expose one pressable entity per
         // command rather than a media_player, so this is how those get wired.
@@ -256,6 +257,7 @@ const TILE_ACTION_SCHEMA = [
 const LABELS: Record<string, string> = {
   entity: "Remote entity",
   volume_entity: "Volume on another media player",
+  volume_step: "Percentage points per Android volume key (enables target slider)",
   power_action: "Power",
   volume_up_action: "Volume up",
   volume_down_action: "Volume down",
