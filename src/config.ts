@@ -178,7 +178,7 @@ export interface PolrAtvRemoteCardConfig {
    * itself reports no volume level to display.
    */
   volume_entity?: string;
-  /** Known percentage points per Android volume key; enables coalesced targets. */
+  /** UI target step in percentage points. Requires volume_set on the audio entity. */
   volume_step?: number;
   /** Optional tv_guide context sensor for launcher, tuner and input state. */
   context_entity?: string;

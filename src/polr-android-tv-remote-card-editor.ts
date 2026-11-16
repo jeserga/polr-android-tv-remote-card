@@ -257,7 +257,7 @@ const TILE_ACTION_SCHEMA = [
 const LABELS: Record<string, string> = {
   entity: "Remote entity",
   volume_entity: "Volume on another media player",
-  volume_step: "Percentage points per Android volume key (enables target slider)",
+  volume_step: "Target adjustment step in percentage points",
   power_action: "Power",
   volume_up_action: "Volume up",
   volume_down_action: "Volume down",

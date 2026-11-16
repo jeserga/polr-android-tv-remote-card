@@ -1,157 +1,55 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { VolumeIntent } from './.build/volume-intent.mjs';
-
-const settle = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
-function setup(t, send, step = 1) {
-  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 100_000 });
-  const calls = [];
-  const intent = new VolumeIntent(step, async (direction, count) => {
-    calls.push([direction, count]);
-    return send?.(direction, count);
-  }, () => {}, undefined, 1000);
-  intent.observe(9, 99);
-  return { intent, calls, tick: async ms => { t.mock.timers.tick(ms); await settle(); } };
+const settle=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
+function setup(t,send){
+ t.mock.timers.enable({apis:['setTimeout','Date'],now:100000});
+ const calls=[];const v=new VolumeIntent(1,async p=>{calls.push(p);return send?send(p):{context:{id:'id'+calls.length}};},()=>{});
+ v.observe(5,{volume_status:'idle',volume_revision:0});
+ return {v,calls,tick:async ms=>{t.mock.timers.tick(ms);await settle();}};
 }
-
-test('15 rapid taps update immediately and send three batches, then await fresh telemetry', async t => {
-  const { intent: v, calls, tick } = setup(t);
-  for (let i = 0; i < 15; i++) v.choose(v.value + 1);
-  assert.equal(v.value, 24);
-  assert.equal(v.confirmed, 9);
-  assert(v.pending);
-  assert.deepEqual(calls, []);
-  await tick(70);
-  assert.deepEqual(calls, [[1, 5], [1, 5], [1, 5]]);
-  v.observe(24, 99);
-  assert(v.pending, 'old telemetry must not confirm the requested percentage');
-  await tick(201);
-  v.observe(24, Date.now() / 1000);
-  assert(!v.pending);
-  assert.equal(v.value, 24);
+test('15 taps are instant and become one absolute target; ACK alone is not success',async t=>{
+ const {v,calls,tick}=setup(t);
+ for(let i=0;i<15;i++)v.choose(v.value+1);
+ assert.equal(v.value,20);assert(v.pending);assert.equal(v.confirmed,5);assert.deepEqual(calls,[]);
+ await tick(70);assert.deepEqual(calls,[20]);assert(v.pending);
+ v.observe(19,{volume_status:'applying',volume_target:.2,volume_request_id:'id1',volume_revision:1});assert(v.pending);assert.equal(v.value,20);assert.equal(v.confirmed,19);
+ v.observe(20,{volume_status:'applied',volume_target:.2,volume_request_id:'id1',volume_revision:1});assert(!v.pending);assert.equal(v.value,20);
 });
-
-test('pending targets are replaced, including direction reversal during a batch', async t => {
-  const resolvers = [];
-  const { intent: v, calls, tick } = setup(t, () => new Promise(resolve => resolvers.push(resolve)));
-  v.choose(50);
-  await tick(70);
-  for (const target of [80, 70, 60, 40, 12]) v.choose(target);
-  assert.equal(v.value, 12);
-  assert.equal(calls.length, 1);
-  resolvers.shift()(); await settle();
-  assert.deepEqual(calls, [[1, 5], [-1, 2]]);
-  resolvers.shift()(); await settle();
-  await tick(201); v.observe(12, Date.now() / 1000);
-  assert(!v.pending);
+test('new target replaces unsent intents during an in-flight call',async t=>{
+ const resolvers=[];const {v,calls,tick}=setup(t,()=>new Promise(r=>resolvers.push(r)));
+ v.choose(50);await tick(70);for(const p of [8,35,12])v.choose(p);
+ assert.equal(v.value,12);assert.equal(calls.length,1);
+ resolvers.shift()({context:{id:'old'}});await settle();assert.deepEqual(calls,[50,12]);
+ v.observe(40,{volume_status:'applied',volume_target:.5,volume_request_id:'old'});assert.equal(v.value,12);assert(v.pending);
+ resolvers.shift()({context:{id:'new'}});await settle();assert(v.pending);
+ v.observe(12,{volume_status:'applied',volume_target:.12,volume_request_id:'new'});assert(!v.pending);
 });
-
-test('opposite taps cancel before dispatch without touching the TV', async t => {
-  const { intent: v, calls, tick } = setup(t);
-  v.choose(10); v.choose(9);
-  await tick(70);
-  assert.deepEqual(calls, []);
-  assert(!v.pending);
+test('reconnect adopts server operation and later another client supersedes it',t=>{
+ const {v}=setup(t);v.observe(7,{volume_status:'applying',volume_target:.4,volume_request_id:'other',volume_revision:2});assert.equal(v.value,40);assert(v.pending);
+ v.observe(9,{volume_status:'applying',volume_target:.12,volume_request_id:'next',volume_revision:3});assert.equal(v.value,12);
+ v.observe(12,{volume_status:'applied',volume_target:.12,volume_request_id:'next',volume_revision:3});assert(!v.pending);
 });
-
-test('a continuous drag starts within 160 ms instead of starving the sender', async t => {
-  const { intent: v, calls, tick } = setup(t);
-  for (let i = 0; i < 4; i++) { v.choose(10 + i); await tick(40); }
-  assert(calls.length > 0);
-  v.dispose();
+test('backend error keeps goal and actual distinct without accepting a one-point error',t=>{
+ const {v}=setup(t);v.observe(16,{volume_status:'error',volume_target:.15,volume_error:'No responde',volume_revision:1});assert.equal(v.value,15);assert.equal(v.confirmed,16);assert.equal(v.error,'No responde');assert(!v.pending);
 });
-
-test('bounds, invalid input and fractional volume steps', async t => {
-  const { intent: v, calls, tick } = setup(t, undefined, 0.5);
-  v.choose(NaN); assert(!v.pending);
-  v.choose(Infinity); assert(!v.pending);
-  v.choose(101); assert.equal(v.value, 100);
-  v.choose(-1); assert.equal(v.value, 0);
-  v.choose(10.1); assert.equal(v.value, 10);
-  await tick(70);
-  assert.deepEqual(calls, [[1, 2]]);
-  v.dispose();
+test('network failure survives re-render and a new gesture can recover',async t=>{
+ let fail=true;const {v,tick}=setup(t,async()=>{if(fail)throw Error();return {context:{id:'ok'}};});v.choose(15);await tick(70);
+ v.observe(5,{volume_status:'idle',volume_revision:0});assert(v.error);assert.equal(v.value,15);assert(!v.pending);
+ fail=false;v.choose(10);await tick(70);v.observe(10,{volume_status:'applied',volume_request_id:'ok',volume_revision:1});assert(!v.error);assert(!v.pending);
 });
-
-test('a rejected call stops the queue and a later gesture uses the actual reading', async t => {
-  let fail = true;
-  const { intent: v, calls, tick } = setup(t, () => { if (fail) throw new Error('offline'); });
-  v.choose(90); await tick(70);
-  assert.equal(calls.length, 1);
-  assert(!v.pending);
-  assert.match(v.error, /cambiar el volumen/);
-  v.observe(11, 101); fail = false;
-  v.choose(12); await tick(70);
-  assert.deepEqual(calls[1], [1, 1]);
-  assert.equal(v.error, undefined);
-  v.dispose();
+test('a failure of the old call cannot discard a newer target',async t=>{
+ let reject;const {v,calls,tick}=setup(t,p=>p===50?new Promise((_,r)=>reject=r):Promise.resolve({context:{id:'new'}}));v.choose(50);await tick(70);v.choose(8);reject(Error());await settle();assert.deepEqual(calls,[50,8]);assert.equal(v.value,8);assert(!v.error);
 });
-
-test('a stalled call times out despite further input; late success cannot resume it', async t => {
-  let resolve;
-  const { intent: v, calls, tick } = setup(t, () => new Promise(r => { resolve = r; }));
-  v.choose(80); await tick(70);
-  await tick(500); v.choose(40);
-  await tick(500);
-  assert.match(v.error, /no responde/);
-  assert(!v.pending);
-  resolve(); await settle();
-  assert.equal(calls.length, 1);
+test('continuous drag dispatches within 160 ms; bounds and invalid input',async t=>{
+ const {v,calls,tick}=setup(t);v.choose(NaN);assert(!v.pending);v.choose(Infinity);assert(!v.pending);
+ v.choose(101);assert.equal(v.value,100);v.choose(-1);assert.equal(v.value,0);
+ for(let i=0;i<4;i++){v.choose(10+i);await tick(40);}assert(calls.length>0);v.dispose();
 });
-
-test('unconfirmed commands time out without resending or claiming success', async t => {
-  const { intent: v, calls, tick } = setup(t);
-  v.choose(11); await tick(70);
-  v.observe(10, 99);
-  assert.equal(v.value, 11);
-  await tick(1000);
-  assert(!v.pending);
-  assert.equal(v.value, 10);
-  assert.match(v.error, /confirmar/);
-  assert.equal(calls.length, 1);
+test('disconnect cancels only unsent browser work, not the server operation',async t=>{
+ let resolve;const {v,calls,tick}=setup(t,()=>new Promise(r=>resolve=r));v.choose(50);v.dispose();await tick(200);assert.equal(calls.length,0);
+ v.choose(50);await tick(70);v.dispose();resolve({context:{id:'old'}});await settle();assert.equal(calls.length,1);
 });
-
-test('fresh telemetry corrects merged ARC keys and accepts the closest reachable level', async t => {
-  const { intent: v, calls, tick } = setup(t);
-  v.choose(20); await tick(70);
-  await tick(250); v.observe(17, Date.now() / 1000); await settle();
-  assert.deepEqual(calls.at(-1), [1, 3]);
-  await tick(250); v.observe(19, Date.now() / 1000); await settle();
-  assert.deepEqual(calls.at(-1), [1, 1]);
-  await tick(250); v.observe(21, Date.now() / 1000);
-  assert(!v.pending);
-  assert.equal(v.value, 21);
-  assert.equal(v.error, undefined);
-});
-
-test('corrections are bounded and old readings never roll the confirmed value back', async t => {
-  const { intent: v, calls, tick } = setup(t);
-  v.choose(20); await tick(70);
-  for (let i = 0; i < 4; i++) { await tick(250); v.observe(10, Date.now() / 1000); await settle(); }
-  assert(!v.pending);
-  assert.match(v.error, /volumen real/);
-  const count = calls.length;
-  v.observe(9, 1); await tick(1500);
-  assert.equal(v.confirmed, 10);
-  assert.equal(calls.length, count);
-});
-
-test('disconnect cancels unsent work and continuation after an in-flight batch', async t => {
-  let resolve;
-  const { intent: v, calls, tick } = setup(t, () => new Promise(r => { resolve = r; }));
-  v.choose(80); v.dispose(); await tick(100);
-  assert.equal(calls.length, 0);
-  v.choose(80); await tick(70);
-  v.dispose(); resolve(); await settle(); await tick(2000);
-  assert.equal(calls.length, 1);
-  assert(!v.pending);
-  assert.equal(v.error, undefined);
-});
-
-test('late rejection after disposal is ignored', async t => {
-  let reject;
-  const { intent: v, tick } = setup(t, () => new Promise((_, r) => { reject = r; }));
-  v.choose(50); await tick(70);
-  v.dispose(); reject(new Error('late')); await settle();
-  assert.equal(v.error, undefined);
+test('late rejection after disconnect is ignored',async t=>{
+ let reject;const {v,tick}=setup(t,()=>new Promise((_,r)=>reject=r));v.choose(50);await tick(70);v.dispose();reject(Error());await settle();assert.equal(v.error,undefined);
 });

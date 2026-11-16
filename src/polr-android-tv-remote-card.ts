@@ -53,7 +53,7 @@ import "./youtube-favorite";
 import "./polr-android-tv-remote-card-editor";
 import type { NavPressPhase } from "./nav-pad";
 
-export const CARD_VERSION = "2.10.0";
+export const CARD_VERSION = "2.11.0";
 
 const CARD_TYPE = "polr-android-tv-remote-card";
 
@@ -465,7 +465,7 @@ export class PolrAndroidTvRemoteCard extends LitElement {
     const muted = device.muted === true;
     const config = this._config!;
     // Explicit actions retain their own transport and gesture semantics.
-    if (known && config.volume_step && ["volume_up", "volume_down", "volume_mute"].every(
+    if (known && (device.volumeFeatures & FEATURE.VOLUME_SET) && config.volume_step && ["volume_up", "volume_down", "volume_mute"].every(
       button => Object.keys(config.overrides[button as ButtonId] ?? {}).length === 0,
     )) {
       return html`<polr-volume-control .hass=${this.hass} .device=${device}

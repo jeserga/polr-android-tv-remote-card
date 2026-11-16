@@ -72,7 +72,7 @@ entity: remote.living_room_tv
 | `transport_buttons`   | all five | Which of those to draw; they always render in playback order.           |
 | `show_volume`         | `true`   | Volume down / mute / up, plus a level bar where there is one.           |
 | `volume_entity`       | player   | What the volume buttons drive. See [Volume](#volume).                   |
-| `volume_step`         | unset    | Known percentage points per Android volume key. Enables the target slider and grouped volume changes. |
+| `volume_step`         | unset    | UI adjustment step in percentage points. Target mode requires an audio entity supporting `volume_set`. |
 | `show_text_input`     | `false`  | Type on the TV. See [Text input](#text-input).                          |
 | `show_apps`           | `true`   | The app launcher.                                                       |
 | `apps_label`          | `Apps`   | Heading above the built-in launcher.                                    |
@@ -282,7 +282,7 @@ If a soundbar or receiver exposes a media player, point the card at it:
 volume_entity: media_player.living_room_soundbar
 ```
 
-For a paired Android remote with a known volume step, set `volume_step: 1` (one percentage point per key). The buttons and slider then show the chosen percentage immediately with an “Aplicando…” indicator and a separate confirmed reading. Rapid changes replace one pending target; the card sends batches of at most five keys, with one batch in flight. Changing direction discards intermediate targets and sends only the remaining difference. Fresh audio telemetry confirms the result; merged ARC keys receive at most three corrections, and a remaining one-point hardware rounding difference may settle to the confirmed value after two corrections. Errors and missing confirmation return to the actual reading. Leaving the card cancels unsent work. Power-off scheduling appears after all other remote controls. Explicit volume action overrides retain their existing behavior.
+With `tv_guide` 1.7.0 or later, `media_player.tv_salon_audio` supports absolute target requests through Home Assistant's standard `media_player.volume_set` service. Set `volume_step: 1` for one percentage point per UI adjustment. The server owns a single replaceable target per TV, serializes isolated volume pulses and confirms their result from HDMI CEC reports after release. The card shows the selected target immediately, plus “Aplicando…” and the actual current volume separately. Acknowledging a service call does not confirm the physical result. New targets replace earlier ones, including direction changes while moving. There is no one-point success tolerance. Leaving or reconnecting the card does not replay or duplicate the server operation. Explicit volume action overrides retain their behavior. Power-off scheduling remains at the bottom of the remote.
 
 If volume goes through an **IR bridge**, there is usually no media player at all
 — instead you get one pressable entity per command. A Sofabaton X1S, for
@@ -329,7 +329,7 @@ Worth knowing, because it shapes the card:
   `select_source`, and nothing enumerates what is installed on the TV. The one
   runtime signal is the app on screen right now — the editor offers to capture
   that, which is the easiest way to learn a package id.
-- **Android volume is step based.** The protocol has no absolute `volume_set`. The default level bar is read-only; configuring a known `volume_step` enables a target slider implemented with grouped keys and confirmation — see [Volume](#volume).
+- **Android volume is step based.** The protocol has no absolute `volume_set`. The default level bar is read-only; the `tv_guide` audio entity implements `volume_set` with server-side regulation and physical confirmation — see [Volume](#volume).
 - **No media title or artwork.** Only the app name is reported.
 
 ## Migrating

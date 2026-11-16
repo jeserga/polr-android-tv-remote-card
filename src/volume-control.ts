@@ -27,20 +27,16 @@ export class VolumeControl extends LitElement {
     if (!this.intent || identity !== this.identity) {
       this.intent?.dispose();
       this.identity = identity;
-      this.intent = new VolumeIntent(this.step, async (direction, count) => {
+      this.intent = new VolumeIntent(this.step, async percent => {
         if (!this.hass || !this.device?.on || !this.device.available) throw new Error("TV no disponible");
-        await this.hass.callService("remote", "send_command", {
-          entity_id: this.device.remoteId,
-          command: direction > 0 ? "VOLUME_UP" : "VOLUME_DOWN",
-          num_repeats: count,
-          delay_secs: 0.12,
+        return this.hass.callService("media_player", "volume_set", {
+          entity_id: this.device.volumeId, volume_level: percent / 100,
         }, undefined, false);
       }, () => this.requestUpdate());
     }
     const entity = d?.volumeId ? this.hass?.states[d.volumeId] : undefined;
     if (typeof d?.volume === "number") {
-      const observedAt = entity?.attributes.observed_at ?? Date.parse(entity?.last_updated ?? "") / 1000;
-      this.intent.observe(d.volume * 100, observedAt);
+      this.intent.observe(d.volume * 100, entity?.attributes ?? {});
     }
   }
 
@@ -71,10 +67,10 @@ export class VolumeControl extends LitElement {
       <div class="level ${pending ? "pending" : ""}">
         <input type="range" min="0" max="100" .step=${String(this.step)} .value=${String(intent.value)} aria-label="Volumen deseado" aria-valuetext=${`${percent} %${pending ? ", pendiente de aplicar" : ""}`}
           @input=${(event: Event) => intent.choose(Number((event.target as HTMLInputElement).value))}>
-        <output>${percent} %</output>
+        <output aria-label="Volumen objetivo">${percent} %</output>
       </div>
       <div class="status" role="status" aria-live="polite">
-        ${pending ? html`<span class="pending-label"><ha-icon icon="mdi:progress-clock"></ha-icon>Aplicando…</span><span>Confirmado: ${Math.round(intent.confirmed)} %</span>` : d.volumeOutput}
+        ${pending ? html`<span class="pending-label"><ha-icon icon="mdi:progress-clock"></ha-icon>Aplicando…</span><span>Actual — ${d.volumeOutput?.includes("ARC") ? "barra" : "TV"}: ${Math.round(intent.confirmed)} %</span>` : d.volumeOutput}
         ${muted ? html`<span>Silencio</span>` : nothing}
       </div>
       ${intent.error ? html`<div class="error" role="alert">${intent.error}</div>` : nothing}

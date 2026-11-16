@@ -18,11 +18,11 @@ try {
     const hass = {
       states: {
         'remote.tv': { state: 'on', attributes: {} },
-        'media_player.tv': { state: 'on', last_updated: new Date().toISOString(), attributes: { volume_level: .09, is_volume_muted: false, output_label: 'HS2100 · HDMI ARC', observed_at: Date.now() / 1000 } },
+        'media_player.tv': { state: 'on', last_updated: new Date().toISOString(), attributes: { supported_features: 1036, volume_level: .09, volume_status: "idle", is_volume_muted: false, output_label: 'HS2100 · HDMI ARC', observed_at: Date.now() / 1000 } },
         'sensor.context': { state: 'on', attributes: { entry_id: 'entry', power_off: {}, idle_standby: {}, soundbar: {} } },
       },
       entities: { 'remote.tv': { entity_id: 'remote.tv', device_id: 'tv', platform: 'androidtv_remote' }, 'media_player.tv': { entity_id: 'media_player.tv', device_id: 'tv', platform: 'androidtv_remote' } }, devices: {},
-      callService: async (...args) => { calls.push(args); await new Promise(resolve => resolvers.push(resolve)); return {}; },
+      callService: async (...args) => { calls.push(args); await new Promise(resolve => resolvers.push(resolve)); return {context:{id:"request-"+calls.length}}; },
     };
     card.hass = hass;
     card.setConfig({ type: 'custom:polr-android-tv-remote-card', entity: 'remote.tv', volume_step: 1, context_entity: 'sensor.context', show_text_input: true, apps: ['netflix'], hold_mode: 'native' });
@@ -44,7 +44,7 @@ try {
     resolvers.shift()(); await new Promise(resolve => setTimeout(resolve, 250));
     const second = calls[1][2];
     resolvers.shift()(); await new Promise(resolve => setTimeout(resolve, 250));
-    hass.states['media_player.tv'].attributes.volume_level = .12;
+    Object.assign(hass.states['media_player.tv'].attributes, {volume_level:.12,volume_target:.12,volume_status:'applied',volume_request_id:'request-2',volume_revision:2});
     hass.states['media_player.tv'].attributes.observed_at = Date.now() / 1000;
     card.hass = { ...hass }; await card.updateComplete; await volume.updateComplete;
     const confirmed = { value: root.querySelector('output').textContent.trim(), pending: !!root.querySelector('.pending-label') };
@@ -55,10 +55,10 @@ try {
     return { instant, first, second, confirmed, last, chips, calls: calls.length };
   });
   assert.equal(result.instant.value, '24 %');
-  assert.match(result.instant.pending, /Aplicando.*Confirmado: 9/s);
+  assert.match(result.instant.pending, /Aplicando.*Actual — barra: 9/s);
   assert.equal(result.instant.calls, 0);
-  assert.deepEqual([result.first.command, result.first.num_repeats, result.first.delay_secs], ['VOLUME_UP', 5, .12]);
-  assert.deepEqual([result.second.command, result.second.num_repeats], ['VOLUME_DOWN', 2]);
+  assert.deepEqual(result.first, {entity_id:'media_player.tv',volume_level:.24});
+  assert.deepEqual(result.second, {entity_id:'media_player.tv',volume_level:.12});
   assert.deepEqual(result.confirmed, { value: '12 %', pending: false });
   assert.equal(result.last, 'POLR-POWER-CONTROL');
   assert.equal(result.chips, 0);

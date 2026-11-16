@@ -735,8 +735,9 @@ const $e = (t, e, i) => {
       return e.callService(r, c, p ?? {}, i.target);
     }
   }
-}, K = {
+}, q = {
   PAUSE: 1,
+  VOLUME_SET: 4,
   VOLUME_MUTE: 8,
   PREVIOUS_TRACK: 16,
   NEXT_TRACK: 32,
@@ -834,7 +835,7 @@ const $e = (t, e, i) => {
   const r = i.playerId;
   switch (o) {
     case "power":
-      return r && vt(i, i.on ? K.TURN_OFF : K.TURN_ON) ? t.callService(
+      return r && vt(i, i.on ? q.TURN_OFF : q.TURN_ON) ? t.callService(
         "media_player",
         i.on ? "turn_off" : "turn_on",
         { entity_id: r }
@@ -842,26 +843,26 @@ const $e = (t, e, i) => {
         entity_id: i.remoteId
       });
     case "play_pause":
-      if (r && vt(i, K.PAUSE))
+      if (r && vt(i, q.PAUSE))
         return t.callService("media_player", "media_play_pause", {
           entity_id: r
         });
       break;
     case "next":
-      if (r && vt(i, K.NEXT_TRACK))
+      if (r && vt(i, q.NEXT_TRACK))
         return t.callService("media_player", "media_next_track", {
           entity_id: r
         });
       break;
     case "previous":
-      if (r && vt(i, K.PREVIOUS_TRACK))
+      if (r && vt(i, q.PREVIOUS_TRACK))
         return t.callService("media_player", "media_previous_track", {
           entity_id: r
         });
       break;
     case "volume_up":
     case "volume_down":
-      if (i.volumeId && we(i, K.VOLUME_STEP))
+      if (i.volumeId && we(i, q.VOLUME_STEP))
         return t.callService(
           "media_player",
           o === "volume_up" ? "volume_up" : "volume_down",
@@ -869,7 +870,7 @@ const $e = (t, e, i) => {
         );
       break;
     case "volume_mute":
-      if (i.volumeId && i.muted !== void 0 && we(i, K.VOLUME_MUTE))
+      if (i.volumeId && i.muted !== void 0 && we(i, q.VOLUME_MUTE))
         return t.callService("media_player", "volume_mute", {
           entity_id: i.volumeId,
           is_volume_muted: !i.muted
@@ -1515,7 +1516,7 @@ class co extends oo {
     this.cancelPress(), this._tapTimer !== void 0 && (window.clearTimeout(this._tapTimer), this._tapTimer = void 0), this._awaitingSecondTap = !1;
   }
 }
-const q = Fe(co), oi = R`
+const B = Fe(co), oi = R`
   /*
    * Every section pads its own bottom and relies on the header for the top.
    * With the header hidden the first row sat flush against the card edge, so
@@ -2548,7 +2549,7 @@ const q = Fe(co), oi = R`
     }
   }
 `;
-var po = Object.defineProperty, ho = Object.getOwnPropertyDescriptor, B = (t, e, i, o) => {
+var po = Object.defineProperty, ho = Object.getOwnPropertyDescriptor, W = (t, e, i, o) => {
   for (var s = o > 1 ? void 0 : o ? ho(e, i) : e, a = t.length - 1, r; a >= 0; a--)
     (r = t[a]) && (s = (o ? r(e, i, s) : r(s)) || s);
   return o && s && po(e, i, s), s;
@@ -2611,7 +2612,7 @@ let D = class extends S {
         class="pad-key ${o}"
         type="button"
         aria-label=${i}
-        ${q(this._pressOptions(t))}
+        ${B(this._pressOptions(t))}
       >
         <ha-icon icon=${e}></ha-icon>
       </button>
@@ -2648,7 +2649,7 @@ let D = class extends S {
           class="pad-key ok"
           type="button"
           aria-label="Select"
-          ${q(this._pressOptions("center"))}
+          ${B(this._pressOptions("center"))}
         >
           <span>OK</span>
         </button>
@@ -2697,34 +2698,34 @@ let D = class extends S {
   }
 };
 D.styles = [le, oi];
-B([
+W([
   f({ type: String })
 ], D.prototype, "pad", 2);
-B([
+W([
   f({ type: Boolean })
 ], D.prototype, "repeat", 2);
-B([
+W([
   f({ attribute: !1 })
 ], D.prototype, "nativeButtons", 2);
-B([
+W([
   f({ type: Boolean })
 ], D.prototype, "haptics", 2);
-B([
+W([
   f({ type: Number })
 ], D.prototype, "nativeTouchHoldDelayMs", 2);
-B([
+W([
   f({ attribute: !1 })
 ], D.prototype, "pressCoordinator", 2);
-B([
+W([
   We(".touchpad")
 ], D.prototype, "_touchpad", 2);
-B([
+W([
   We(".touchpad-dot")
 ], D.prototype, "_dot", 2);
-B([
+W([
   d()
 ], D.prototype, "_tracking", 2);
-D = B([
+D = W([
   H("polr-atv-nav-pad")
 ], D);
 const V = (t) => new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit" }).format(new Date(t * 1e3)), $t = (t = /* @__PURE__ */ new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(t);
@@ -2965,7 +2966,7 @@ function $o(t, e = Date.now() / 1e3) {
   const a = i[i.length - 1];
   return o.reverse().map((r) => ({ ...r, active: a?.power === "on" && r.end === a.end && e - r.end < 20 }));
 }
-var wo = Object.defineProperty, ko = Object.getOwnPropertyDescriptor, W = (t, e, i, o) => {
+var wo = Object.defineProperty, ko = Object.getOwnPropertyDescriptor, F = (t, e, i, o) => {
   for (var s = o > 1 ? void 0 : o ? ko(e, i) : e, a = t.length - 1, r; a >= 0; a--)
     (r = t[a]) && (s = (o ? r(e, i, s) : r(s)) || s);
   return o && s && wo(e, i, s), s;
@@ -3042,34 +3043,34 @@ let N = class extends S {
 N.styles = R`
     :host{color:var(--primary-text-color)}*{box-sizing:border-box}dialog{position:fixed;margin:auto;border:1px solid var(--divider-color);border-radius:20px;padding:0;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 32px);background:var(--ha-card-background,var(--card-background-color,#fff));color:inherit;box-shadow:0 16px 60px #0005}dialog::backdrop{background:#0008}.content{padding:18px}.heading{display:flex;align-items:center;gap:12px}.heading img{width:44px;height:44px;border-radius:12px}.heading>div{flex:1;min-width:0}h2{font-size:21px;margin:0}p{margin:8px 0;font-size:14px;line-height:1.5}.heading p{color:var(--secondary-text-color);margin:3px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}button,a{font:inherit;color:inherit;touch-action:manipulation}button{border:0;cursor:pointer;min-height:48px;border-radius:12px;background:var(--secondary-background-color,#eee);display:flex;justify-content:center;align-items:center;gap:8px;padding:10px}.icon{min-width:44px;background:transparent}.shuffle{color:var(--text-primary-color,#fff);background:var(--primary-color,#03a9f4)}button:disabled{opacity:.45;cursor:default}.explanation,.source{color:var(--secondary-text-color);font-size:13px}.error{color:var(--error-color)}ol{padding:0;margin:14px 0;list-style:none}li{display:flex;align-items:stretch;border-top:1px solid var(--divider-color)}.video{flex:1;min-width:0;text-align:left;background:transparent;justify-content:flex-start;border-radius:6px;padding:12px 4px;gap:10px}.rank{width:24px;flex-shrink:0;color:var(--secondary-text-color);font-size:14px;text-align:center}.details{flex:1;min-width:0;display:grid;gap:5px}.details strong{font-size:14px;line-height:1.4;overflow-wrap:anywhere}.details small{font-size:12px;color:var(--secondary-text-color)}li>a{width:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center}ha-icon{--mdc-icon-size:22px;flex-shrink:0}button:focus-visible,a:focus-visible{outline:2px solid var(--primary-color);outline-offset:-2px}@media(max-width:420px){.content{padding:14px}.actions{grid-template-columns:1fr}}
   `;
-W([
+F([
   f({ attribute: !1 })
 ], N.prototype, "hass", 2);
-W([
+F([
   f({ attribute: !1 })
 ], N.prototype, "entryId", 2);
-W([
+F([
   f({ attribute: !1 })
 ], N.prototype, "favoriteId", 2);
-W([
+F([
   f({ attribute: !1 })
 ], N.prototype, "operation", 2);
-W([
+F([
   f({ attribute: !1 })
 ], N.prototype, "queue", 2);
-W([
+F([
   d()
 ], N.prototype, "catalog", 2);
-W([
+F([
   d()
 ], N.prototype, "choosing", 2);
-W([
+F([
   d()
 ], N.prototype, "error", 2);
-W([
+F([
   d()
 ], N.prototype, "pending", 2);
-N = W([
+N = F([
   H("polr-youtube-favorite")
 ], N);
 var Ao = Object.defineProperty, So = Object.getOwnPropertyDescriptor, ct = (t, e, i, o) => {
@@ -3462,7 +3463,7 @@ function De(t, e) {
   const i = t.observed_at ? e - t.observed_at : 1 / 0, o = i >= -2 && i <= 15, s = Math.max(0, t.duration || 0);
   return { position: Math.max(0, Math.min(s, (t.position || 0) + (o && t.state === "playing" ? Math.max(0, i) : 0))), fresh: o, canSeek: o && t.seekable === !0 && s > 0 && !!t.item_id };
 }
-var zo = Object.defineProperty, Oo = Object.getOwnPropertyDescriptor, F = (t, e, i, o) => {
+var zo = Object.defineProperty, Oo = Object.getOwnPropertyDescriptor, K = (t, e, i, o) => {
   for (var s = o > 1 ? void 0 : o ? Oo(e, i) : e, a = t.length - 1, r; a >= 0; a--)
     (r = t[a]) && (s = (o ? r(e, i, s) : r(s)) || s);
   return o && s && zo(e, i, s), s;
@@ -3540,34 +3541,34 @@ L.styles = R`
     .seek{display:flex;align-items:center;gap:8px;font-size:12px}.seek input{min-width:0;width:85px;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:0 8px;height:42px;text-align:center;font:inherit;font-variant-numeric:tabular-nums}
     button{height:44px;min-width:44px;border:0;border-radius:10px;color:var(--primary-text-color);background:var(--secondary-background-color);cursor:pointer}button:disabled,input:disabled{opacity:.45}.error{font-size:12px;color:var(--error-color);margin-top:6px}.pause-hint{display:block;font-size:10px;color:var(--secondary-text-color);margin-top:5px}
   `;
-F([
+K([
   f({ attribute: !1 })
 ], L.prototype, "hass", 2);
-F([
+K([
   f({ attribute: !1 })
 ], L.prototype, "playback", 2);
-F([
+K([
   f()
 ], L.prototype, "entryId", 2);
-F([
+K([
   d()
 ], L.prototype, "now", 2);
-F([
+K([
   d()
 ], L.prototype, "draft", 2);
-F([
+K([
   d()
 ], L.prototype, "text", 2);
-F([
+K([
   d()
 ], L.prototype, "editing", 2);
-F([
+K([
   d()
 ], L.prototype, "busy", 2);
-F([
+K([
   d()
 ], L.prototype, "error", 2);
-L = F([
+L = K([
   H("polr-playback-control")
 ], L);
 const Mo = new Intl.DateTimeFormat("en-GB", {
@@ -3848,49 +3849,41 @@ Q = dt([
   H("polr-soundbar-control")
 ], Q);
 class Vo {
-  constructor(e, i, o, s = () => Date.now(), a = 12e3) {
-    this.step = e, this.send = i, this.changed = o, this.now = s, this.confirmationMs = a, this.confirmed = 0, this.estimated = 0, this.busy = !1, this.queuedAt = 0, this.sentAt = 0, this.generation = 0, this.observedAt = 0, this.corrections = 0;
+  constructor(e, i, o, s = () => Date.now()) {
+    this.step = e, this.send = i, this.changed = o, this.now = s, this.confirmed = 0, this.pending = !1, this.queuedAt = 0, this.busy = !1, this.generation = 0, this.server = {};
   }
   get value() {
     return this.target ?? this.confirmed;
   }
-  get pending() {
-    return this.target !== void 0;
-  }
   observe(e, i) {
-    i < this.observedAt || (this.observedAt = i, this.confirmed = e, this.pending || (this.estimated = e), this.pending && !this.busy && !this.timer && this.close(this.estimated, this.target) && i * 1e3 > this.sentAt + 200 && (this.close(e, this.target) || this.corrections >= 2 && Math.abs(e - this.target) <= this.step ? (this.target = void 0, this.estimated = e, clearTimeout(this.timeout)) : this.corrections < 3 ? (++this.corrections, this.estimated = e, clearTimeout(this.timeout), this.flush()) : this.fail("La barra no ha confirmado el porcentaje solicitado. Se muestra el volumen real.")));
+    this.confirmed = e, this.server = i, this.applyServer();
+  }
+  applyServer() {
+    this.failedRevision !== void 0 && (this.server.volume_revision ?? 0) <= this.failedRevision || (this.failedRevision = void 0, !(this.busy || this.queued !== void 0 || this.timer) && (this.ack && this.server.volume_request_id !== this.ack || (this.ack = void 0, this.pending = this.server.volume_status === "applying", this.error = this.server.volume_error ?? void 0, this.target = this.pending || this.error ? (this.server.volume_target ?? this.confirmed / 100) * 100 : void 0)));
   }
   choose(e) {
-    Number.isFinite(e) && (this.pending || (this.estimated = this.confirmed, this.corrections = 0), this.target = Math.max(0, Math.min(100, Math.round(e / this.step) * this.step)), this.error = void 0, this.busy || clearTimeout(this.timeout), this.changed(), !this.busy && (this.timer || (this.queuedAt = this.now()), clearTimeout(this.timer), this.timer = setTimeout(
-      () => {
-        this.timer = void 0, this.flush();
-      },
-      Math.max(0, Math.min(70, 160 - (this.now() - this.queuedAt)))
-    )));
+    Number.isFinite(e) && (this.target = Math.max(0, Math.min(100, Math.round(e / this.step) * this.step)), this.queued = this.target, this.pending = !0, this.error = void 0, this.failedRevision = void 0, this.ack = void 0, this.changed(), !this.busy && (this.timer || (this.queuedAt = this.now()), clearTimeout(this.timer), this.timer = setTimeout(() => {
+      this.timer = void 0, this.flush();
+    }, Math.max(0, Math.min(70, 160 - (this.now() - this.queuedAt))))));
   }
   dispose() {
-    ++this.generation, clearTimeout(this.timer), clearTimeout(this.timeout), this.timer = void 0, this.timeout = void 0, this.busy = !1, this.target = void 0, this.error = void 0, this.sentAt = 0;
-  }
-  close(e, i) {
-    return Math.abs(e - i) < this.step / 2 + 1e-3;
-  }
-  fail(e) {
-    this.dispose(), this.estimated = this.confirmed, this.error = e, this.changed();
+    ++this.generation, clearTimeout(this.timer), this.timer = void 0, this.queued = void 0, this.busy = !1;
   }
   async flush() {
-    if (this.target === void 0 || this.busy) return;
-    const e = Math.round((this.target - this.estimated) / this.step);
-    if (!e) {
-      !this.sentAt && this.close(this.confirmed, this.target) ? (this.target = void 0, this.changed()) : this.timeout = setTimeout(() => this.fail("No se ha podido confirmar el volumen. Comprueba el valor real e inténtalo de nuevo."), this.confirmationMs);
-      return;
-    }
-    const i = e > 0 ? 1 : -1, o = Math.min(5, Math.abs(e)), s = this.generation;
-    this.busy = !0, this.timeout = setTimeout(() => this.fail("La TV no responde al cambio de volumen."), this.confirmationMs);
+    if (this.queued === void 0 || this.busy) return;
+    const e = this.queued, i = this.generation;
+    this.queued = void 0, this.busy = !0;
     try {
-      if (await this.send(i, o), s !== this.generation) return;
-      clearTimeout(this.timeout), this.estimated = Math.max(0, Math.min(100, this.estimated + i * o * this.step)), this.sentAt = this.now(), this.busy = !1, this.changed(), await this.flush();
+      const o = await this.send(e);
+      if (i !== this.generation) return;
+      this.busy = !1, this.ack = o.context?.id, this.queued !== void 0 ? await this.flush() : this.applyServer(), this.changed();
     } catch {
-      s === this.generation && this.fail("No se ha podido cambiar el volumen. Inténtalo de nuevo.");
+      if (i !== this.generation) return;
+      if (this.busy = !1, this.queued !== void 0) {
+        await this.flush();
+        return;
+      }
+      this.failedRevision = this.server.volume_revision ?? 0, this.pending = !1, this.queued = void 0, this.error = "No se ha podido enviar el volumen solicitado.", this.changed();
     }
   }
 }
@@ -3908,20 +3901,15 @@ let et = class extends S {
   }
   willUpdate(t) {
     const e = this.device, i = `${e?.remoteId}/${e?.volumeId}/${e?.volumeOutput}/${this.step}`;
-    (!this.intent || i !== this.identity) && (this.intent?.dispose(), this.identity = i, this.intent = new Vo(this.step, async (s, a) => {
+    (!this.intent || i !== this.identity) && (this.intent?.dispose(), this.identity = i, this.intent = new Vo(this.step, async (s) => {
       if (!this.hass || !this.device?.on || !this.device.available) throw new Error("TV no disponible");
-      await this.hass.callService("remote", "send_command", {
-        entity_id: this.device.remoteId,
-        command: s > 0 ? "VOLUME_UP" : "VOLUME_DOWN",
-        num_repeats: a,
-        delay_secs: 0.12
+      return this.hass.callService("media_player", "volume_set", {
+        entity_id: this.device.volumeId,
+        volume_level: s / 100
       }, void 0, !1);
     }, () => this.requestUpdate()));
     const o = e?.volumeId ? this.hass?.states[e.volumeId] : void 0;
-    if (typeof e?.volume == "number") {
-      const s = o?.attributes.observed_at ?? Date.parse(o?.last_updated ?? "") / 1e3;
-      this.intent.observe(e.volume * 100, s);
-    }
+    typeof e?.volume == "number" && this.intent.observe(e.volume * 100, o?.attributes ?? {});
   }
   adjust(t) {
     this.intent && this.intent.choose(this.intent.value + t * this.step);
@@ -3938,20 +3926,20 @@ let et = class extends S {
     });
     return n`
       <div class="buttons">
-        <button type="button" aria-label="Bajar volumen" ${q(a(-1))}><ha-icon icon="mdi:volume-minus"></ha-icon></button>
+        <button type="button" aria-label="Bajar volumen" ${B(a(-1))}><ha-icon icon="mdi:volume-minus"></ha-icon></button>
         <button type="button" aria-label=${s ? "Activar sonido" : "Silenciar"} aria-pressed=${String(s)}
-          ${q({ onPress: () => this.dispatchEvent(new CustomEvent("volume-mute")), haptics: this.haptics, claimTouch: !0, coordinator: this.coordinator })}>
+          ${B({ onPress: () => this.dispatchEvent(new CustomEvent("volume-mute")), haptics: this.haptics, claimTouch: !0, coordinator: this.coordinator })}>
           <ha-icon icon=${s ? "mdi:volume-high" : "mdi:volume-off"}></ha-icon>
         </button>
-        <button type="button" aria-label="Subir volumen" ${q(a(1))}><ha-icon icon="mdi:volume-plus"></ha-icon></button>
+        <button type="button" aria-label="Subir volumen" ${B(a(1))}><ha-icon icon="mdi:volume-plus"></ha-icon></button>
       </div>
       <div class="level ${i ? "pending" : ""}">
         <input type="range" min="0" max="100" .step=${String(this.step)} .value=${String(e.value)} aria-label="Volumen deseado" aria-valuetext=${`${o} %${i ? ", pendiente de aplicar" : ""}`}
           @input=${(r) => e.choose(Number(r.target.value))}>
-        <output>${o} %</output>
+        <output aria-label="Volumen objetivo">${o} %</output>
       </div>
       <div class="status" role="status" aria-live="polite">
-        ${i ? n`<span class="pending-label"><ha-icon icon="mdi:progress-clock"></ha-icon>Aplicando…</span><span>Confirmado: ${Math.round(e.confirmed)} %</span>` : t.volumeOutput}
+        ${i ? n`<span class="pending-label"><ha-icon icon="mdi:progress-clock"></ha-icon>Aplicando…</span><span>Actual — ${t.volumeOutput?.includes("ARC") ? "barra" : "TV"}: ${Math.round(e.confirmed)} %</span>` : t.volumeOutput}
         ${s ? n`<span>Silencio</span>` : l}
       </div>
       ${e.error ? n`<div class="error" role="alert">${e.error}</div>` : l}
@@ -4165,7 +4153,7 @@ const Ne = [
 ], Qo = {
   entity: "Remote entity",
   volume_entity: "Volume on another media player",
-  volume_step: "Percentage points per Android volume key (enables target slider)",
+  volume_step: "Target adjustment step in percentage points",
   power_action: "Power",
   volume_up_action: "Volume up",
   volume_down_action: "Volume down",
@@ -4857,7 +4845,7 @@ var es = Object.defineProperty, is = Object.getOwnPropertyDescriptor, _t = (t, e
     (r = t[a]) && (s = (o ? r(e, i, s) : r(s)) || s);
   return o && s && es(e, i, s), s;
 };
-const os = "2.10.0", Rt = "polr-android-tv-remote-card";
+const os = "2.11.0", Rt = "polr-android-tv-remote-card";
 let it = class extends S {
   constructor() {
     super(...arguments), this._text = "", this._sending = !1, this._controlQueue = Promise.resolve(), this._nativeSessions = /* @__PURE__ */ new Map(), this._pressCoordinator = new lo();
@@ -5048,7 +5036,7 @@ let it = class extends S {
                 class="icon-button"
                 type="button"
                 aria-label=${t.on ? "Turn off" : "Turn on"}
-                ${q(this._pressOptions("power"))}
+                ${B(this._pressOptions("power"))}
               >
                 <ha-icon icon="mdi:power"></ha-icon>
               </button>
@@ -5064,7 +5052,7 @@ let it = class extends S {
         type="button"
         aria-label=${i}
         title=${i}
-        ${q(this._pressOptions(t, o))}
+        ${B(this._pressOptions(t, o))}
       >
         <ha-icon icon=${e}></ha-icon>
       </button>
@@ -5089,7 +5077,7 @@ let it = class extends S {
    * codes work regardless — it is only the *player* route that needs the bit.
    */
   _renderTransport(t) {
-    const e = t.playerId === null, i = e || vt(t, K.PREVIOUS_TRACK), o = e || vt(t, K.NEXT_TRACK), s = new Set(this._config.transport_buttons), a = [
+    const e = t.playerId === null, i = e || vt(t, q.PREVIOUS_TRACK), o = e || vt(t, q.NEXT_TRACK), s = new Set(this._config.transport_buttons), a = [
       s.has("previous") && i ? this._button("previous", "mdi:skip-previous", "Previous") : l,
       s.has("rewind") ? this._button("rewind", "mdi:rewind", "Rewind", { repeat: !0 }) : l,
       s.has("play_pause") ? this._button(
@@ -5113,7 +5101,7 @@ let it = class extends S {
    */
   _renderVolume(t) {
     const e = Vi(t), i = t.muted === !0, o = this._config;
-    return e && o.volume_step && ["volume_up", "volume_down", "volume_mute"].every(
+    return e && t.volumeFeatures & q.VOLUME_SET && o.volume_step && ["volume_up", "volume_down", "volume_mute"].every(
       (s) => Object.keys(o.overrides[s] ?? {}).length === 0
     ) ? n`<polr-volume-control .hass=${this.hass} .device=${t}
         .step=${o.volume_step} .haptics=${o.haptics} .coordinator=${this._pressCoordinator}
@@ -5125,7 +5113,7 @@ let it = class extends S {
           type="button"
           aria-label=${i ? "Activar sonido" : t.muted === !1 ? "Silenciar" : "Alternar silencio"}
           aria-pressed=${t.muted === void 0 ? "undefined" : i ? "true" : "false"}
-          ${q(this._pressOptions("volume_mute"))}
+          ${B(this._pressOptions("volume_mute"))}
         >
           <ha-icon icon=${i ? "mdi:volume-high" : "mdi:volume-off"}></ha-icon>
         </button>
@@ -5203,7 +5191,7 @@ let it = class extends S {
                 title=${a.name ?? ""}
                 aria-pressed=${a.entity ? String(r) : l}
                 style=${a.color ? `--app-color:${a.color}` : ""}
-                ${q({
+                ${B({
           onPress: () => {
             c || this._launch(a);
           },
@@ -5297,7 +5285,7 @@ let it = class extends S {
                   <button
                     class="control-button accent wide"
                     type="button"
-                    ${q(this._pressOptions("power"))}
+                    ${B(this._pressOptions("power"))}
                   >
                     <ha-icon icon="mdi:power"></ha-icon><span>Turn on</span>
                   </button>
